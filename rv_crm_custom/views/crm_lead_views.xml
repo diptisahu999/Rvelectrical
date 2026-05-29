@@ -23,6 +23,10 @@
             <xpath expr="//field[@name='tag_ids']" position="attributes">
                 <attribute name="required">1</attribute>
             </xpath>
+            <!-- Hide Title Field -->
+            <xpath expr="//field[@name='title']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
         </field>
     </record>
 
