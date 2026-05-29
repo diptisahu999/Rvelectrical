@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="mrp_bom_product_configurator.dialog">
+        <Dialog size="'lg'" title="title">
+            <MrpBomProductList t-if="this.state.products.length" products="this.state.products"/>
+            <t t-set-slot="footer">
+                <button
+                        class="btn btn-primary"
+                        t-on-click="onConfirm"
+                        t-att-disabled="!isPossibleConfiguration()">
+                    Confirm
+                </button>
+                <button class="btn btn-secondary" t-on-click="onDiscard">
+                    Cancel
+                </button>
+            </t>
+        </Dialog>
+    </t>
+
+    <t t-name="mrp_bom_product_configurator.MrpBomProductList">
+        <div class="o_mrp_bom_product_configurator_list">
+            <t t-foreach="props.products" t-as="product" t-key="product.product_tmpl_id">
+                <MrpBomProduct product="product"/>
+            </t>
+        </div>
+    </t>
+
+    <t t-name="mrp_bom_product_configurator.MrpBomProduct">
+        <div class="o_mrp_bom_product_configurator_product mb-3">
+            <h5 t-esc="props.product.display_name"/>
+            <div class="row">
+                <t t-foreach="props.product.attribute_lines" t-as="ptal" t-key="ptal.id">
+                    <div class="col-12 mb-2">
+                        <MrpBomProductTemplateAttributeLine ptal="ptal" productTmplId="props.product.product_tmpl_id"/>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+
+    <t t-name="mrp_bom_product_configurator.MrpBomProductTemplateAttributeLine">
+        <div class="o_mrp_bom_product_configurator_attribute_line">
+            <strong t-esc="props.ptal.attribute.name"/>:
+            <div class="mt-1">
+                <t t-foreach="props.ptal.attribute_values" t-as="ptav" t-key="ptav.id">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input"
+                               type="radio"
+                               t-att-name="'ptal_' + props.ptal.id"
+                               t-att-id="'ptav_' + ptav.id"
+                               t-att-value="ptav.id"
+                               t-att-checked="props.ptal.selected_attribute_value_ids.includes(ptav.id)"
+                               t-on-change="() => this.onAttributeChange(ptav.id)"/>
+                        <label class="form-check-label" t-att-for="'ptav_' + ptav.id">
+                            <span t-esc="ptav.name"/>
+                            <t t-if="ptav.is_custom">
+                                <input type="text"
+                                       class="form-control form-control-sm d-inline-block ml-2"
+                                       style="width: 150px;"
+                                       placeholder="Custom Value"
+                                       t-att-value="props.ptal.customValue || ''"
+                                       t-on-input="(ev) => this.onCustomValueInput(ptav.id, ev.target.value)"
+                                       t-if="props.ptal.selected_attribute_value_ids.includes(ptav.id)"/>
+                            </t>
+                        </label>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+    <t t-name="mrp_bom_product_configurator.ConfigButton">
+        <button t-if="props.record.data.configuration_template_id"
+                class="btn btn-primary btn-sm ml-2"
+                t-on-click="onClick">
+            Configure
+        </button>
+    </t>
+</templates>

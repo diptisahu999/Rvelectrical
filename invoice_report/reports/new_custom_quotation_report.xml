@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="new_report_unified_quotation_proforma_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="company" t-value="doc.company_id.sudo()"/>
+
+                <!-- ADD THIS WRAPPER -->
+                <div class="article o_report_layout_standard o_table_standard o_snail_mail"
+                        t-att-data-oe-model="doc and doc._name"
+                        t-att-data-oe-id="doc and doc.id"
+                        t-att-data-oe-lang="doc and doc.env.context.get('lang')"
+                        style="letter-spacing: 2; font-family: 'Open Sans', sans-serif;">
+
+                    <!-- ========================== -->
+                    <!-- PAGE: 1 IMAGE PAGE -->
+                    <!-- ========================== -->
+                   
+                    <!-- <div class="page" style="padding:0;margin:0;">
+                        <img src="/invoice_report/static/src/img/q0.jpg"
+                            style="width:100%; min-height:1123px; display:block;"/>
+                        <div style="position:absolute; top:835px; left:210px;
+                                font-size:20px; font-weight:bold; color:#1a1a1a; letter-spacing:1px;">
+                            <t t-esc="doc.partner_id.name"/>
+                        </div>
+                    </div>
+
+                    <div class="page" style="padding:0;margin:0;">
+                        <img src="/invoice_report/static/src/img/q1.jpg"
+                            style="width:100%; min-height:1123px; display:block;"/>
+                    </div>
+
+                    <div class="page" style="padding:0;margin:0; page-break-after:always;">
+                        <img src="/invoice_report/static/src/img/q2.jpg"
+                            style="width:100%; min-height:1123px; display:block;"/>
+                    </div> -->
+
+                    <!-- =========================== -->
+                    <!-- PAGE 2 : QUOTATION CONTENT -->
+                    <!-- =========================== -->
+
+                    <div class="page" 
+                            style="position:relative;
+                                width: 100%;
+                                height:auto;
+                                page-break-before:always;">
+                        
+                        <div style="padding-top:18mm; padding-bottom: 0mm; padding-left:8mm; padding-right:8mm;">
+                        
+                            <!-- HEADER -->
+                            <!-- <table class="table p-0 mb-0" style="border: 1px solid #6c757d;">
+                                <tr>
+                                    <td class="col-4" 
+                                            style="text-align: center; vertical-align: middle; width: 30%; 
+                                                height: 120px; border-right: 1px solid #6c757d;">
+                                        <img t-if="company.logo"
+                                            t-att-src="image_data_uri(company.logo)"
+                                            alt="Logo"
+                                            style=" margin: 0 auto; max-width: 220px; max-height: 100px; width: auto; height: auto;" />
+                                    </td>
+                                    <td class="col-8" style="text-align: right; padding-right: 20px;">
+                                        <div style="letter-spacing: 1.5px; font-size: 16px;" class="text-info">
+                                            <strong style="font-size: 16px;" t-field="company.name"/>
+                                        </div>
+                                        <div style="letter-spacing: 1.5px;">
+                                            <t t-if="company.street">
+                                                <span t-field="company.street" />
+                                                <br/>
+                                            </t>
+                                            <t t-if="company.street2">
+                                                <span t-field="company.street2" />
+                                                <br/>
+                                            </t>
+                                            <span t-field="company.city"/>,
+                                            <span t-field="company.state_id" /> -
+                                            <span t-field="company.zip" />
+                                        </div>
+                                        <div style="letter-spacing: 1px;">
+                                            <span>Mobile: </span>
+                                            <span t-field="company.mobile"/>
+                                            <span style="padding-left: 10px;">Email: </span>
+                                            <span t-field="company.email"/>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table> -->
+
+                            <!-- TITLE -->
+                            <div class="text-center p-2" style="background: #4fb1ed20">
+                                <span class="text-uppercase" style="font-size: 24px; color:#4fb1ed; font-weight: bold; letter-spacing: 1.5px;">
+                                    <t t-if="report_type == 'quotation'">Quotation</t>
+                                    <t t-elif="report_type == 'proforma'">PRO-FORMA Invoice</t>
+                                    <t t-else="">Quotation</t>
+                                </span>
+                            </div>
+
+                            <!-- WATERMARK -->
+                            <div style="background: url('/invoice_report/static/src/img/watermark4.png') no-repeat center top; 
+                                    background-size: contain; width: 100%; min-height: 800px;">
+                                
+                                <div class="row d-flex align-items-stretch">
+                                   <table class="table mb-0"
+                                        style="width:100%;
+                                                border-collapse:collapse;
+                                                border:1px solid black;
+                                                table-layout:fixed;">
+
+                                        <!-- ================= TOP ROW ================= -->
+                                        <tr>
+                                            <!-- CUSTOMER -->
+                                            <td rowspan="2"
+                                                style="width:25%;
+                                                    padding:12px;
+                                                    vertical-align:top;
+                                                    border-right:1px solid black;">
+                                                <strong>Customer Details:</strong><br/>
+                                                <span t-field="doc.partner_id.name"/><br/>
+                                                <span t-field="doc.partner_id.vat"/><br/>
+                                                <strong>Address:</strong><br/>
+                                                <span t-field="doc.partner_id.contact_address"/>
+                                            </td>
+
+                                            <!-- SHIPPING -->
+                                            <td rowspan="2"
+                                                style="width:25%;
+                                                    padding:12px;
+                                                    vertical-align:top;
+                                                    border-right:1px solid black;">
+                                                <strong>Shipping Address:</strong><br/>
+                                                <span t-field="doc.partner_shipping_id.contact_address"/>
+                                            </td>
+
+                                            <!-- QUOTATION -->
+                                            <td style="width:25%;
+                                                    padding:20px;
+                                                    vertical-align:top;
+                                                    border-right:1px solid black;
+                                                    border-bottom:1px solid black;">
+                                                <strong style="letter-spacing:1px;">
+                                                    Quotation #:
+                                                </strong><br/>
+                                                <span t-field="doc.name"/>
+                                            </td>
+
+                                            <!-- DATE -->
+                                            <td style="width:25%;
+                                                    padding:20px;
+                                                    vertical-align:top;
+                                                    border-bottom:1px solid black;">
+                                                <strong style="letter-spacing:1px;">
+                                                    Date:
+                                                </strong><br/>
+                                                <span t-field="doc.date_order"/>
+                                            </td>
+                                        </tr>
+
+                                        <!-- ================= BOTTOM ROW ================= -->
+                                        <tr>
+                                            <!-- PAYMENT TERMS -->
+                                            <td style="padding:20px;
+                                                    vertical-align:top;
+                                                    border-right:1px solid black;">
+                                                <strong style="letter-spacing:1px;">
+                                                    Payment Terms:
+                                                </strong><br/>
+                                                <t t-if="doc.payment_term_id">
+                                                    <span t-field="doc.payment_term_id.name"/>
+                                                </t>
+                                            </td>
+
+                                            <!-- SALESPERSON -->
+                                            <td style="padding:20px;
+                                                    vertical-align:top;">
+                                                <strong style="letter-spacing:1px;">
+                                                    Salesperson:
+                                                </strong><br/>
+                                                <span t-field="doc.user_id"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <!-- ITEMS -->
+                                <div class="row oe_structure">
+                                    <div class="col-12">
+                                        <t t-set="has_discount" t-value="any(line.discount &gt; 0 for line in doc.order_line)"/>
+                                        <table class="mb-0 table" style="font-size: 14px; border-width: 0px 1px 1px 1px;border-style:solid; border-color:black;page-break-inside:avoid;">
+                                            <thead class="bg-aqua">
+                                                <tr style="line-height: 1.2; letter-spacing: 1px; " class="align-items-top bg-warning text-dark ">
+                                                    <th name="th_sequence" class="text-center text-dark" style="width: 3%; border-right: 1px solid #000; border-bottom: 1px solid #000;">#</th>
+                                                    <th name="th_item" 
+                                                        class="px-2 text-dark" 
+                                                        t-att-style="'width: 40%; font-weight: bold; border-right: 1px solid #000; border-bottom: 1px solid #000;' if has_discount else 'width: 55%; font-weight: bold; border-right: 1px solid #000; border-bottom: 1px solid #000;'">Item</th>
+                                                    <th name="th_hsn" class="text-center text-dark" style="font-weight: bold; border-right: 1px solid #000; border-bottom: 1px solid #000;">HSN Code</th>
+                                                    <th name="th_qty" class="text-center text-dark" style="font-weight: bold; border-right: 1px solid #000; border-bottom: 1px solid #000;">Qty</th>
+                                                    <th name="th_uom" class="text-center text-dark" style="font-weight: bold; border-right: 1px solid #000; border-bottom: 1px solid #000;">Unit</th>
+                                                    <th name="th_rate" class="text-center text-dark" style="font-weight: bold; border-right: 1px solid #000; border-bottom: 1px solid #000;">Unit Price</th>
+                                                    <th t-if="has_discount" name="th_rate" class="text-center text-dark" style="font-weight: bold; border-right: 1px solid #000; border-bottom: 1px solid #000;">Disc.%</th>
+                                                    <th name="th_amount" class="text-center text-dark" style="font-weight: bold; border-bottom: 1px solid #000;">Amount</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <t t-set="sequence" t-value="1"/>
+                                                <t t-set="lines" t-value="doc.order_line.sorted(key=lambda l: (l.sequence, l.id))"/>
+                                                <t t-set="total_qty" t-value="0"/>
+                                                <t t-foreach="lines" t-as="line">
+                                                    <t t-if="not line.display_type">
+                                                        <tr style="page-break-inside: avoid;">
+                                                            <td class="px-2 text-center" style="border-right: 1px solid #000; border-bottom: 1px solid #000;"><t t-esc="sequence"/></td>
+                                                            <td class="px-2" style="border-right: 1px solid #000; border-bottom: 1px solid #000;">
+                                                                <span class="text-bold" t-field="line.name" t-options="{'widget': 'text'}"/>
+                                                            </td>
+                                                            <td class="text-center px-1" style="border-right: 1px solid #000; border-bottom: 1px solid #000;">
+                                                                <t t-set="tax_percent" t-value="', '.join([str(int(tax.amount)) + '%' for tax in line.tax_id])"/>
+                                                                <span>
+                                                                    <t t-esc="line.product_id.l10n_in_hsn_code"/>
+                                                                    <t t-if="tax_percent">
+                                                                        <strong>(<t t-esc="tax_percent"/>)</strong>
+                                                                    </t>
+                                                                </span>
+                                                            </td>
+                                                            <td class="text-center px-1" style="border-right: 1px solid #000; border-bottom: 1px solid #000;"><span t-field="line.product_uom_qty"/></td>
+                                                            <td class="text-center px-2" style="border-right: 1px solid #000; border-bottom: 1px solid #000;"><span t-field="line.product_uom"/></td>
+                                                            <td class="text-center px-2" style="border-right: 1px solid #000; border-bottom: 1px solid #000;"><span t-field="line.price_unit"/></td>
+                                                            <td t-if="has_discount" class="text-center px-2" style="border-right: 1px solid #000; border-bottom: 1px solid #000;"><span t-field="line.discount"/></td>
+                                                            <td class="text-center px-2" style="border-bottom: 1px solid #000;"><span t-field="line.price_subtotal"/></td>
+                                                        </tr>
+                                                        <t t-set="sequence" t-value="sequence + 1"/>
+                                                        <t t-set="total_qty" t-value="total_qty + line.product_uom_qty"/>
+                                                    </t>
+                                                    <t t-if="line.display_type == 'line_note'">
+                                                        <tr style="page-break-inside: avoid;">
+                                                            <td colspan="8" style="border: none; padding-left: 60px; font-style: italic; color: #888;">
+                                                                <span t-field="line.name" t-options="{'widget': 'text'}"/>
+                                                            </td>
+                                                        </tr>
+                                                    </t>
+                                                    <t t-if="line.display_type == 'line_section'">
+                                                        <tr style="page-break-inside: avoid;">
+                                                            <td colspan="8" class="fw-bold text-info">
+                                                                <span t-field="line.name" t-options="{'widget': 'text'}"/>
+                                                            </td>
+                                                        </tr>
+                                                    </t>
+                                                </t>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div> <!-- CLOSE ITEMS -->
+
+                                <!-- SHOW TOTAL QUANTITY HERE -->
+                                <!-- TOTAL SECTIONS -->
+                                <div class="row" style="border-width: 0px 1px 1px 1px;border-style:solid; border-color:black; page-break-inside:avoid; page-break-before:auto;">
+                                    <div class="col-6" style="padding: 0; margin: 0; border-right: 1px solid #000;">
+                                        <table class="mb-0 avoid-page-break-inside table-borderless" style="height: 170px; font-size: 14px;">
+                                            <tr style="border-bottom: 0; border-top: 0; padding-left: 10px;">
+                                                <td style="border-bottom: 0; border-top: 0; padding-left: 10px;" class="px-2">
+                                                    <div class="row">
+                                                        <div class="col-12 text-start" style="font-size: 15px; margin-bottom: 6px; margin-top:12px;">
+                                                            Total Items / Qty : <t t-esc="sequence - 1"/> / <t t-esc="total_qty"/>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr style="border-bottom: 0; border-top: 0;">
+                                                <td style="border-bottom: 0; border-top: 0;">
+                                                    <strong class="mb-1 px-2">Bank Details:</strong>
+                                                </td>
+                                            </tr>
+                                            <tr style="border-top: 0; padding-left: 10px;">
+                                                <td style="border-top: 0; padding-left: 10px;">
+                                                    <table class="table-borderless px-2">
+                                                        <tr class="mb-2 ml-2">
+                                                            <td class="text-muted">Bank:</td>
+                                                            <td style="padding-left: 20px;">
+                                                                <span>YES BANK LIMITED, SURAT</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="mb-4 ml-2">
+                                                            <td class="text-muted">Account #:</td>
+                                                            <td style="padding-left: 20px;">
+                                                                <span>084184600004775</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="mb-4 ml-2">
+                                                            <td class="text-muted">IFSC Code:</td>
+                                                            <td style="padding-left: 20px;">
+                                                                <span>YESB0000841</span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr class="mb-4 ml-2">
+                                                            <td class="text-muted">Branch:</td>
+                                                            <td style="padding-left: 20px;">
+                                                                <span>RING ROAD BRANCH</span>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-6 py-2">
+                                        <div class="totals-section d-flex flex-column align-items-end justify-content-between" style="width: 100%; height: 100%; font-size: 16px; justify-content: flex-end !important;">
+                                            <div class="totals-row bg-warning" style="display: flex;align-items: center; justify-content: space-between;justify-content-end; padding: 4px 0; border-bottom: 1px solid #000;">
+                                                <span class="px-2 text-dark font-weight-bold" style="font-size: 15px; font-weight: bold;margin-right: 20px;">Untaxed Amount </span>
+                                                <span class="px-2 text-dark font-weight-bold" t-field="doc.amount_untaxed" style="font-size: 15px; font-weight: bold;"/>
+                                            </div>
+                                            <!-- CALCULATE SGST, CGST, IGST -->
+                                            <t t-set="sgst" t-value="0.0"/>
+                                            <t t-set="cgst" t-value="0.0"/>
+                                            <t t-set="igst" t-value="0.0"/>
+                                            <t t-foreach="doc.order_line" t-as="line">
+                                                <t t-foreach="line.tax_id" t-as="tax">
+                                                    <t t-if="'SGST' in tax.name">
+                                                        <t t-set="sgst" t-value="sgst + (line.price_subtotal * tax.amount / 100.0)"/>
+                                                    </t>
+                                                    <t t-if="'CGST' in tax.name">
+                                                        <t t-set="cgst" t-value="cgst + (line.price_subtotal * tax.amount / 100.0)"/>
+                                                    </t>
+                                                    <t t-if="'IGST' in tax.name">
+                                                        <t t-set="igst" t-value="igst + (line.price_subtotal * tax.amount / 100.0)"/>
+                                                    </t>
+                                                    <!-- For generic GST (not split) -->
+                                                    <t t-if="'GST' in tax.name and 'IGST' not in tax.name and 'SGST' not in tax.name and 'CGST' not in tax.name">
+                                                        <t t-set="sgst" t-value="sgst + ((line.price_subtotal * tax.amount / 100.0) / 2)"/>
+                                                        <t t-set="cgst" t-value="cgst + ((line.price_subtotal * tax.amount / 100.0) / 2)"/>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                            <t t-if="sgst">
+                                                <div class="totals-row" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #000;" >
+                                                    <span class="px-2 text-muted mr-2 justify-content-start" style="margin-right: 24px;">SGST</span>
+                                                    <span class="px-2" t-esc="sgst" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                                </div>
+                                            </t>
+                                            <t t-if="cgst">
+                                                <div class="totals-row" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #000;">
+                                                    <span class="px-2 text-muted mr-2" style="margin-right: 24px;">CGST</span>
+                                                    <span class="px-2" t-esc="cgst" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                                </div>
+                                            </t>
+                                            <t t-if="igst">
+                                                <div class="totals-row" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #000;">
+                                                    <span class="px-2 text-muted mr-2" style="margin-right: 24px;">IGST</span>
+                                                    <span class="px-2" t-esc="igst" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                                </div>
+                                            </t>
+                                            <div class="totals-row justify-content-end bg-warning" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 16px; font-weight: bold; border-bottom: 1px solid #000;">
+                                                <span class="px-2 mr-2 text-dark" style="margin-right: 24px; font-weight: bold; font-size: 17px;">Total</span>
+                                                <span class="px-2 text-dark" t-field="doc.amount_total" style=" font-weight: bold; font-size: 17px;"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div> <!-- CLOSE TOTAL SECTIONS -->
+
+                                <!-- SIGNATURE SECTION -->
+                                <div class="row" 
+                                     style="border-width: 0px 1px 1px 1px; border-style:solid; border-color:black; 
+                                        page-break-inside: avoid; break-inside: avoid; margin-bottom:0px; padding-bottom:0px;">
+                                    <div class="text-end px-2">
+                                        <div><span>For R V ENTERPRISE</span> </div>
+                                        <div style="text-align: end; height: 120px;">
+                                            <img class="object-fit-cover" 
+                                                    src="/invoice_report/static/src/img/stamp.png" 
+                                                    height="100" width="100" alt="stamp" />
+                                        </div>
+                                        <div style="height: 30px;"><span style="border-bottom: 1px solid;">Authorized Signatory</span></div>
+                                    </div>
+                                </div> <!-- CLOSE SIGNATURE SECTION -->
+                                <br/><br/>
+
+                                <t t-if="doc.additional_notes">
+                                    <div style="border: 1px solid #000; margin-bottom: 8px;">
+                                        <div class="text-center align-self-center bg-secondary !bg-opacity-75">
+                                            <span style="font-size: 16px; padding-left: 10px;" 
+                                                    class="fw-bold text-white">Additional Notes</span>
+                                        </div>
+                                        <div class="text-start text-wrap px-2">
+                                            <t t-out="doc.additional_notes" />
+                                        </div>
+                                    </div>
+                                </t>
+                                <br/><br/>
+
+                            </div> <!-- CLOSE WATERMARK -->
+
+                        </div>
+
+                    </div> <!-- CLOSE QUOTATION -->
+
+                    <!-- ===================== -->
+                    <!-- PAGE 3 : ADD IMAGE -->
+                    <!-- ===================== -->
+
+                    <!-- <div class="page" style="padding:0;margin:0; page-break-before:always;">
+                        <img src="/invoice_report/static/src/img/q4.jpg"
+                            style="width:100%; min-height:1123px; display:block;"/>
+                    </div>
+
+                    <div class="page" style="padding:0;margin:0;">
+                        <img src="/invoice_report/static/src/img/q5.jpg"
+                            style="width:100%; min-height:1123px; display:block;"/>
+                    </div>
+
+                    <div class="page" style="padding:0;margin:0;">
+                        <img src="/invoice_report/static/src/img/q6.jpg"
+                            style="width:100%; min-height:1123px; display:block;"/>
+                    </div>
+
+                    <div class="page" style="padding:0;margin:0;">
+                        <img src="/invoice_report/static/src/img/q7.jpg"
+                            style="width:100%; min-height:1123px; display:block;"/>
+                    </div> -->
+                    
+                </div> <!-- CLOSE article -->
+
+                 <!-- FOOTER -->
+                <!-- <div t-attf-class="footer">
+                    <div t-attf-class="o_footer_content pt-4 text-end">
+                        <div>
+                            <span class="text-muted">Page
+                                <span class="page"/> /
+                                <span class="topage"/>
+                            </span>
+                        </div>
+                    </div>
+                </div>  -->
+                <!-- CLOSE FOOTER -->
+            </t>
+        </t>
+    </template>
+
+
+    <!-- Quotation Report Template -->
+    <template id="report_unified_quotation_new">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="lang" t-value="doc.partner_id.lang"/>
+                <t t-set="report_type" t-value="'quotation'"/>
+                <t t-call="invoice_report.new_report_unified_quotation_proforma_document"/>
+            </t>
+        </t>
+    </template>
+
+    <!-- Quotation Report Action -->
+    <record id="action_unified_quotation_new" model="ir.actions.report">
+        <field name="name">New Custom Quotation</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">invoice_report.report_unified_quotation_new</field>
+        <field name="report_file">invoice_report.report_unified_quotation_new</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="paperformat_id" ref="paperformat_quotation_full"/>
+
+        <!-- This sets the filename when downloading the PDF -->
+        <field name="print_report_name">
+            'Quotation - ' + (object.name or 'QUO') + ' - ' + (object.partner_id.name or 'Customer')
+        </field>
+    </record>
+
+</odoo>

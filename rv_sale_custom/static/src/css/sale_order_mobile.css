@@ -1,0 +1,49 @@
+/* CSS to force inline creation and table layout for Sale Order lines on Mobile */
+
+@media (max-width: 767px) {
+    /* Target the list renderer with the custom class */
+    .o_list_view.o_list_editable_mobile .o_list_table {
+        display: table !important;
+        width: 100% !important;
+        table-layout: auto !important;
+    }
+
+    .o_list_view.o_list_editable_mobile .o_list_table thead {
+        display: table-header-group !important;
+    }
+
+    .o_list_view.o_list_editable_mobile .o_list_table tbody tr {
+        display: table-row !important;
+    }
+
+    .o_list_view.o_list_editable_mobile .o_list_table td,
+    .o_list_view.o_list_editable_mobile .o_list_table th {
+        display: table-cell !important;
+        padding: 5px !important;
+        white-space: nowrap !important;
+    }
+
+    /* Keep the product column readable */
+    .o_list_view.o_list_editable_mobile .o_list_table td[name="product_id"] {
+        min-width: 150px !important;
+    }
+
+    /* Force the "Add a product" inline button back to the bottom */
+    .o_list_view.o_list_editable_mobile .o_list_button_add {
+        display: block !important;
+        margin-top: 10px !important;
+    }
+
+    /* Hide the mobile-specific chunky buttons from the top at all costs */
+    .o_content > .o_x2many_buttons,
+    div.o_x2many_buttons,
+    .o_list_renderer_buttons,
+    .o_form_view:not(.o_form_readonly) .o_x2many_buttons {
+        display: none !important;
+    }
+
+    /* Force the list table footer (which contains inline Add buttons) to show */
+    .o_list_view.o_list_editable_mobile .o_list_table tfoot {
+        display: table-footer-group !important;
+    }
+}

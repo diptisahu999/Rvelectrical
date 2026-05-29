@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_l10n_in_ewaybill_form_inherit_rv_inventory" model="ir.ui.view">
+        <field name="name">l10n.in.ewaybill.form.inherit.rv.inventory</field>
+        <field name="model">l10n.in.ewaybill</field>
+        <field name="inherit_id" ref="l10n_in_ewaybill_stock.l10n_in_ewaybill_form_view"/>
+        <field name="arch" type="xml">
+             <!-- Screenshot shows a 'Document' field (likely name or document_number). 
+                  We'll try to place Invoice No. after document date or document number. -->
+            <xpath expr="//field[@name='document_date']" position="after">
+                <field name="invoice_number" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,19 @@
+<odoo>
+    <record id="view_sale_order_form_inherit_whatsapp_button" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.whatsapp.button</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>  
+        <field name="arch" type="xml">
+
+            <!-- Add the WhatsApp button in the header next to 'Confirm' -->
+            <xpath expr="//header/button[@name='action_confirm']" position="after">
+                <button name="action_send_whatsapp"
+                        string="Send WhatsApp"
+                        type="object"
+                        class="btn-primary"
+                        icon="fa-whatsapp"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

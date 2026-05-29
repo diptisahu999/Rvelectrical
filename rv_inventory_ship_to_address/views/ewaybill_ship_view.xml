@@ -1,0 +1,33 @@
+<odoo>
+    <record id="ewaybill_form_ship_to_address" model="ir.ui.view">
+        <field name="name">ewaybill.form.ship.to.address</field>
+        <field name="model">l10n.in.ewaybill</field>
+        <field name="inherit_id"
+               ref="l10n_in_ewaybill_stock.l10n_in_ewaybill_form_view"/>
+        <field name="arch" type="xml">
+
+            <!-- Insert address just after Ship To field, inside same group -->
+            <xpath expr="//field[@name='partner_ship_to_id']" position="after">
+                <div style="margin-left: 120px; margin-top: 4px;">
+                    <field name="ship_to_address_html"
+                           widget="html"
+                           nolabel="1"
+                           readonly="1"/>
+                </div>
+            </xpath>
+
+            <!-- Add picking_partner_id for domain filter context -->
+            <xpath expr="//field[@name='partner_ship_to_id']" position="before">
+                <field name="picking_partner_id" invisible="1"/>
+            </xpath>
+
+            <!-- Make Ship To field editable with filtered dropdown -->
+            <xpath expr="//field[@name='partner_ship_to_id']" position="attributes">
+                <attribute name="readonly">0</attribute>
+                <attribute name="domain">['|', ('id', '=', picking_partner_id), ('parent_id', '=', picking_partner_id)]</attribute>
+                <attribute name="options">{'no_create': True, 'no_create_edit': True}</attribute>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

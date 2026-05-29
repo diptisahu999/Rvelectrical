@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="push_notification_event_view_tree" model="ir.ui.view">
+        <field name="name">push.notification.event.tree</field>
+        <field name="model">push.notification.event</field>
+        <field name="arch" type="xml">
+            <list string="Notification Events" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="monitored_user_ids" widget="many2many_tags" string="Team Members"/>
+                <field name="secondary_user_ids" widget="many2many_tags" string="Supervisors"/>
+                <field name="is_active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="push_notification_event_action" model="ir.actions.act_window">
+        <field name="name">Notification Events</field>
+        <field name="res_model">push.notification.event</field>
+        <field name="view_mode">list</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Manage your system notifications here.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu for management -->
+    <menuitem id="menu_push_notification_events" 
+              name="Notification Management" 
+              parent="rv_flutter_notification_bridge.menu_push_notification_root" 
+              action="push_notification_event_action" 
+              sequence="30"/>
+</odoo>

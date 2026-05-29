@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="terms_and_condition_view_form" model="ir.ui.view">
+        <field name="name">terms.and.condition.view.form</field>
+        <field name="model">terms.and.conditions</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="terms_condition" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="terms_and_condition_view_tree" model="ir.ui.view">
+        <field name="name">terms.and.condition.view.tree</field>
+        <field name="model">terms.and.conditions</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" />
+            </list>
+        </field>
+    </record>
+    <record id="action_terms_and_condition_view" model="ir.actions.act_window">
+        <field name="name">Terms &amp; Conditions</field>
+        <field name="res_model">terms.and.conditions</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <menuitem id="menu_terms_and_conditions" name="Terms &amp; Conditions" action="action_terms_and_condition_view" parent="account.menu_finance_configuration" sequence="6" />
+</odoo>

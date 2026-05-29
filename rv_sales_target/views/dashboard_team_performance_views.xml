@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="rv_sales_target.SalesDashboardTarget"
+       t-inherit="crm_whatsapp.SalesDashboard"
+       t-inherit-mode="extension" owl="1">
+
+        <!-- Add Target column header -->
+        <xpath expr="//thead/tr/th[1]" position="after">
+            <th>Target</th>
+        </xpath>
+
+        <!-- Add Target value column -->
+        <xpath expr="//tbody/tr/td[1]" position="after">
+            <td class="fw-bold">
+                ₹<t t-esc="user.target or 0"/>
+            </td>
+        </xpath>
+
+    </t>
+
+</templates>

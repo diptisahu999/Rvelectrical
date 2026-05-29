@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- CRM Events -->
+        <record id="event_crm_lead_create" model="push.notification.event">
+            <field name="name">CRM: New Lead Created</field>
+            <field name="code">crm_lead_create</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- Project Events -->
+        <record id="event_project_task_create" model="push.notification.event">
+            <field name="name">Project: New Task Created</field>
+            <field name="code">project_task_create</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="event_project_subtask_create" model="push.notification.event">
+            <field name="name">Project: New Sub-task Created</field>
+            <field name="code">project_subtask_create</field>
+            <field name="sequence">21</field>
+        </record>
+        <record id="event_project_task_assign" model="push.notification.event">
+            <field name="name">Project: Task Assigned/Changed</field>
+            <field name="code">project_task_assign</field>
+            <field name="sequence">22</field>
+        </record>
+        <record id="event_project_subtask_assign" model="push.notification.event">
+            <field name="name">Project: Sub-task Assigned/Changed</field>
+            <field name="code">project_subtask_assign</field>
+            <field name="sequence">23</field>
+        </record>
+
+        <!-- Sales Events -->
+        <!-- <record id="event_sale_order_confirm" model="push.notification.event">
+            <field name="name">Sales: Order Confirmed</field>
+            <field name="code">sale_order_confirm</field>
+            <field name="sequence">30</field>
+        </record> -->
+
+        <!-- Inventory Events -->
+        <!-- <record id="event_delivery_dispatch" model="push.notification.event">
+            <field name="name">Inventory: Delivery Dispatched</field>
+            <field name="code">delivery_dispatch</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="event_product_receive" model="push.notification.event">
+            <field name="name">Inventory: Product Received</field>
+            <field name="code">product_receive</field>
+            <field name="sequence">41</field>
+        </record> -->
+
+        <!-- Purchase Events -->
+        <!-- <record id="event_purchase_order_confirm" model="push.notification.event">
+            <field name="name">Purchase: Order Confirmed</field>
+            <field name="code">purchase_order_confirm</field>
+            <field name="sequence">50</field>
+        </record> -->
+    </data>
+</odoo>

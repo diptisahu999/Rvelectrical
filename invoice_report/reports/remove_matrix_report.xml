@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Purchase Quotation Report to Remove Product Matrix -->
+    <template id="hide_purchase_matrix_quotation" inherit_id="purchase.report_purchasequotation_document">
+        <!-- Target the specific matrix call added by the module -->
+        <xpath expr="//t[@t-call='product_matrix.matrix']" position="replace">
+            <!-- Replacing the Product Matrix with nothing to hide it -->
+        </xpath>
+    </template>
+</odoo>

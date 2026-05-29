@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="crm_lead_view_form_inherit_rv_crm_custom" model="ir.ui.view">
+        <field name="name">crm.lead.view.form.inherit.rv_crm_custom</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <!-- Hide Enrich Button -->
+            <xpath expr="//button[@name='iap_enrich']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <!-- Hide Property Field (Properties) -->
+            <xpath expr="//field[@name='lead_properties']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <!-- Add Last Update Date -->
+            <xpath expr="//field[@name='tag_ids']" position="after">
+                <field name="write_date" string="Last Update Date" readonly="1"/>
+            </xpath>
+            <xpath expr="(//field[@name='tag_ids'])[2]" position="after">
+                <field name="write_date" string="Last Update Date" readonly="1"/>
+            </xpath>
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="crm_lead_move_source_parent" model="ir.ui.view">
+        <field name="name">crm.lead.move.source.parent</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+
+            <!-- ✅ STEP 1 : Add Source near Customer -->
+            <xpath expr="//field[@name='team_id']" position="after">
+                <field name="source_id"/>
+            </xpath>
+
+            <!-- ✅ STEP 2 : Remove Source from Extra Info -->
+            <xpath expr="//page[@name='extra']//field[@name='source_id']"
+                   position="replace"/>
+
+        </field>
+    </record>
+
+<record id="crm_lead_view_tree_inherit_hide_generate_leads" model="ir.ui.view">
+        <field name="name">crm.lead.view.tree.inherit.hide.generate.leads</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_generate_leads']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="crm.crm_lead_action_pipeline" model="ir.actions.act_window">
+        <field name="name">Opportunity</field>
+        <field name="view_mode">list,kanban,calendar,pivot,graph,activity,form</field>
+        <field name="view_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="view_ids" eval="[(5, 0, 0)]"/>
+    </record>
+
+    <record id="crm.crm_lead_opportunities" model="ir.actions.act_window">
+        <field name="name">Opportunity</field>
+        <field name="view_mode">list,kanban,calendar,pivot,graph,activity,form</field>
+        <field name="view_id" ref="crm.crm_case_tree_view_oppor"/>
+        <field name="view_ids" eval="[(5, 0, 0)]"/>
+    </record>
+
+    <menuitem id="crm.menu_crm_opportunities"
+              parent="crm.crm_menu_sales"
+              action="crm.crm_lead_action_pipeline"
+              sequence="1"/>
+    <!-- Change Opportunity View Order -->
+</odoo>

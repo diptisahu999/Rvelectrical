@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_category_rv_app_access" model="ir.module.category">
+        <field name="name">App Access</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="group_app_access" model="res.groups">
+        <field name="name">App Access</field>
+        <field name="category_id" ref="module_category_rv_app_access"/>
+    </record>
+
+    <record id="group_restricted_sales_access" model="res.groups">
+        <field name="name">Restricted Sales User (No Invoice)</field>
+        <field name="category_id" ref="module_category_rv_app_access"/>
+        <field name="implied_ids" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+        <field name="comment">User can access CRM and Sales, create and confirm quotations, but cannot create invoices.</field>
+    </record>
+
+    <record id="group_sales_crm_delete" model="res.groups">
+        <field name="name">Delete Sales &amp; CRM Entries</field>
+        <field name="category_id" ref="module_category_rv_app_access"/>
+        <field name="comment">Allows user to delete Sales Orders and CRM Leads.</field>
+    </record>
+</odoo>

@@ -1,0 +1,131 @@
+<odoo>
+
+    <!-- CRM Lead Child section Add New Page Follow Up -->
+    <record id="crm_lead_form_followup_inherit" model="ir.ui.view">
+        <field name="name">crm.lead.form.followup.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Follow up" name="followup_page">
+                    <!-- Opportunity View: Readonly, No Create (Managed via Calendar) -->
+                    <field name="followup_ids" nolabel="1" readonly="1" invisible="type == 'lead'">
+                         <list create="false" delete="false" edit="false">
+                            <field name="scheduled_date"/>
+                            <field name="state" widget="badge" 
+                                decoration-success="state == 'done'" 
+                                decoration-muted="state == 'draft'"/>
+                            <field name="note"/>
+                            <field name="create_date" string="Created On" widget="datetime" optional="hide"/>
+                        </list>
+                    </field>
+
+                    <!-- Lead View: Editable, Create Allowed -->
+                    <field name="followup_ids" nolabel="1" invisible="type == 'opportunity'">
+                        <list editable="bottom" delete="false" create="true">
+                            <field name="note" placeholder="Add a follow-up note"/>
+                            <field name="create_date" string="Created On" widget="datetime" readonly="1" optional="hide"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+
+    <!-- CRM Lead Tree Progress Bar -->
+    <record id="crm_lead_tree_progress_inherit" model="ir.ui.view">
+        <field name="name">crm.lead.tree.progress</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_leads"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//list" position="inside">
+                <field 
+                    name="followup_progress" 
+                    widget="progressbar" 
+                    string="Progress"
+                    decoration-danger="followup_progress &lt; 30"
+                    decoration-warning="followup_progress &gt;= 30 and followup_progress &lt; 60"
+                    decoration-info="followup_progress &gt;= 60 and followup_progress &lt; 80"
+                    decoration-success="followup_progress &gt;= 80"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- Form View for Followups -->
+    <record id="view_crm_lead_followup_form" model="ir.ui.view">
+        <field name="name">crm.lead.followup.form</field>
+        <field name="model">crm.lead.followup</field>
+        <field name="arch" type="xml">
+            <form string="Follow Up" create="false" delete="false">
+                <header>
+                    <button name="action_mark_done" string="Mark as Done" type="object" class="btn-primary" invisible="state == 'done'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="lead_id" readonly="1"/>
+                            <field name="partner_id" readonly="1"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                            <field name="scheduled_date" readonly="1"/>
+                            <field name="lead_type" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="create_date" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="note" placeholder="Enter notes here..." required="state == 'done'" readonly="state == 'done'"/>
+                        
+                        <field name="outcome" widget="radio" 
+                               invisible="lead_type != 'opportunity' or state == 'done'"
+                               options="{'horizontal': true}"/>
+                               
+                         <field name="outcome" readonly="1" 
+                               invisible="lead_type != 'opportunity' or state != 'done'"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Calendar View for Followups -->
+    <record id="view_crm_lead_followup_calendar" model="ir.ui.view">
+        <field name="name">crm.lead.followup.calendar</field>
+        <field name="model">crm.lead.followup</field>
+        <field name="arch" type="xml">
+            <calendar string="Follow Ups" date_start="scheduled_date" color="user_id" mode="month">
+                <field name="lead_id"/>
+                <field name="partner_id"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="note"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Action for Calendar -->
+    <record id="action_crm_lead_followup_calendar" model="ir.actions.act_window">
+        <field name="name">Follow Up Calendar</field>
+        <field name="res_model">crm.lead.followup</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="domain">[('lead_type', '=', 'opportunity')]</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            No follow-ups found
+          </p>
+        </field>
+    </record>
+
+    <!-- Menu Item in CRM -->
+    <!-- Menu Item in CRM (Promoted to Root for Default Opening) -->
+    <menuitem id="menu_crm_lead_followup_calendar"
+              name="Follow Up Calendar"
+              action="action_crm_lead_followup_calendar"
+              sequence="1"
+              web_icon="survey,static/description/icon.png"/>
+
+</odoo>

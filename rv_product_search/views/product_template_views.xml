@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--
+        Inherit the product.template search view to modify the default 'name' field.
+        When a user types in the search bar and presses Enter, the default behavior
+        only searches by product name, internal reference, and barcode.
+
+        This override extends the filter_domain of the 'name' field to ALSO search
+        through product attribute values (attribute_line_ids.value_ids.name).
+
+        This means typing "590" and pressing Enter will now find products that have
+        an attribute value of "590" (e.g., a product with attribute "Size: 590").
+    -->
+    <record id="product_template_search_view_inherit" model="ir.ui.view">
+        <field name="name">product.template.search.inherit.rv.product.search</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <!-- Replace the default 'name' field with an enhanced version
+                 that also searches through attribute values -->
+            <field name="name" position="replace">
+                <field name="name" string="Product"
+                    filter_domain="[
+                        '|', '|', '|',
+                        ('name', 'ilike', self),
+                        ('default_code', 'ilike', self),
+                        ('barcode', 'ilike', self),
+                        ('attribute_line_ids.value_ids.name', 'ilike', self)
+                    ]"/>
+            </field>
+        </field>
+    </record>
+</odoo>

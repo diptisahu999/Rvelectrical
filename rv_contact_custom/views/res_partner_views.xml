@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_inherit_rv_contact_custom" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.rv_contact_custom</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='phone']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='category_id']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
+        </field>
+    </record>
+    
+    <!-- Hide company & address from Kanban -->
+    <record id="contacts.action_contacts" model="ir.actions.act_window">
+        <field name="domain">[('parent_id', '=', False)]</field>
+    </record>
+</odoo>

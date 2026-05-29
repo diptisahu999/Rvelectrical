@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_purchase_delete" model="res.groups">
+        <field name="name">Delete Purchase Entries</field>
+        <field name="category_id" ref="module_category_rv_app_access"/>
+        <field name="comment">Allows user to delete Purchase Orders.</field>
+    </record>
+
+    <!-- Attempt to revoke unlink permission from standard Purchase User -->
+    <!-- Note: The ID 'purchase.access_purchase_order' is the standard Odoo ID for Purchase User access rights. 
+         If this ID differs in your Odoo version/customization, please adjust it. -->
+    <record id="purchase.access_purchase_order" model="ir.model.access">
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    
+    <!-- Revoke from Purchase Manager if needed, though usually Managers have it. 
+         The user said "those who have access only user rights". 
+         So we definitely target 'access_purchase_order' which is usually for Group Purchase User. -->
+
+</odoo>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="mrp_bom_form_view_inherit_product_configurator" model="ir.ui.view">
+        <field name="name">mrp.bom.form.inherit.product.configurator</field>
+        <field name="model">mrp.bom</field>
+        <field name="inherit_id" ref="mrp.mrp_bom_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='bom_line_ids']/list/field[@name='product_id']" position="before">
+                <field name="configuration_template_id" options="{'no_create': True}" />
+                <widget name="mrp_bom_config_button" />
+            </xpath>
+            <xpath expr="//field[@name='bom_line_ids']/list/field[@name='product_id']" position="attributes">
+                <attribute name="readonly">configuration_template_id</attribute>
+                <attribute name="force_save">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='bom_line_ids']/list/field[@name='product_id']" position="after">
+                <field name="product_config_mode" invisible="1"/>
+                <field name="product_custom_attribute_value_ids" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

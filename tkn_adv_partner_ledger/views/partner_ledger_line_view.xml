@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree View for Partner Ledger Lines -->
+        <record id="view_partner_ledger_line_tree" model="ir.ui.view">
+            <field name="name">partner.ledger.line.tree</field>
+            <field name="model">partner.ledger.line</field>
+            <field name="arch" type="xml">
+                <list string="Partner Ledger" create="false" edit="false" delete="false">
+                    <field name="date"/>
+                    <field name="name"/>
+                    <field name="ref"/>
+                    <field name="entry_type"/>
+                    <field name="debit" sum="Total Debit"/>
+                    <field name="credit" sum="Total Credit"/>
+                    <field name="balance"/>
+                    <field name="currency_id"/>
+                    <field name="invoice_id" invisible="invoice_id == False"/>
+                    <field name="payment_id" invisible="payment_id == False"/>
+                    <field name="move_id" invisible="move_id == False"/>
+                    <button name="action_view_document" type="object" string="Views" icon="fa-external-link"
+                            invisible="invoice_id == False and payment_id == False and move_id == False"
+                            help="View Original Document"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form View for Partner Ledger Lines -->
+        <record id="view_partner_ledger_line_form" model="ir.ui.view">
+            <field name="name">partner.ledger.line.form</field>
+            <field name="model">partner.ledger.line</field>
+            <field name="arch" type="xml">
+                <form string="Partner Ledger Line" create="false" edit="false" delete="false">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="date"/>
+                                <field name="name"/>
+                                <field name="ref"/>
+                                <field name="entry_type"/>
+                                <field name="partner_id"/>
+                            </group>
+                            <group>
+                                <field name="debit"/>
+                                <field name="credit"/>
+                                <field name="balance"/>
+                                <field name="currency_id"/>
+                                <field name="is_initial_balance" invisible="1"/>
+                            </group>
+                        </group>
+                        <group string="Related Documents"
+                               invisible="invoice_id == False or payment_id == False or move_id == False">
+                            <field name="invoice_id" invisible="invoice_id == False"/>
+                            <field name="payment_id" invisible="payment_id == False"/>
+                            <field name="move_id" invisible="move_id == False"/>
+                            <field name="move_line_id" invisible="1"/>
+                        </group>
+                        <footer>
+                            <button name="action_view_document" string="View Original Document" type="object"
+                                    class="oe_highlight"
+                                    invisible="invoice_id == False or payment_id == False or move_id == False"/>
+                            <button string="Close" class="btn-secondary" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Graph View for Partner Ledger -->
+        <record id="view_partner_ledger_line_graph" model="ir.ui.view">
+            <field name="name">partner.ledger.line.graph</field>
+            <field name="model">partner.ledger.line</field>
+            <field name="arch" type="xml">
+                <graph string="Partner Ledger" type="pie" sample="1">
+                    <field name="date" interval="day"/>
+                    <field name="debit" type="measure"/>
+                    <field name="credit" type="measure"/>
+<!--                    <field name="balance" type="measure"/>-->
+                </graph>
+            </field>
+        </record>
+
+        <!-- Pivot View for Partner Ledger -->
+        <record id="view_partner_ledger_line_pivot" model="ir.ui.view">
+            <field name="name">partner.ledger.line.pivot</field>
+            <field name="model">partner.ledger.line</field>
+            <field name="arch" type="xml">
+                <pivot string="Partner Ledger" sample="1">
+                    <field name="date" interval="day" type="row"/>
+                    <field name="entry_type" type="row"/>
+                    <field name="debit" type="measure"/>
+                    <field name="credit" type="measure"/>
+<!--                    <field name="balance" type="measure"/>-->
+                </pivot>
+            </field>
+        </record>
+
+        <!-- Search View for Partner Ledger Lines -->
+        <record id="view_partner_ledger_line_search" model="ir.ui.view">
+            <field name="name">partner.ledger.line.search</field>
+            <field name="model">partner.ledger.line</field>
+            <field name="arch" type="xml">
+                <search string="Partner Ledger">
+                    <field name="date"/>
+                    <field name="name"/>
+                    <field name="ref"/>
+                    <field name="entry_type"/>
+                    <separator/>
+                    <filter string="Debit > 0" name="has_debit" domain="[('debit', '>', 0)]"/>
+                    <filter string="Credit > 0" name="has_credit" domain="[('credit', '>', 0)]"/>
+                    <separator/>
+                    <filter string="Initial Balance" name="initial_balance"
+                            domain="[('is_initial_balance', '=', True)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Partner" name="group_by_partner_id" domain="[]" context="{'group_by': 'partner_id'}"/>
+                        <separator/>
+                        <filter string="Date" name="group_by_date" domain="[]" context="{'group_by': 'date'}"/>
+                        <filter string="Type" name="group_by_type" domain="[]" context="{'group_by': 'entry_type'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action for Partner Ledger Lines -->
+        <record id="action_partner_ledger_line" model="ir.actions.act_window">
+            <field name="name">Partner Ledger</field>
+            <field name="res_model">partner.ledger.line</field>
+            <field name="view_mode">list,pivot,graph</field>
+            <field name="domain">[('wizard_id', '=', active_id)]</field>
+            <field name="context">{'search_default_group_by_partner_id': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No ledger entries found
+                </p>
+                <p>
+                    This view shows all ledger entries for the selected partner.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

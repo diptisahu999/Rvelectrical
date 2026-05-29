@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_ewaybill_inherit_invoice_no" inherit_id="l10n_in_ewaybill_stock.report_ewaybill">
+        <!-- Add Invoice No. to the Document Details section (Frequency used for Delivery Challan) -->
+        <xpath expr="//h5[contains(text(), 'Document Details')]/following-sibling::table//tr" position="after">
+             <tr t-if="doc.invoice_number">
+                 <td colspan="2">
+                     Invoice No.: <b><t t-out="doc.invoice_number"/></b>
+                 </td>
+             </tr>
+        </xpath>
+        
+        <!-- Also try to add it to the generic E-Way Bill Details section -->
+        <xpath expr="//h5[contains(text(), 'E-WAY BILL Details')]/following-sibling::table//tr[1]" position="after">
+            <tr t-if="doc.invoice_number">
+                <td colspan="4">
+                    Invoice No.: <b><t t-out="doc.invoice_number"/></b>
+                </td>
+            </tr>
+        </xpath>
+    </template>
+</odoo>

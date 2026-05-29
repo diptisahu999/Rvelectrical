@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Inherit the existing dashboard view -->
+        <record id="dashboard_today_view" model="ir.ui.view">
+            <field name="name">dashboard.today.view</field>
+            <field name="model">dashboard.today</field>
+            <field name="arch" type="xml">
+                <form string="Dashboard Today">
+                    <sheet>
+                        <group>
+                            <field name="id" invisible="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Add menu item if needed -->
+        <record id="dashboard_today_action" model="ir.actions.act_window">
+            <field name="name">Dashboard Today</field>
+            <field name="res_model">dashboard.today</field>
+            <field name="view_mode">form</field>
+            <field name="target">current</field>
+        </record>
+    </data>
+</odoo>

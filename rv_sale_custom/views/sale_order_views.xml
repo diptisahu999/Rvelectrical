@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Quotation Tree View -->
+    <record id="view_quotation_tree_inherit_rv_sale_custom" model="ir.ui.view">
+        <field name="name">sale.order.tree.inherit.rv_sale_custom</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="create">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit Sale Order Kanban View -->
+    <record id="view_sale_order_kanban_inherit_rv_sale_custom" model="ir.ui.view">
+        <field name="name">sale.order.kanban.inherit.rv_sale_custom</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_sale_order_kanban"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban" position="attributes">
+                <attribute name="create">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit Sale Order Form View -->
+    <record id="view_order_form_inherit_rv_sale_custom" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.rv_sale_custom</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="create">0</attribute>
+            </xpath>
+            <!-- Restrict Delivery Address to only the selected customer's addresses -->
+            <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
+                <attribute name="domain">['|', ('id', '=', partner_id), ('parent_id', '=', partner_id)]</attribute>
+                <attribute name="no_create">1</attribute>
+                <attribute name="no_create_edit">1</attribute>
+                <attribute name="no_quick_create">1</attribute>
+                <attribute name="options">{'no_create': True, 'no_create_edit': True, 'no_quick_create': True}</attribute>
+            </xpath>
+            <!-- Restrict Invoice Address to only the selected customer's addresses -->
+            <xpath expr="//field[@name='partner_invoice_id']" position="attributes">
+                <attribute name="domain">['|', ('id', '=', partner_id), ('parent_id', '=', partner_id)]</attribute>
+                <attribute name="no_create">1</attribute>
+                <attribute name="no_create_edit">1</attribute>
+                <attribute name="no_quick_create">1</attribute>
+                <attribute name="options">{'no_create': True, 'no_create_edit': True, 'no_quick_create': True}</attribute>
+            </xpath>
+            <!-- Force Inline Creation on Mobile for Order Lines -->
+            <xpath expr="//field[@name='order_line']" position="attributes">
+                <attribute name="mode">list</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/list" position="attributes">
+                <attribute name="class">o_list_editable_mobile</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

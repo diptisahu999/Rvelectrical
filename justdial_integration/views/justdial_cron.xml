@@ -1,0 +1,21 @@
+<odoo>
+    <record id="stpl_justdial_connector_cron" model="ir.cron">
+        <field name="name">STPL Justdial Connector Cron</field>
+        
+        <!-- Run every 30 minutes -->
+        <field name="interval_number">30</field>
+        <field name="interval_type">minutes</field>
+
+        <!-- 👇 THIS CONTROLS SALESPERSON -->
+        <field name="user_id" ref="base.user_admin"/>
+
+        <!-- Model -->
+        <field name="model_id" ref="crm.model_crm_lead"/>
+
+        <!-- Method to execute -->
+        <field name="code">model.assign_justdial_leads()</field>
+        <field name="state">code</field>
+
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

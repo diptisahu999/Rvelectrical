@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Insert the "Add from Library" button into the project form header -->
+    <record id="project_project_view_form_inherit_task_library_button" model="ir.ui.view">
+        <field name="name">project.project.form.inherit.task.library.button</field>
+        <field name="model">project.project</field>
+        <!-- inherit whichever base project form exists; project.edit_project is commonly present -->
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <!-- Insert button into existing header, not by creating a whole new header -->
+            <xpath expr="//header" position="inside">
+                <button name="%(project_task_library.action_task_library_wizard)d"
+                        type="action"
+                        string="Add from Library"
+                        class="btn-secondary"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="project_project_view_list_inherit_progress" model="ir.ui.view">
+        <field name="name">project.project.list.inherit.progress</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.project_list_view_group_stage"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="x_project_progress" widget="progressbar" string="Progress"
+                    decoration-danger="x_project_progress &lt; 30"
+                    decoration-warning="x_project_progress &gt;= 30 and x_project_progress &lt; 60"
+                    decoration-info="x_project_progress &gt;= 60 and x_project_progress &lt; 80"
+                    decoration-success="x_project_progress &gt;= 80"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

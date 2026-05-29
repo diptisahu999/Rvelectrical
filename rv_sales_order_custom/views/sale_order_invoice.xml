@@ -1,0 +1,50 @@
+<odoo>
+
+<!-- 1️⃣ Hide Existing Create Invoice Button (XML) -->
+
+    <record id="view_sale_order_form_hide_create_invoice" model="ir.ui.view">
+        <field name="name">sale.order.form.hide.create.invoice</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Hide Regular Create Invoice -->
+            <xpath expr="//button[@id='create_invoice']"
+                position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Hide Percentage Create Invoice -->
+            <xpath expr="//button[@id='create_invoice_percentage']"
+                position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+
+<!-- 2️⃣ Add New Create Invoice Button (Same Position) -->
+
+   <record id="view_sale_order_form_new_create_invoice" model="ir.ui.view">
+        <field name="name">sale.order.form.new.create.invoice</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Insert new button exactly where old one was -->
+            <xpath expr="//button[@id='create_invoice']" position="after">
+
+                <button name="action_create_invoice_direct"
+                        string="Create Invoice"
+                        type="object"
+                        class="o_btn o_form_button"
+                        data-hotkey="q"
+                        invisible="state != 'sale' or invoice_status == 'invoiced'"/>
+
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

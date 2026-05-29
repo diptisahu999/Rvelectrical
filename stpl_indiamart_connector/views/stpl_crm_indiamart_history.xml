@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="crm_indiamart_history_list" model="ir.ui.view">
+            <field name="name">crm_indiamart_history_tree</field>
+            <field name="model">crm.indiamart.history</field>
+            <field name="arch" type="xml">
+                <list string="Lead IndiaMart History" edit="0" create="false" delete="false">
+                    <field name="company_id"/>
+                    <field name="start_datetime"/>
+                    <field name="end_datetime"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="crm_indiamart_history_form" model="ir.ui.view">
+            <field name="name">crm_indiamart_history_form</field>
+            <field name="model">crm.indiamart.history</field>
+            <field name="arch" type="xml">
+                <form string="Lead IndiaMart History" edit="0" create="false" delete="false">
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="company_id" options='{"no_open": True}'/>
+                            </group>
+                            <group>
+                                <field name="start_datetime"/>
+                                <field name="end_datetime"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Leads">
+                                <field name="lead_ids">
+                                    <list string="Leads" create="false" delete="false">
+                                        <field name="name"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Response">
+                                <field name="response"/>
+                            </page>
+                            <page string="Error Description" invisible="state != 'error'">
+                                <field name="error_description"/>
+                            </page>
+                            <page string="Duplicate Leads">
+                                <field name="duplicate_lead_ids">
+                                    <list string="Duplicate Leads" create="false" delete="false">
+                                        <field name="name"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="crm_indiamart_history_list_filter" model="ir.ui.view">
+            <field name="name">crm_indiamart_history_list_filter</field>
+            <field name="model">crm.indiamart.history</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Today" name="this_day" domain="[('start_datetime','&gt;=', context_today()),('start_datetime','&lt;=',context_today() + datetime.timedelta(days=1) - datetime.timedelta(seconds=1))]"/>
+                    <filter string="Yesterday" name="yesterday" domain="[('start_datetime','&gt;=', ((context_today()-datetime.timedelta(days=1)).strftime('%Y-%m-%d 00:00:00'))), ('start_datetime','&lt;=', ((context_today()+datetime.timedelta(days=0)).strftime('%Y-%m-%d 00:00:00')))]"/>
+                    <filter string="Last week" name="last_week" domain="[('start_datetime','&gt;=',(context_today() + relativedelta(weeks=-1, weekday=0)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="Last 3 week" name="last_three_week" domain="[('start_datetime','&gt;=',(context_today() + relativedelta(weeks=-3, weekday=0)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="Last Months" name="last_month" domain="[('start_datetime','&gt;=',(context_today() + relativedelta(months=-1, weekday=0)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="Last 3 Months" name="last_three_months" domain="[('start_datetime','&gt;=',(context_today() + relativedelta(months=-3, weekday=0)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="Last 6 Months" name="last_six_month" domain="[('start_datetime','&gt;=',(context_today() + relativedelta(months=-6, weekday=0)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="Last Year" name="last_year" domain="[('start_datetime','&gt;=',(context_today()-relativedelta(years=1)).strftime('%%Y-01-01')),('start_datetime','&lt;=', time.strftime('%%Y-01-01'))]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Company" name="company_id" domain="[]" context="{'group_by': 'company_id'}"/>
+                        <filter string="Status" name="state" domain="[]" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
+
+        <record id="crm_indiamart_history_action" model="ir.actions.act_window">
+            <field name="name">Lead IndiaMart History</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">crm.indiamart.history</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="crm_indiamart_history_list_filter"/>
+            <field name="view_id" ref="crm_indiamart_history_list"/>
+        </record>
+
+        <menuitem id="lead_indiamart_history_config"
+                  name="Lead IndiaMart History"
+                  parent="crm.crm_menu_config"
+                  action="crm_indiamart_history_action"
+                  sequence="5"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,45 @@
+<odoo>
+
+    <!-- List View -->
+    <record id="view_stock_overview_list" model="ir.ui.view">
+        <field name="name">rv.stock.overview.list</field>
+        <field name="model">rv.stock.overview</field>
+        <field name="arch" type="xml">
+            <list string="Stock Overview">
+                <field name="product_id"/>
+                <field name="on_hand_qty" sum="On Hand"/>
+                <field name="incoming_qty" sum="Incoming"/>
+                <field name="reserved_qty" sum="Reserved"/>
+                <field name="forecasted_qty" sum="Forecasted"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Search by product name -->
+    <record id="view_stock_overview_search" model="ir.ui.view">
+        <field name="name">rv.stock.overview.search</field>
+        <field name="model">rv.stock.overview</field>
+        <field name="arch" type="xml">
+            <search string="Search Stock Overview">
+                <field name="product_id" string="Product"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Menu action -->
+    <record id="action_stock_overview" model="ir.actions.act_window">
+        <field name="name">Stock Overview</field>
+        <field name="res_model">rv.stock.overview</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="view_stock_overview_search"/>
+    </record>
+
+    <!-- Menu -->
+    <menuitem
+        id="menu_stock_overview"
+        name="Stock Overview"
+        parent="stock.menu_stock_warehouse_mgmt"
+        action="action_stock_overview"
+        sequence="90"/>
+        
+</odoo>

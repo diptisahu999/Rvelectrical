@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Timesheets -->
+    <record id="hr_timesheet.timesheet_menu_root" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+    <!-- Surveys -->
+    <record id="survey.menu_surveys" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+    <!-- Attendances -->
+    <record id="hr_attendance.menu_hr_attendance_root" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+    <!-- Time Off -->
+    <record id="hr_holidays.menu_hr_holidays_root" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+    <!-- Data Cleaning -->
+    <!-- <record id="data_cleaning.menu_data_cleaning_root" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record> -->
+</odoo>

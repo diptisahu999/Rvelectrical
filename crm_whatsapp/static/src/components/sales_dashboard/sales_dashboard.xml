@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="crm_whatsapp.SalesDashboard" owl="1">
+        <div class="o_sales_dashboard" style="height: 100%; overflow: auto; background-color: #f9f9f9;">
+            <!-- Header/Navbar -->
+            <div class="d-flex justify-content-between align-items-center p-3" style="background-color: #6c5ce7; color: white;">
+                <h3 class="m-0">Business Dashboard</h3>
+                <div class="d-flex gap-2">
+                     <button class="btn btn-light text-primary" t-on-click="openDailyReport">
+                        <i class="fa fa-file-text-o me-1"/>Daily Report
+                    </button>
+                    <button class="btn btn-light text-primary" t-on-click="refresh">
+                        <i class="fa fa-refresh me-1"/>Refresh
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-4">
+                <!-- FILTERS BAR -->
+                <div class="bg-white p-3 mb-4 shadow-sm rounded">
+                    <div class="row g-2">
+                        <!-- Period Dropdown -->
+                        <div class="col-md-2">
+                             <select class="form-select border-0 bg-light" t-model="state.filters.period" t-on-change="(ev) => this.onFilterChange('period', ev.target.value)">
+                                <option value="all">All Time</option>
+                                <option value="today">Today</option>
+                                <option value="yesterday">Yesterday</option>
+                                <option value="this_week">This Week</option>
+                                <option value="last_week">Last Week</option>
+                                <option value="this_month">This Month</option>
+                                <option value="last_month">Last Month</option>
+                                <option value="this_quarter">This Quarter</option>
+                                <option value="last_quarter">Last Quarter</option>
+                                <option value="this_year">This Year</option>
+                                <option value="last_90_days">Last 90 Days</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Custom Date Inputs -->
+                        <t t-if="state.filters.period === 'custom'">
+                             <div class="col-md-2">
+                                 <input type="date" class="form-control border-0 bg-light" t-model="state.filters.date_from" t-on-change="(ev) => this.onFilterChange('date_from', ev.target.value)"/>
+                             </div>
+                             <div class="col-md-2">
+                                 <input type="date" class="form-control border-0 bg-light" t-model="state.filters.date_to" t-on-change="(ev) => this.onFilterChange('date_to', ev.target.value)"/>
+                             </div>
+                        </t>
+
+                        <!-- Customer -->
+                        <div class="col-md-2">
+                             <input type="text" class="form-control form-control-sm" placeholder="Customer Name" list="customer_datalist" t-model="state.filters.customer_name" t-on-change="(ev) => this.onFilterChange('customer_name', ev.target.value)" t-on-input="(ev) => this.onFilterChange('customer_name', ev.target.value)"/>
+                             <datalist id="customer_datalist">
+                                 <t t-foreach="state.master_data.customers" t-as="c" t-key="c.id">
+                                     <option t-att-value="c.name"/>
+                                 </t>
+                             </datalist>
+                        </div>
+
+                         <!-- Salesperson -->
+                         <div class="col-md-2">
+                             <select class="form-select form-select-sm" t-model="state.filters.user_id" t-on-change="(ev) => this.onFilterChange('user_id', ev.target.value)">
+                                 <option value="">Salesperson</option>
+                                 <t t-foreach="state.master_data.users" t-as="u" t-key="u.id"><option t-att-value="u.id"><t t-esc="u.name"/></option></t>
+                             </select>
+                         </div>
+
+                          <!-- State -->
+                         <div class="col-md-2">
+                             <select class="form-select form-select-sm" t-model="state.filters.state_id" t-on-change="(ev) => this.onFilterChange('state_id', ev.target.value)">
+                                 <option value="">State</option>
+                                 <t t-foreach="state.master_data.states" t-as="s" t-key="s.id"><option t-att-value="s.id"><t t-esc="s.name"/></option></t>
+                             </select>
+                         </div>
+
+                          <!-- City -->
+                         <div class="col-md-2">
+                             <input type="text" class="form-control form-control-sm" placeholder="City" t-model="state.filters.city" t-on-change="(ev) => this.onFilterChange('city', ev.target.value)"/>
+                         </div>
+                    
+                        <!-- Product -->
+                         <div class="col-md-2">
+                             <input type="text" class="form-control form-control-sm" placeholder="Product Name" list="product_datalist" t-model="state.filters.product_name" t-on-change="(ev) => this.onFilterChange('product_name', ev.target.value)" t-on-input="(ev) => this.onFilterChange('product_name', ev.target.value)"/>
+                             <datalist id="product_datalist">
+                                 <t t-foreach="state.master_data.products" t-as="p" t-key="p.id"><option t-att-value="p.name"/></t>
+                             </datalist>
+                         </div>
+
+                         <!-- Source -->
+                         <div class="col-md-2">
+                             <select class="form-select form-select-sm" t-model="state.filters.source_id" t-on-change="(ev) => this.onFilterChange('source_id', ev.target.value)">
+                                 <option value="">Source</option>
+                                 <t t-foreach="state.master_data.sources" t-as="s" t-key="s.id"><option t-att-value="s.id"><t t-esc="s.name"/></option></t>
+                             </select>
+                         </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs (Moved UP as requested) -->
+                <div class="bg-white shadow-sm rounded mb-4">
+                    <div class="border-bottom p-3">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item">
+                                <a t-attf-class="nav-link #{state.activeTab === 'overview' ? 'active' : 'text-muted'}" href="#" t-on-click="() => this.setTab('overview')">Overview</a>
+                            </li>
+                            <li class="nav-item">
+                                <a t-attf-class="nav-link #{state.activeTab === 'opportunities' ? 'active' : 'text-muted'}" href="#" t-on-click="() => this.setTab('opportunities')">Opportunity Analysis</a>
+                            </li>
+                            <li class="nav-item">
+                                <a t-attf-class="nav-link #{state.activeTab === 'revenue' ? 'active' : 'text-muted'}" href="#" t-on-click="() => this.setTab('revenue')">Sales &amp; Revenue</a>
+                            </li>
+                             <li class="nav-item">
+                                <a t-attf-class="nav-link #{state.activeTab === 'team' ? 'active' : 'text-muted'}" href="#" t-on-click="() => this.setTab('team')">Team Performance</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- OVERVIEW CONTENT: KPI CARDS -->
+                <t t-if="state.activeTab === 'overview'">
+                    <div class="row mb-4">
+                        <t t-foreach="state.kpis" t-as="kpi" t-key="kpi.name">
+                            <div class="col-md-3 mb-4">
+                                <div class="d-flex align-items-center p-3 bg-white shadow-sm rounded" style="height: 100px; cursor: pointer;" t-on-click="() => this.openKpi(kpi.name)">
+                                    <div class="p-3 rounded text-white me-3 d-flex align-items-center justify-content-center" 
+                                         t-attf-style="background-color: #{kpi.color}; width: 60px; height: 60px; font-size: 24px;">
+                                        <i t-attf-class="fa #{kpi.icon}"/>
+                                    </div>
+                                    <div>
+                                        <div class="text-muted small fw-bold text-uppercase"><t t-esc="kpi.label"/></div>
+                                        <h3 class="m-0 fw-bold"><t t-esc="kpi.value"/></h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+
+                <!-- OPPORTUNITY ANALYSIS -->
+                <t t-if="state.activeTab === 'opportunities'">
+                    <!-- KPIs -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="bg-white p-3 rounded shadow-sm d-flex justify-content-between align-items-center" style="cursor: pointer;" t-on-click="() => this.openKpi('open_leads')">
+                                <div><small class="text-muted">Open Leads</small><h3 class="m-0"><t t-esc="state.opportunity_dashboard.kpis.open_leads"/></h3></div>
+                                <i class="fa fa-users text-primary fa-2x"/>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="bg-white p-3 rounded shadow-sm d-flex justify-content-between align-items-center" style="cursor: pointer;" t-on-click="() => this.openKpi('open_opportunities')">
+                                <div><small class="text-muted">Open Opportunities</small><h3 class="m-0"><t t-esc="state.opportunity_dashboard.kpis.open_opportunities"/></h3></div>
+                                <i class="fa fa-rocket text-warning fa-2x"/>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="bg-white p-3 rounded shadow-sm d-flex justify-content-between align-items-center" style="cursor: pointer;" t-on-click="() => this.openKpi('pipeline_value')">
+                                <div><small class="text-muted">Pipeline Value</small><h3 class="m-0"><t t-esc="formatCurrency(state.opportunity_dashboard.kpis.pipeline_value)"/></h3></div>
+                                <i class="fa fa-line-chart text-info fa-2x"/>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="bg-white p-3 rounded shadow-sm d-flex justify-content-between align-items-center" style="cursor: pointer;" t-on-click="() => this.openKpi('lead_conversion')">
+                                <div><small class="text-muted">Lead Conversion</small><h3 class="m-0"><t t-esc="state.opportunity_dashboard.kpis.lead_conversion"/>%</h3></div>
+                                <i class="fa fa-bullseye text-success fa-2x"/>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-4">
+                         <div class="col-md-6">
+                            <div class="bg-white p-3 rounded shadow-sm text-center" style="cursor: pointer;" t-on-click="() => this.openKpi('win_rate')">
+                                <small class="text-muted">Win Rate</small>
+                                <h2><t t-esc="state.opportunity_dashboard.kpis.win_rate"/>%</h2>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="bg-white p-3 rounded shadow-sm text-center" style="cursor: pointer;" t-on-click="() => this.openKpi('avg_deal_size')">
+                                <small class="text-muted">Average Deal Size</small>
+                                <h2><t t-esc="formatCurrency(state.opportunity_dashboard.kpis.avg_deal_size)"/></h2>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CHARTS -->
+                    <div class="row">
+                        <div class="col-md-8 mb-4">
+                             <div class="bg-white p-3 rounded shadow-sm">
+                                <h5>Pipeline Value by Stage</h5>
+                                <div style="height: 300px;">
+                                    <canvas t-ref="pipelineChart"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                             <div class="bg-white p-3 rounded shadow-sm">
+                                <h5>Opportunities by Source</h5>
+                                <div style="height: 300px;">
+                                    <canvas t-ref="sourceChart"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- SALES REVENUE -->
+                 <t t-if="state.activeTab === 'revenue'">
+                    <!-- KPIs -->
+                    <div class="row mb-4">
+                        <div class="col-md-3"><div class="bg-white p-3 rounded shadow-sm" style="cursor: pointer;" t-on-click="() => this.openKpi('draft_quotations')">
+                            <small class="text-muted">Draft Quotations</small><h3 class="m-0"><t t-esc="state.sales_dashboard.kpis.draft_quotations"/></h3>
+                        </div></div>
+                        <div class="col-md-3"><div class="bg-white p-3 rounded shadow-sm" style="cursor: pointer;" t-on-click="() => this.openKpi('confirmed_orders')">
+                            <small class="text-muted">Confirmed Orders</small><h3 class="m-0"><t t-esc="state.sales_dashboard.kpis.confirmed_orders"/></h3>
+                        </div></div>
+                        <div class="col-md-3"><div class="bg-white p-3 rounded shadow-sm" style="cursor: pointer;" t-on-click="() => this.openKpi('draft_proformas')">
+                            <small class="text-muted">Draft Proformas</small><h3 class="m-0"><t t-esc="state.sales_dashboard.kpis.draft_proformas"/></h3>
+                        </div></div>
+                        <div class="col-md-3"><div class="bg-white p-3 rounded shadow-sm" style="cursor: pointer;" t-on-click="() => this.openKpi('invoices')">
+                            <small class="text-muted">Invoices</small><h3 class="m-0"><t t-esc="state.sales_dashboard.kpis.invoices"/></h3>
+                        </div></div>
+                    </div>
+                     <div class="row mb-4">
+                        <div class="col-md-3"><div class="bg-white p-3 rounded shadow-sm" style="cursor: pointer;" t-on-click="() => this.openKpi('sales_revenue')">
+                            <small class="text-muted">Sales Revenue</small><h3 class="m-0"><t t-esc="formatCurrency(state.sales_dashboard.kpis.sales_revenue)"/></h3>
+                        </div></div>
+                        <div class="col-md-3"><div class="bg-white p-3 rounded shadow-sm" style="cursor: pointer;" t-on-click="() => this.openKpi('avg_order_value')">
+                            <small class="text-muted">Avg. Order Value</small><h3 class="m-0"><t t-esc="formatCurrency(state.sales_dashboard.kpis.avg_order_value)"/></h3>
+                        </div></div>
+                         <div class="col-md-3"><div class="bg-white p-3 rounded shadow-sm" style="cursor: pointer;" t-on-click="() => this.openKpi('invoice_revenue')">
+                            <small class="text-muted">Invoice Revenue</small><h3 class="m-0"><t t-esc="formatCurrency(state.sales_dashboard.kpis.invoice_revenue)"/></h3>
+                        </div></div>
+                        <div class="col-md-3"><div class="bg-white p-3 rounded shadow-sm" style="cursor: pointer;" t-on-click="() => this.openKpi('sent_quotations')">
+                            <small class="text-muted">Sent Quotations</small><h3 class="m-0"><t t-esc="state.sales_dashboard.kpis.sent_quotations"/></h3>
+                        </div></div>
+                    </div>
+
+                    <!-- CHARTS -->
+                    <div class="row">
+                        <div class="col-md-12 mb-4">
+                             <div class="bg-white p-3 rounded shadow-sm">
+                                <h5>12-Month Sales Trend</h5>
+                                <div style="height: 300px;">
+                                    <canvas t-ref="trendChart"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                         <div class="col-md-12 mb-4">
+                             <div class="bg-white p-3 rounded shadow-sm">
+                                <h5>Top 5 Selling Products</h5>
+                                <div style="height: 300px;">
+                                    <canvas t-ref="productChart"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- TEAM PERFORMANCE -->
+                <t t-if="state.activeTab === 'team'">
+                     <div class="bg-white shadow-sm rounded p-4">
+                        <h5 class="mb-3">User Performance</h5>
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Leads Created</th>
+                                    <th>Opportunities Created</th>
+                                    <th>Sales Target</th>
+                                    <th>Sales Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="state.team_performance" t-as="user" t-key="user.name">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-primary text-white rounded-circle d-flex justify-content-center align-items-center me-2" style="width:30px; height:30px;">
+                                                <i class="fa fa-user"/>
+                                            </div>
+                                            <t t-esc="user.name"/>
+                                        </div>
+                                    </td>
+                                    <td><t t-esc="user.leads"/></td>
+                                    <td><t t-esc="user.deals"/></td>
+                                    <td class="fw-bold">
+                                        ₹<t t-esc="user.salestarget or 0"/>
+                                    </td>
+                                    <td class="fw-bold">₹<t t-esc="user.revenue"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </t>
+</templates>

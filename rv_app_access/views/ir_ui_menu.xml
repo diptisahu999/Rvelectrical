@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="base.menu_management" model="ir.ui.menu">
+        <field name="groups_id" eval="[(4, ref('group_app_access'))]"/>
+    </record>
+
+    <!-- Hide Partner Ledger from Partner Reports (base_accounting_kit) -->
+    <record id="base_accounting_kit.menu_partner_ledger" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+    <!-- Hide Partner Ledger from Dynamic Financial Reports (dynamic_accounts_report) -->
+    <record id="dynamic_accounts_report.menu_partner_ledger" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+</odoo>

@@ -1,0 +1,7 @@
+<odoo>
+    <data noupdate="1">
+        <record id="india_mart_id" model="utm.source">
+            <field name="name">IndiaMart</field>
+        </record>
+    </data>
+</odoo>

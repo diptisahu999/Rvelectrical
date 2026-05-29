@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Software Development Template -->
+        <record id="template_software_development" model="project.stage.template">
+            <field name="name">Software Development</field>
+            <field name="description">Standard stages for software development projects</field>
+        </record>
+        
+        <record id="stage_backlog" model="project.stage.template.stage">
+            <field name="name">Backlog</field>
+            <field name="description">Tasks waiting to be started</field>
+            <field name="template_id" ref="template_software_development"/>
+        </record>
+        
+        <record id="stage_in_progress" model="project.stage.template.stage">
+            <field name="name">In Progress</field>
+            <field name="description">Tasks currently being worked on</field>
+            <field name="template_id" ref="template_software_development"/>
+        </record>
+        
+        <record id="stage_testing" model="project.stage.template.stage">
+            <field name="name">Testing</field>
+            <field name="description">Tasks under testing</field>
+            <field name="template_id" ref="template_software_development"/>
+        </record>
+        
+        <record id="stage_done" model="project.stage.template.stage">
+            <field name="name">Done</field>
+            <field name="description">Completed tasks</field>
+            <field name="template_id" ref="template_software_development"/>
+        </record>
+
+        <!-- Marketing Campaign Template -->
+        <record id="template_marketing" model="project.stage.template">
+            <field name="name">Marketing Campaign</field>
+            <field name="description">Stages for marketing campaign projects</field>
+        </record>
+        
+        <record id="stage_planning" model="project.stage.template.stage">
+            <field name="name">Planning</field>
+            <field name="description">Campaign planning phase</field>
+            <field name="template_id" ref="template_marketing"/>
+        </record>
+        
+        <record id="stage_creation" model="project.stage.template.stage">
+            <field name="name">Content Creation</field>
+            <field name="description">Creating marketing materials</field>
+            <field name="template_id" ref="template_marketing"/>
+        </record>
+        
+        <record id="stage_review" model="project.stage.template.stage">
+            <field name="name">Review</field>
+            <field name="description">Content review and approval</field>
+            <field name="template_id" ref="template_marketing"/>
+        </record>
+        
+        <record id="stage_launch" model="project.stage.template.stage">
+            <field name="name">Launched</field>
+            <field name="description">Campaign is live</field>
+            <field name="template_id" ref="template_marketing"/>
+        </record>
+    </data>
+</odoo>

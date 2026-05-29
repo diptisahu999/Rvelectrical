@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_crm_daily_report,crm.daily.report,model_crm_daily_report,base.group_user,1,1,1,1
+access_crm_daily_report_user_line,crm.daily.report.user.line,model_crm_daily_report_user_line,base.group_user,1,1,1,1
+access_crm_daily_report_status_line,crm.daily.report.status.line,model_crm_daily_report_status_line,base.group_user,1,1,1,1
+access_crm_daily_report_source_line,crm.daily.report.source.line,model_crm_daily_report_source_line,base.group_user,1,1,1,1
+

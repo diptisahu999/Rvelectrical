@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_inherit_advance_payment" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.advance.payment</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                 <field name="is_fully_paid_via_advance" invisible="1"/>
+                 <button name="action_register_advance_payment" string="Advance Payment" type="object" class="btn-primary"
+                    invisible="state not in ['sale', 'done'] or is_fully_paid_via_advance"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_advance_payments" type="object" class="oe_stat_button" icon="fa-money" invisible="advance_payment_count == 0">
+                    <field name="advance_payment_count" widget="statinfo" string="Advance Payment"/>
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='other_information']" position="before">
+                <page string="Advance Payments" name="advance_payments">
+                    <field name="advance_payment_ids" readonly="1"/>
+                </page>
+            </xpath>
+            <xpath expr="//field[@name='tax_totals']" position="after">
+                <div class="d-flex justify-content-end oe_subtotal_footer_separator">
+                    <span class="me-2" style="font-weight: bold;">Remaining Amount: </span>
+                    <field name="remaining_amount" nolabel="1" widget="monetary" options="{'currency_field': 'currency_id'}" decoration-bf="1"/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

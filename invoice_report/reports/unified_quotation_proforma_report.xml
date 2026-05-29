@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="report_unified_quotation_proforma_document" >
+    <!-- <link rel="stylesheet" type="text/css" href="/invoice_report/static/src/css/proforma_fonts.css"/> -->
+        <t t-set="company" t-value="doc.company_id.sudo()"/>
+        <!-- Content -->
+        <div class="article o_report_layout_standard o_table_standard o_snail_mail"
+        t-att-data-oe-model="doc and doc._name"
+        t-att-data-oe-id="doc and doc.id"
+        t-att-data-oe-lang="doc and doc.env.context.get('lang')"
+        style="letter-spacing: 2; font-family: 'Open Sans', sans-serif;">
+            <!-- Header -->
+            <table class="table p-0 mb-0" style="border: 1px solid #6c757d;">
+            <tr>
+                    <td class="col-4" style="text-align: center; vertical-align: middle; width: 30%; height: 120px; border-right: 1px solid #6c757d;">
+                        <img t-if="company.logo"
+                             t-att-src="image_data_uri(company.logo)"
+                             alt="Logo"
+                             style=" margin: 0 auto; max-width: 220px; max-height: 100px; width: auto; height: auto;" />
+                    </td>
+                    <td class="col-8" style="text-align: right; padding-right: 20px;">
+                        <div style="letter-spacing: 1.5px; font-size: 16px;" class="text-info">
+                            <strong style="font-size: 16px;" t-field="company.name"/>
+                        </div>
+                        <div style="letter-spacing: 1.5px;">
+                            <t t-if="company.street">
+                                <span t-field="company.street" />
+                                <br/>
+                            </t>
+                            <t t-if="company.street2">
+                                <span t-field="company.street2" />
+                                <br/>
+                            </t>
+                            <span t-field="company.city"/>,
+                            <span t-field="company.state_id" /> -
+                            <span t-field="company.zip" />
+                        </div>
+                        <div style="letter-spacing: 1px;">
+                            <t t-if="company.vat">
+                                <span>GSTIN: </span>
+                                <span t-field="company.vat"/>
+                            </t>
+                        </div>
+                        <div style="letter-spacing: 1px;">
+                            <span>Mobile: </span>
+                            <span t-field="company.mobile"/>
+                            <span style="padding-left: 10px;">Email: </span>
+                            <span t-field="company.email"/>
+                        </div>
+                    </td>
+
+            </tr>
+            </table>
+            <div class="text-center p-2" style="background: #4fb1ed20">
+
+                <span class="text-uppercase" style="font-size: 24px; color:#4fb1ed; font-weight: bold; letter-spacing: 1.5px;">
+                    <t t-if="report_type == 'quotation'">Quotation</t>
+                    <t t-elif="report_type == 'proforma'">PRO-FORMA Invoice</t>
+                    <t t-else="">Quotation</t>
+                </span>
+
+            </div>
+            <div style="background: url('/invoice_report/static/src/img/watermark4.png') no-repeat center center; background-size: contain; width: 100%; height: 800px;">
+            <div class="page">
+                <!-- Address and Info -->
+                <div class="row">
+                    <div class="col-6">
+                        <table class="table p-0 mb-0" style="height: 190px; border-width: 1px 0px 1px 1px;border-style:solid; border-color:black;">
+                            <tr>
+                                <td style="padding-left: 10px; padding-right: 10px; line-height: 1.2;">
+                                    <strong style="font-size:15px;">Customer Details:</strong>
+                                    <br/>
+                                    <span t-field="doc.partner_id.name" style=" font-size:13px;"/>
+                                    <br/>
+                                    <span t-field="doc.partner_id.vat" style=" font-size:13px;"/>
+                                    <br/>
+
+                                    <strong style="margin-top: 4px; font-size:15px;">Address:</strong>
+                                    <br/>
+                                    <t t-if="doc.partner_id.street">
+                                        <span t-field="doc.partner_id.street"  style=" font-size:13px;"/>
+                                        <br/>
+                                    </t>
+                                    <t t-if="doc.partner_id.street2">
+                                        <span t-field="doc.partner_id.street2" style=" font-size:13px;"/>
+                                        <br/>
+                                    </t>
+                                    <span t-field="doc.partner_id.city" style=" font-size:13px;"/>,
+                                    <span t-field="doc.partner_id.state_id" style=" font-size:13px;"/>,
+                                    <span t-field="doc.partner_id.zip" style=" font-size:13px;"/>
+                                    <br/>
+                                    <t t-if="doc.partner_id.mobile">
+                                        <span t-field="doc.partner_id.mobile" style=" font-size:13px;"/>
+                                    </t>
+                                    <br/>
+
+
+                                    <td>
+                                    <strong style="margin-top: 4px;  font-size:15px;">Shipping Address:</strong>
+                                    <br/>
+                                    <t t-if="doc.partner_shipping_id">
+                                        <t t-if="doc.partner_shipping_id.street">
+                                            <span t-field="doc.partner_shipping_id.street" style=" font-size:13px;" />
+                                            <br/>
+                                        </t>
+                                        <t t-if="doc.partner_shipping_id.street2">
+                                            <span t-field="doc.partner_shipping_id.street2" style=" font-size:13px;"/>
+                                            <br/>
+                                        </t>
+                                        <span t-field="doc.partner_shipping_id.city" style=" font-size:13px;"/>,
+                                        <span t-field="doc.partner_shipping_id.state_id" style=" font-size:13px;"/>,
+                                        <span t-field="doc.partner_shipping_id.zip" style=" font-size:13px;"/>
+                                        <br/>
+                                        <t t-if="doc.partner_shipping_id.mobile">
+                                            <span t-field="doc.partner_shipping_id.mobile" style=" font-size:13px;"/>
+                                        </t>
+                                    </t>
+                                    </td>
+<!--                                    <t t-else="">-->
+<!--                                        <t t-if="doc.partner_id.street">-->
+<!--                                            <span t-field="doc.partner_id.street" style=" font-size:13px;"/>-->
+<!--                                            <br/>-->
+<!--                                        </t>-->
+<!--                                        <t t-if="doc.partner_id.street2">-->
+<!--                                            <span t-field="doc.partner_id.street2" style=" font-size:13px;"/>-->
+<!--                                            <br/>-->
+<!--                                        </t>-->
+<!--                                        <span t-field="doc.partner_id.city" style=" font-size:13px;"/>,-->
+<!--                                        <span t-field="doc.partner_id.state_id" style=" font-size:13px;"/>,-->
+<!--                                        <span t-field="doc.partner_id.zip" style=" font-size:13px;"/>-->
+<!--                                        <br/>-->
+<!--                                        <t t-if="doc.partner_id.mobile">-->
+<!--                                            <span t-field="doc.partner_id.mobile" style=" font-size:13px;"/>-->
+<!--                                        </t>-->
+<!--                                    </t>-->
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-6 my-0 py-0">
+                        <table class="table p-0 mb-0" style="height: 190px; font-size: 14px; border: 1px solid #000;">
+                            <tr>
+                                <td class="p-4" style="line-height: 1.2; border-right: 1px solid #000;">
+                                    <span style="font-weight: bold; letter-spacing: 1px; font-size: 16px;">
+                                        <t t-if="report_type == 'quotation'">Quotation #:</t>
+                                        <t t-elif="report_type == 'proforma'">Pro-Forma #:</t>
+                                        <t t-else="">Quotation #:</t>
+                                    </span>
+                                    <br/>
+                                    <span t-field="doc.name" />
+                                </td>
+                                <td class="p-4" style="line-height: 1.2;">
+                                    <span style="font-weight: bold; letter-spacing: 1px; font-size: 16px;">Date:</span>
+                                    <br/>
+                                    <span t-field="doc.date_order" />
+                                </td>
+                            </tr>
+                            <tr>
+                                 <td class="p-4" style="line-height: 1.2; border-right: 1px solid #000; border-top: 1px solid #000;">
+                                    <span style="font-weight: bold; letter-spacing: 1px; font-size: 16px;">Payment Terms:</span>
+                                    <br/>
+                                    <t t-if="doc.payment_term_id">
+                                        <span t-field="doc.payment_term_id.name" />
+                                    </t>
+                                </td>
+                                <td class="p-4" style="line-height: 1.2; border-top: 1px solid #000;">
+                                    <span style="font-weight: bold; letter-spacing: 1px; font-size: 16px;">Salesperson:</span>
+                                    <br/>
+                                    <t t-if="doc.user_id">
+                                        <span t-field="doc.user_id"/>
+                                    </t>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <!-- Items -->
+                <div class="row oe_structure">
+                    <div class="col-12">
+                        <table class="mb-0 table avoid-page-break-inside" style="font-size: 14px; border-width: 0px 1px 1px 1px;border-style:solid; border-color:black;">
+<!--                            border: 1px solid #000;-->
+                            <thead class="bg-aqua">
+                                <tr style="line-height: 1.2; letter-spacing: 1px; " class="align-items-top bg-warning text-dark ">
+                                    <th name="th_sequence" class="text-center text-dark" style="width: 3%; border-right: 1px solid #000; border-bottom: 1px solid #000;">#</th>
+                                    <th name="th_item" class="px-2 text-dark" style="width: 35%; font-weight: bold; border-right: 1px solid #000; border-bottom: 1px solid #000;">Item</th>
+                                    <th name="th_hsn" class="text-center text-dark" style="font-weight: bold; border-right: 1px solid #000; border-bottom: 1px solid #000;">HSN Code</th>
+                                    <th name="th_qty" class="text-center text-dark" style="font-weight: bold; border-right: 1px solid #000; border-bottom: 1px solid #000;">Qty</th>
+                                    <th name="th_uom" class="text-center text-dark" style="font-weight: bold; border-right: 1px solid #000; border-bottom: 1px solid #000;">Unit</th>
+                                    <th name="th_rate" class="text-center text-dark" style="font-weight: bold; border-right: 1px solid #000; border-bottom: 1px solid #000;">Unit Price</th>
+                                    <th name="th_rate" class="text-center text-dark" style="font-weight: bold; border-right: 1px solid #000; border-bottom: 1px solid #000;">Disc.%</th>
+
+                                    <th name="th_taxes" class="text-center text-dark" style="font-weight: bold; border-right: 1px solid #000; border-bottom: 1px solid #000;">Taxes</th>
+                                    <th name="th_amount" class="text-center text-dark" style="font-weight: bold; border-bottom: 1px solid #000;">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="sequence" t-value="1"/>
+                                <t t-set="lines" t-value="doc.order_line.sorted(key=lambda l: (l.sequence, l.id))"/>
+                                <t t-set="total_qty" t-value="0"/>
+
+                                <t t-foreach="lines" t-as="line">
+                                    <t t-if="not line.display_type">
+                                        <tr>
+                                            <td class="px-2 text-center" style="border-right: 1px solid #000; border-bottom: 1px solid #000;"><t t-esc="sequence"/></td>
+                                            <td class="px-2" style="border-right: 1px solid #000; border-bottom: 1px solid #000;">
+                                                <span class="text-bold" t-field="line.name" t-options="{'widget': 'text'}"/>
+                                            </td>
+                                            <td class="text-center px-1" style="border-right: 1px solid #000; border-bottom: 1px solid #000;"><span t-field="line.product_id.l10n_in_hsn_code"/></td>
+                                            <td class="text-center px-1" style="border-right: 1px solid #000; border-bottom: 1px solid #000;"><span t-field="line.product_uom_qty"/></td>
+                                            <td class="text-center px-2" style="border-right: 1px solid #000; border-bottom: 1px solid #000;"><span t-field="line.product_uom"/></td>
+                                            <td class="text-center px-2" style="border-right: 1px solid #000; border-bottom: 1px solid #000;"><span t-field="line.price_unit"/></td>
+                                            <td class="text-center px-2" style="border-right: 1px solid #000; border-bottom: 1px solid #000;"><span t-field="line.discount"/></td>
+
+                                            <td class="text-center px-2" style="border-right: 1px solid #000; border-bottom: 1px solid #000;">
+                                                <t t-if="line.tax_id">
+                                                    <t t-set="taxes" t-value="', '.join([tax.name for tax in line.tax_id])"/>
+                                                    <span t-out="taxes"/>
+                                                </t>
+                                            </td>
+                                            <td class="text-center px-2" style="border-bottom: 1px solid #000;"><span t-field="line.price_subtotal"/></td>
+                                        </tr>
+                                        <t t-set="sequence" t-value="sequence + 1"/>
+                                        <t t-set="total_qty" t-value="total_qty + line.product_uom_qty"/>
+                                    </t>
+                                    <t t-if="line.display_type == 'line_note'">
+                                        <tr>
+                                            <td colspan="8" style="border: none; padding-left: 60px; font-style: italic; color: #888;">
+                                                <span t-field="line.name" t-options="{'widget': 'text'}"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="line.display_type == 'line_section'">
+                                        <tr>
+                                            <td colspan="8" class="fw-bold text-info">
+                                                <span t-field="line.name" t-options="{'widget': 'text'}"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Show total quantity here -->
+                <!-- Total Section -->
+                <div class="row" style="border-width: 0px 1px 1px 1px;border-style:solid; border-color:black;">
+<!--                    border: 1px solid #000;-->
+                    <div class="col-6" style="padding: 0; margin: 0; border-right: 1px solid #000; ">
+                        <table class="mb-0 avoid-page-break-inside table-borderless" style="height: 170px; font-size: 14px;">
+                            <tr style="border-bottom: 0; border-top: 0; padding-left: 10px;">
+                                <td style="border-bottom: 0; border-top: 0; padding-left: 10px;" class="px-2">
+                                    <div class="row">
+                                        <div class="col-12 text-start" style="font-size: 15px; margin-bottom: 6px; margin-top:12px;">
+                                            Total Items / Qty : <t t-esc="sequence - 1"/> / <t t-esc="total_qty"/>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+<!--                            <tr>-->
+<!--                                <td style="padding: 0; margin: 0; height: 1px;">-->
+<!--                                    <div style="border-bottom: 1px solid #000; width: 100%; height: 1px; margin: 0; padding: 0;">-->
+<!--                                    </div>-->
+<!--                                </td>-->
+<!--                            </tr>-->
+                            <tr style="border-bottom: 0; border-top: 0;">
+                                <td style="border-bottom: 0; border-top: 0;">
+                                    <strong class="mb-1 px-2">Bank Details:</strong>
+                                </td>
+                            </tr>
+                            <tr style="border-top: 0; padding-left: 10px;">
+                                <td style="border-top: 0; padding-left: 10px;">
+                                    <table class="table-borderless px-2">
+                                        <tr class="mb-2 ml-2">
+                                            <td class="text-muted">Bank:</td>
+                                            <td style="padding-left: 20px;">
+                                                <span>YES BANK LIMITED, SURAT</span>
+                                            </td>
+                                        </tr>
+                                        <tr class="mb-4 ml-2">
+                                            <td class="text-muted">Account #:</td>
+                                            <td style="padding-left: 20px;">
+                                                <span>084184600004775</span>
+                                            </td>
+                                        </tr>
+                                        <tr class="mb-4 ml-2">
+                                            <td class="text-muted">IFSC Code:</td>
+                                            <td style="padding-left: 20px;">
+                                                <span>YESB0000841</span>
+                                            </td>
+                                        </tr>
+                                        <tr class="mb-4 ml-2">
+                                            <td class="text-muted">Branch:</td>
+                                            <td style="padding-left: 20px;">
+                                                <span>RING ROAD BRANCH</span>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-6 py-2">
+                        <div class="totals-section d-flex flex-column align-items-end justify-content-between" style="width: 100%; height: 100%; font-size: 16px; justify-content: flex-end !important; ">
+                            <div class="totals-row bg-warning" style="display: flex;align-items: center; justify-content: space-between;justify-content-end; padding: 4px 0; border-bottom: 1px solid #000;">
+                                <span class="px-2 text-dark font-weight-bold" style="font-size: 15px; font-weight: bold;margin-right: 20px;">Untaxed Amount </span>
+                                <span class="px-2 text-dark font-weight-bold" t-field="doc.amount_untaxed" style="font-size: 15px; font-weight: bold;"/>
+                            </div>
+                            <!-- Calculate SGST, CGST, IGST -->
+                            <t t-set="sgst" t-value="0.0"/>
+                            <t t-set="cgst" t-value="0.0"/>
+                            <t t-set="igst" t-value="0.0"/>
+                            <t t-foreach="doc.order_line" t-as="line">
+                                <t t-foreach="line.tax_id" t-as="tax">
+                                    <t t-if="'SGST' in tax.name">
+                                        <t t-set="sgst" t-value="sgst + (line.price_subtotal * tax.amount / 100.0)"/>
+                                    </t>
+                                    <t t-if="'CGST' in tax.name">
+                                        <t t-set="cgst" t-value="cgst + (line.price_subtotal * tax.amount / 100.0)"/>
+                                    </t>
+                                    <t t-if="'IGST' in tax.name">
+                                        <t t-set="igst" t-value="igst + (line.price_subtotal * tax.amount / 100.0)"/>
+                                    </t>
+                                    <!-- For generic GST (not split) -->
+                                    <t t-if="'GST' in tax.name and 'IGST' not in tax.name and 'SGST' not in tax.name and 'CGST' not in tax.name">
+                                        <t t-set="sgst" t-value="sgst + ((line.price_subtotal * tax.amount / 100.0) / 2)"/>
+                                        <t t-set="cgst" t-value="cgst + ((line.price_subtotal * tax.amount / 100.0) / 2)"/>
+                                    </t>
+                                </t>
+                            </t>
+                            <t t-if="sgst">
+                                <div class="totals-row" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #000;" >
+                                    <span class="px-2 text-muted mr-2 justify-content-start" style="margin-right: 24px;">SGST</span>
+                                    <span class="px-2" t-esc="sgst" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                </div>
+                            </t>
+                            <t t-if="cgst">
+                                <div class="totals-row" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #000;">
+                                    <span class="px-2 text-muted mr-2" style="margin-right: 24px;">CGST</span>
+                                    <span class="px-2" t-esc="cgst" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                </div>
+                            </t>
+                            <t t-if="igst">
+                                <div class="totals-row" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #000;">
+                                    <span class="px-2 text-muted mr-2" style="margin-right: 24px;">IGST</span>
+                                    <span class="px-2" t-esc="igst" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                </div>
+                            </t>
+
+                            <div class="totals-row justify-content-end bg-warning" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 16px; font-weight: bold; border-bottom: 1px solid #000;">
+                                <span class="px-2 mr-2 text-dark" style="margin-right: 24px; font-weight: bold; font-size: 17px;">Total</span>
+                                <span class="px-2 text-dark" t-field="doc.amount_total" style=" font-weight: bold; font-size: 17px;"/>
+                            </div>
+
+<!--                            <t t-if="doc.global_discount">-->
+<!--                            <div class="totals-row" style="display: flex;align-items: center; justify-content: space-between;justify-content: end; padding: 4px 0; border-bottom: 1px solid #000;">-->
+<!--                                <span class="px-2 text-muted mr-2" style="margin-right: 24px;">Discount (<t t-esc="doc.global_discount"/>%)</span>-->
+<!--                                <span class="px-2" t-esc="-doc.discount_amount" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>-->
+<!--                            </div>-->
+<!--                            <div class="totals-row justify-content-end bg-warning" style="display: flex;align-items: center; justify-content: space-between;justify-content: end; padding: 4px 0;">-->
+<!--                                <span class="px-2 text-dark" style="margin-right: 24px; font-weight: bold; font-size: 17px;">Price After Discount</span>-->
+<!--                                <span class="px-2 text-dark" t-esc="doc.price_after_discount" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>-->
+<!--                            </div>-->
+<!--                            </t>-->
+
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Signature Section -->
+                <div class="row" style="border-width: 0px 1px 1px 1px;border-style:solid; border-color:black; page-break-inside: avoid; break-inside: avoid;">
+                    <div class="text-end px-2">
+                        <div>
+                            <span>For R V ENTERPRISE</span>
+                        </div>
+                        <div style="text-align: end; height: 120px;">
+                            <img class="object-fit-cover" src="/invoice_report/static/src/img/stamp.png" height="100" width="100" alt="stamp" />
+                        </div>
+                        <div style="height: 30px;">
+                            <span style="border-bottom: 1px solid;">Authorized Signatory</span>
+                        </div>
+                    </div>
+                </div>
+                <br/>
+                <br/>
+
+                <t t-if="doc.additional_notes">
+                    <div style="border: 1px solid #000; margin-bottom: 8px;">
+                        <div class="text-center align-self-center bg-secondary !bg-opacity-75">
+                            <span style="font-size: 16px; padding-left: 10px;" class="fw-bold text-white">Additional Notes</span>
+                        </div>
+                        <div class="text-start text-wrap px-2">
+                             <t t-out="doc.additional_notes" />
+                        </div>
+                    </div>
+                </t>
+                <br/>
+                <br/>
+                <!-- Terms and Conditions -->
+                <t t-if="doc.note">
+                    <div style="border: 1px solid #000; page-break-before: always; break-before: page;">
+                        <div class="text-center align-self-center bg-info !bg-opacity-75">
+                            <span style="font-size: 16px; padding-left: 10px; color: white;" class="fw-bold text-white">Terms and Conditions</span>
+                        </div>
+                        <div class="text-start text-wrap px-2 gujarati" style="font-family: 'Noto Sans Gujarati', 'Shruti', 'Arial Unicode MS', sans-serif !important; font-size: 16px; line-height: 1.8; text-rendering: optimizeLegibility; word-break: keep-all;">
+                            <t t-esc="doc.note" />
+                        </div>
+                    </div>
+                </t>
+                <br></br>
+                <br></br>
+                <!-- <div>
+                    <span class="text-info">R V | UPS, Solar and Battery | Visit
+                        <span t-field="company.website" t-options="{'widget': 'url'}" /></span>
+                </div> -->
+            </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div t-attf-class="footer">
+            <div t-attf-class="o_footer_content pt-4 text-end">
+                <div>
+                    <span class="text-muted">Page
+                        <span class="page"/> /
+                        <span class="topage"/>
+<!--                        • This is a system generated-->
+<!--                        <t t-if="report_type == 'quotation'">quotation</t>-->
+<!--                        <t t-elif="report_type == 'proforma'">PRO-FORMA Invoice</t>-->
+<!--                        <t t-else="">quotation</t>.
+-->                 </span>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Quotation Report Template -->
+    <template id="report_unified_quotation">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="lang" t-value="doc.partner_id.lang"/>
+                <t t-set="report_type" t-value="'quotation'"/>
+                <t t-call="invoice_report.report_unified_quotation_proforma_document"/>
+            </t>
+        </t>
+    </template>
+
+    <!-- Pro-Forma Report Template -->
+    <template id="report_unified_proforma">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="lang" t-value="doc.partner_id.lang"/>
+                <t t-set="report_type" t-value="'proforma'"/>
+                <t t-call="invoice_report.report_unified_quotation_proforma_document"/>
+            </t>
+        </t>
+    </template>
+
+    <!-- Quotation Report Action -->
+    <record id="action_unified_quotation" model="ir.actions.report">
+        <field name="name">Custom Quotation</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">invoice_report.report_unified_quotation</field>
+        <field name="report_file">invoice_report.report_unified_quotation</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="paperformat_id" ref="paperformat_no_space"/>
+
+        <!-- This sets the filename when downloading the PDF -->
+        <field name="print_report_name">
+            'Quotation - ' + (object.name or 'QUO') + ' - ' + (object.partner_id.name or 'Customer')
+        </field>
+    </record>
+
+    <!-- Pro-Forma Report Action -->
+    <record id="action_unified_proforma" model="ir.actions.report">
+        <field name="name">PRO-FORMA Invoice</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">invoice_report.report_unified_proforma</field>
+        <field name="report_file">invoice_report.report_unified_proforma</field>
+        <field name="binding_type">report</field>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="paperformat_id" ref="paperformat_no_space"/>
+
+        <!-- This sets the filename when downloading the PDF -->
+        <field name="print_report_name">
+            'PRO-FORMA Invoice - ' + (object.name or 'PRO') + ' - ' + (object.partner_id.name or 'Customer')
+        </field>
+    </record>
+        <!-- Unbind Standard Sale Order Reports to avoid confusion -->
+    <record id="sale.action_report_saleorder" model="ir.actions.report">
+         <field name="binding_model_id" eval="False"/>
+    </record>
+    <record id="sale.action_report_pro_forma_invoice" model="ir.actions.report">
+         <field name="binding_model_id" eval="False"/>
+    </record>
+</odoo>

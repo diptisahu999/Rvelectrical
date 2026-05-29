@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_sales_dashboard_client" model="ir.actions.client">
+        <field name="name">Business Dashboard</field>
+        <field name="tag">crm_whatsapp.sales_dashboard_client_action</field>
+        <!-- <field name="context" eval="{'active_test': False}"/> -->
+    </record>
+
+    <!-- Top Level Menu -->
+    <menuitem id="menu_sales_dashboard_root"
+              name="Business Dashboard"
+              action="action_sales_dashboard_client"
+              sequence="1"
+              web_icon="crm,static/description/icon.png"
+              groups="group_business_dashboard_user"/>
+</odoo>

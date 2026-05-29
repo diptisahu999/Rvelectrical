@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Push Device Views -->
+    <record id="push_device_view_tree" model="ir.ui.view">
+        <field name="name">push.device.tree</field>
+        <field name="model">push.device</field>
+        <field name="arch" type="xml">
+            <list string="Push Devices">
+                <field name="user_id"/>
+                <field name="platform"/>
+                <field name="fcm_token"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="push_device_action" model="ir.actions.act_window">
+        <field name="name">Push Devices</field>
+        <field name="res_model">push.device</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Push Log Views -->
+    <record id="push_notification_log_view_tree" model="ir.ui.view">
+        <field name="name">push.notification.log.tree</field>
+        <field name="model">push.notification.log</field>
+        <field name="arch" type="xml">
+            <list string="Push Notification Logs" decoration-danger="status == 'failed'" decoration-warning="status == 'no_device'" decoration-success="status == 'success'">
+                <field name="create_date" string="Sent On"/>
+                <field name="user_id"/>
+                <field name="title"/>
+                <field name="status"/>
+                <field name="firebase_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="push_notification_log_view_form" model="ir.ui.view">
+        <field name="name">push.notification.log.form</field>
+        <field name="model">push.notification.log</field>
+        <field name="arch" type="xml">
+            <form string="Push Notification Log">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="user_id"/>
+                            <field name="create_date"/>
+                            <field name="status"/>
+                            <field name="firebase_id"/>
+                        </group>
+                        <group>
+                            <field name="title"/>
+                            <field name="body"/>
+                        </group>
+                    </group>
+                    <group string="Technical Details">
+                        <field name="data_payload"/>
+                        <field name="error_message" invisible="not error_message"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="push_notification_log_action" model="ir.actions.act_window">
+        <field name="name">Push Notification Logs</field>
+        <field name="res_model">push.notification.log</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem id="menu_push_notification_root" 
+              name="Push Notifications" 
+              parent="base.menu_administration" 
+              sequence="100"/>
+
+    <menuitem id="menu_push_device" 
+              name="Devices" 
+              parent="menu_push_notification_root" 
+              action="push_device_action" 
+              sequence="10"/>
+
+    <menuitem id="menu_push_notification_log" 
+              name="Logs" 
+              parent="menu_push_notification_root" 
+              action="push_notification_log_action" 
+              sequence="20"/>
+</odoo>

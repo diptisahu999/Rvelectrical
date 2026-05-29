@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dashboard_today_user,dashboard.today user,model_dashboard_today,base.group_user,1,1,1,1
+access_dashboard_today_manager,dashboard.today manager,model_dashboard_today,base.group_system,1,1,1,1

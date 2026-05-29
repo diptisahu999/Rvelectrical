@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_advance_partner_ledger,access.advance.partner.ledger,model_report_customer_card,,1,1,1,1
+access_advance_partner_ledger_line_details,access.advance.partner.ledger.line,model_partner_ledger_line,,1,1,1,1

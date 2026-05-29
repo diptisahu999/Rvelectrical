@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_crm_daily_report_user_line_tree" model="ir.ui.view">
+        <field name="name">crm.daily.report.user.line.tree</field>
+        <field name="model">crm.daily.report.user.line</field>
+        <field name="arch" type="xml">
+            <list string="User Summary">
+                <field name="currency_id" column_invisible="True"/>
+                <field name="user_id"/>
+                <field name="untouched_lead" sum="Total"/>
+                <field name="lead" sum="Total"/>
+                <field name="deal" sum="Total"/>
+                <field name="lead_done_followup" sum="Total"/>
+                <field name="opportunity_done_followup" sum="Total"/>
+                <field name="revenue" widget="monetary" sum="Total"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_crm_daily_report_source_line_tree" model="ir.ui.view">
+        <field name="name">crm.daily.report.source.line.tree</field>
+        <field name="model">crm.daily.report.source.line</field>
+        <field name="arch" type="xml">
+            <list string="Source Wise Lead Summary">
+                <field name="source_id"/>
+                <field name="today_count" sum="Total"/>
+                <field name="lifetime_count" sum="Total"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_crm_daily_report_form" model="ir.ui.view">
+        <field name="name">crm.daily.report.form</field>
+        <field name="model">crm.daily.report</field>
+        <field name="arch" type="xml">
+            <form string="Daily Report">
+                <header>
+                    <button name="print_report" string="Generate PDF Report" type="object" class="oe_highlight"/>
+                    <button name="action_generate_report_lines" string="Refresh Data" type="object"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Business Overview Day Report</h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="date"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <separator string="Lead &amp; Deal Summary"/>
+                    <group col="4">
+                        <field name="new_lead"/>
+                        <field name="new_deal"/>
+                        <field name="won_deal"/>
+                    </group>
+
+                    <separator string="Follow-ups Summary"/>
+                    <group col="4">
+                        <field name="lead_done_followup"/>
+                        <field name="opportunity_done_followup"/>
+                        <field name="overdue_followup"/>
+                        <field name="tomorrow_followup"/>
+                        <field name="completed_task"/>
+                    </group>
+
+                    <separator string="Today's Business Activity"/>
+                    <group col="4">
+                        <field name="quotation_count_today"/>
+                        <field name="quotation_amount_today" widget="monetary"/>
+                        <field name="order_confirmed_count_today"/>
+                        <field name="order_confirmed_amount_today" widget="monetary"/>
+                        <field name="purchase_count_today"/>
+                        <field name="purchase_amount_today" widget="monetary"/>
+                        <field name="inventory_out_qty_today"/>
+                        <field name="payment_in_amount_today" widget="monetary"/>
+                        <field name="advance_given_amount_today" widget="monetary"/>
+                        <field name="advance_received_amount_today" widget="monetary"/>
+                        <field name="invoice_amount_today" widget="monetary"/>
+                        <field name="invoice_count_today"/>
+                    </group>
+
+                    <notebook>
+                        <page string="User Summaries">
+                            <separator string="User Summary (Today)"/>
+                            <field name="user_summary_today_ids" readonly="1" context="{'tree_view_ref': 'crm_whatsapp.view_crm_daily_report_user_line_tree'}"/>
+                        </page>
+                        <page string="Status Summaries">
+                             <separator string="Source Wise Lead Summary"/>
+                             <field name="source_summary_ids" readonly="1" context="{'tree_view_ref': 'crm_whatsapp.view_crm_daily_report_source_line_tree'}"/>
+                        </page>
+
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_crm_daily_report" model="ir.actions.act_window">
+        <field name="name">Daily Report</field>
+        <field name="res_model">crm.daily.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+
+    <menuitem id="menu_crm_daily_report"
+              name="Daily Business Report"
+              parent="crm.crm_menu_root"
+              action="action_crm_daily_report"
+              sequence="5"/>
+</odoo>

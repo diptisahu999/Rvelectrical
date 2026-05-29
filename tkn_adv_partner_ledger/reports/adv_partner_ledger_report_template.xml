@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <template id="report_customer_card_document">
+            <t t-call="web.external_layout">
+                <t t-foreach="partners" t-as="partner">
+                    <div class="page" style="page-break-after: always;" dir="ltr">
+                        <link rel="stylesheet" href="/client_account_transactions/static/src/css/font_css.css"/>
+                        <div class="row">
+                            <div class="col-5">
+                                <span>From Date:-</span>
+                                <span t-field="o.date_start" t-field-options='{"format": "MM/dd/yyyy"}'/>
+                            </div>
+                            <div class="col-1"></div>
+                            <div class="col-5">
+                                <span>To Date:-</span>
+                                <span t-field="o.date_end" t-field-options='{"format": "MM/dd/yyyy"}'/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-5" t-if="o.sales_person_ids">
+                                <span>Sales Person:-</span>
+                                <span t-esc="', '.join(o.sales_person_ids.mapped('name'))"/>
+                            </div>
+                            <div class="col-1" t-if="o.sales_person_ids"/>
+                            <div class="col-5" t-if="o.journal_ids">
+                                <span>Journals:-</span>
+                                <span t-esc="', '.join(o.journal_ids.mapped('name'))"/>
+                            </div>
+                        </div>
+                        <div class="row mt-2 ms-4">
+                            <div class="col">
+                                <h5 style="font-weight:bold">
+                                    Customer Name:
+                                    <span t-field="partner.name"/>
+                                </h5>
+
+                                <h6>
+                                    Address:
+                                    <span t-field="partner.street"/>
+                                    <span t-field="partner.state_id.name"/>
+                                    <span t-field="partner.country_id.name"/>
+                                </h6>
+                            </div>
+                        </div>
+                        <br/>
+
+                        <table class="table table-condensed">
+                            <thead style="background-color: #82b7e2">
+                                <tr>
+                                    <th style="border: 1px solid black; color:black">#</th>
+                                    <th class="text-center" style="border: 1px solid black; color:black; width:120px">
+                                        Date
+                                    </th>
+                                    <th class="text-center" style="border: 1px solid black; color:black">Voucher</th>
+                                    <th class="text-center" style="border: 1px solid black; color:black">Details</th>
+                                    <th class="text-center" style="border: 1px solid black; color:black">Debit</th>
+                                    <th class="text-center" style="border: 1px solid black; color:black">Credit</th>
+                                    <th class="text-center" style="border: 1px solid black; color:black">Balance</th>
+                                </tr>
+
+                            </thead>
+                            <tbody>
+                                <tr t-if="o.show_initial_balance">
+                                    <td class="text-center" colspan="3" style="border: 1px solid black">
+                                        <strong>Initial Balance</strong>
+                                    </td>
+                                    <td colspan="3" style="border: 1px solid black"></td>
+                                    <th class="text-center" style="border: 1px solid black">
+                                        <span 
+                                            t-esc="balance(partner,o.date_start,o.journal_ids,o.sales_person_ids,o.moves_status,o.currency_id,o.company_id,o.partner_type)"/>
+                                        <span style="margin-left:5px;" t-esc="o.currency_id.symbol"/>
+                                    </th>
+                                </tr>
+                                <t t-set="index" t-value="0"/>
+                                <t t-set="balanced" 
+                                    t-value="balance(partner,o.date_start,o.journal_ids,o.sales_person_ids,o.moves_status,o.currency_id,o.company_id,o.partner_type)"/>
+                                <t t-set="total_debit" t-value="0.0"/>
+                                <t t-set="total_credit" t-value="0.0"/>
+                                <t t-set="total_balance" t-value="0.0"/>
+
+                                <t t-foreach="get_move(o.date_start,o.date_end,partner,o.journal_ids,o.sales_person_ids,o.moves_status,o.currency_id,o.company_id,o.partner_type)"
+                                   t-as="line">
+                                    <tr>
+                                        <t t-set="index" t-value="index + 1"/>
+                                        <td style="border: 1px solid black" num_format_str="@"
+                                            easyfx="align: horizontal right,vert center;font:height 200;">
+                                            <span t-esc="index"/>
+                                        </td>
+                                        <td class="text-center" style="border: 1px solid black" num_format_str="@"
+                                            easyfx="align: horizontal right,vert center;font:height 200;">
+                                            <span t-esc="line['date']"/>
+                                        </td>
+                                        <td class="text-center" style="border: 1px solid black" num_format_str="@"
+                                            easyfx="align: horizontal right,vert center;font:height 200;">
+                                            <span t-esc="line['num']"/>
+                                        </td>
+
+                                        <td class="text-center" style="border: 1px solid black"
+                                            num_format_str="@"
+                                            easyfx="align: horizontal right,vert center;font:height 200;">
+                                            <t t-esc="line['origin']"/>
+                                        </td>
+
+                                        <t t-if="line['debit']">
+                                            <t t-set="balanced" t-value="balanced + line['debit']"/>
+
+                                        </t>
+                                        <t t-if="line['credit']">
+                                            <t t-set="balanced" t-value="balanced - line['credit']"/>
+                                        </t>
+
+                                        <td class="text-center" style="border: 1px solid black" num_format_str="@"
+                                            easyfx="align: horizontal right,vert center;font:height 200;">
+                                            <span t-if="line['debit']" t-esc="round(line['debit'], 2)"/>
+                                            <span style="margin-left:5px;" t-if="line['debit']"
+                                                  t-esc="o.currency_id.symbol"/>
+                                        </td>
+                                        <td class="text-center" style="border: 1px solid black" num_format_str="@"
+                                            easyfx="align: horizontal right,vert center;font:height 200;">
+                                            <span t-if="line['credit']" t-esc="round(line['credit'], 2)"/>
+                                            <span style="margin-left:5px;" t-if="line['credit']"
+                                                  t-esc="o.currency_id.symbol"/>
+                                        </td>
+
+                                        <td class="text-center" style="border: 1px solid black; background-color:wight;"
+                                            num_format_str="@"
+                                            easyfx="align: horizontal right,vert center;font:height 200;">
+                                            <span t-esc="round(line['balance'],2)"/>
+                                            <span style="margin-left:5px;" t-esc="o.currency_id.symbol"/>
+                                        </td>
+
+                                        <t t-if="line['flag'] == 'invoice' and o.show_details">
+                                            <tr>
+                                                <td colspan="7">
+                                                    <table class="table table-condensed" style="width: 100%;">
+                                                        <h6 style="width: 100%; background-color:#ccd2d5; padding: 5px;text-align:center">
+                                                            Invoice Details
+                                                        </h6>
+                                                        <tr style="border: 1px solid black;background-color:#eaeff1;">
+                                                            <td style="color:black">Product</td>
+                                                            <td class="text-center" style="color:black">Qty</td>
+                                                            <td class="text-center" style="color:black">Uom</td>
+                                                            <td class="text-center" style="color:black">Price</td>
+                                                            <td class="text-center"
+                                                                style="color:black; background-color:#eaeff1;">Total
+                                                            </td>
+                                                        </tr>
+                                                        <t t-foreach="line['lines']" t-as="l">
+                                                            <tr>
+                                                                <td>
+                                                                    <span t-esc="l.product_id.name"/>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <span t-esc="l.quantity"/>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <span t-esc="l.product_uom_id.name"/>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <span t-esc="l.price_unit"/>
+                                                                    <span style="margin-left:5px;"
+                                                                          t-esc="l.currency_id.symbol"/>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <span t-esc="l.price_total"/>
+                                                                    <span style="margin-left:5px;"
+                                                                          t-esc="l.currency_id.symbol"/>
+                                                                </td>
+                                                            </tr>
+                                                        </t>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </t>
+
+                                        <t t-set="total_debit" t-value="total_debit + line['debit']"/>
+                                        <t t-set="total_credit" t-value="total_credit + line['credit']"/>
+                                        <t t-set="total_balance" t-value="total_balance + line['balance']"/>
+
+                                    </tr>
+                                </t>
+                            </tbody>
+                            <tfooter>
+                                <tr style="border:none;">
+                                    <td colspan="7" style="border:none;"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="text-start">
+                                        <strong>Total</strong>
+                                    </td>
+
+                                    <td class="text-center">
+                                        <span t-esc="round(total_debit, 2)"/>
+                                        <span style="margin-left:5px;" t-esc="o.currency_id.symbol"/>
+                                    </td>
+
+                                    <td class="text-center">
+                                        <span t-esc="round(total_credit, 2)"/>
+                                        <span style="margin-left:5px;" t-esc="o.currency_id.symbol"/>
+                                    </td>
+
+                                    <td class="text-center">
+                                        <span t-esc="round(all_balance(partner,o.date_start,o.date_end,o.journal_ids,o.sales_person_ids,o.moves_status,o.currency_id,o.company_id,o.partner_type),2)"/>
+                                        <span style="margin-left:5px;" t-esc="o.currency_id.symbol"/>
+                                    </td>
+                                </tr>
+                            </tfooter>
+                        </table>
+                        <hr style="height:1px;border:none;margin-bottom:5px"/>
+
+                        <center>
+                            <div t-if="o.show_closing_balance" class="row">
+                                <div class="col-6">
+                                    <h4 class="text-start" style="padding: 5px; background-color: #dce1e3;">
+                                        Ending Balance:
+                                        <span style="margin-left: 10px;"
+                                              t-esc="round(all_balance(partner,o.date_start,o.date_end,o.journal_ids,o.sales_person_ids,o.moves_status,o.currency_id,o.company_id,o.partner_type),2)"/>
+                                        <span style="margin-left:5px;" t-esc="o.currency_id.symbol"/>
+                                    </h4>
+                                </div>
+                            </div>
+                        </center>
+
+                        <br/>
+                        <br/>
+
+                        <div class="row mt-5" style="font-size:20px">
+                            <div t-if="o.printed_by" class="col-6">
+                                <span>Printed By:</span>
+                                <span>
+                                    <span style="margin-left: 8px" t-field="user.name"/>
+                                </span>
+                            </div>
+                            <div t-if="o.print_date" class="col-6 text-end">
+                                <span>Print Date:</span>
+                                <span>
+                                    <span style="margin-left: 8px" t-esc="datetime.datetime.now().date()"/>
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </template>
+
+        <template id="report_customer_card">
+            <t t-call="web.html_container">
+                <!--                <t t-foreach="docs" t-as="o">-->
+                <!--                    <t t-call="tkn_adv_partner_ledger.report_customer_card_document"/>-->
+                <!--                </t>-->
+                <t t-set="o" t-value="docs[0]"/>
+                <t t-call="tkn_adv_partner_ledger.report_customer_card_document"/>
+            </t>
+        </template>
+
+        <record id="paperformat_customer_transaction_card" model="report.paperformat">
+            <field name="name">PaperFormat Client Account Transactions</field>
+            <field name="default" eval="True"/>
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Landscape</field>
+            <field name="margin_top">20</field>
+            <field name="margin_bottom">25</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False"/>
+            <field name="header_spacing">20</field>
+            <field name="dpi">90</field>
+        </record>
+
+        <!--  Report action  -->
+        <record id="qweb_report_customer_card_id" model="ir.actions.report">
+            <field name="name">Client Account Transactions</field>
+            <field name="model">report.customer.card</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">tkn_adv_partner_ledger.report_customer_card</field>
+            <field name="report_file">tkn_adv_partner_ledger.report_customer_card</field>
+            <!--            <field name="binding_type">report</field>-->
+            <!--            <field name="paperformat_id">tkn_adv_partner_ledger.paperformat_customer_transaction_card</field>-->
+        </record>
+
+    </data>
+</odoo>

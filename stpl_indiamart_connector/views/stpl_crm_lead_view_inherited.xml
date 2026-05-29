@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_crm_case_leads_filter_inherited" model="ir.ui.view">
+        <field name="name">view_crm_case_opportunities_filter_inherited</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search/filter" position='after'>
+                <filter string="Is IndiaMart" name="is_indiamart" domain="[('is_indiamart', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_crm_case_leads_list_inherited" model="ir.ui.view">
+        <field name="name">crm.lead.list.inherit</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_leads"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='phone']" position='attributes'>
+                <attribute name="optional">show</attribute>
+            </xpath>
+            <xpath expr="//field[@name='source_id']" position='attributes'>
+                <attribute name="optional">show</attribute>
+            </xpath>
+            <xpath expr="//field[@name='phone']" position='before'>
+                <field name="mobile" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
+

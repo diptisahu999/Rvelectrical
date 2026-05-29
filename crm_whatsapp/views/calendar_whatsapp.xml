@@ -1,0 +1,19 @@
+<odoo>
+    <record id="view_calendar_event_form_inherit_whatsapp_button" model="ir.ui.view">
+        <field name="name">calendar.event.form.inherit.whatsapp.button</field>
+        <field name="model">calendar.event</field>
+        <field name="inherit_id" ref="calendar.view_calendar_event_form"/>
+        <field name="arch" type="xml">
+
+            <!-- ✅ Correct position for meeting form -->
+            <xpath expr="//form/sheet/div[1]" position="before">
+                <button name="action_send_whatsapp"
+                        string="WhatsApp"
+                        type="object"
+                        class="btn-primary"
+                        icon="fa-whatsapp"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

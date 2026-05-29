@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Force Delete Mail Messages (Audit Trail) -->
+    <record id="action_force_delete_mail_message" model="ir.actions.server">
+        <field name="name">Force Delete (Audit)</field>
+        <field name="model_id" ref="mail.model_mail_message"/>
+        <field name="binding_model_id" ref="mail.model_mail_message"/>
+        <field name="groups_id" eval="[(6, 0, [ref('audit_trail_control.group_audit_trail_manager')])]"/>
+        <field name="state">code</field>
+        <field name="code">
+# Direct SQL delete to bypass python constraints like "You cannot remove parts of the audit trail"
+if records:
+    env.cr.execute("DELETE FROM mail_message WHERE id IN %s", (tuple(records.ids),))
+        </field>
+    </record>
+
+    <!-- Force Delete Journal Entries / Invoices (account.move) -->
+    <record id="action_force_delete_account_move" model="ir.actions.server">
+        <field name="name">Force Delete Entry/Invoice</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="groups_id" eval="[(6, 0, [ref('audit_trail_control.group_audit_trail_manager')])]"/>
+        <field name="state">code</field>
+        <field name="code">
+# WARNING: This bypasses all accounting constraints and audit trail protections
+# Use only for removing test/erroneous data
+if records:
+    move_ids = tuple(records.ids)
+    
+    # Get all journal item IDs first (before deletion)
+    env.cr.execute("SELECT id FROM account_move_line WHERE move_id IN %s", (move_ids,))
+    line_ids = tuple([row[0] for row in env.cr.fetchall()])
+    
+    # Delete related records in correct order to avoid foreign key constraints
+    if line_ids:
+        # 1. Delete payment reconciliation links FIRST (they reference account_move_line)
+        env.cr.execute("DELETE FROM account_partial_reconcile WHERE debit_move_id IN %s OR credit_move_id IN %s", (line_ids, line_ids))
+        
+        # 2. Delete analytic lines (if any)
+        env.cr.execute("DELETE FROM account_analytic_line WHERE move_line_id IN %s", (line_ids,))
+        
+        # 3. Delete tax lines relationships
+        env.cr.execute("DELETE FROM account_move_line_account_tax_rel WHERE account_move_line_id IN %s", (line_ids,))
+    
+    # 4. Delete journal items (account.move.line)
+    env.cr.execute("DELETE FROM account_move_line WHERE move_id IN %s", (move_ids,))
+    
+    # 5. Delete mail messages (chatter/audit trail)
+    env.cr.execute("DELETE FROM mail_message WHERE model = 'account.move' AND res_id IN %s", (move_ids,))
+    
+    # 6. Delete mail followers
+    env.cr.execute("DELETE FROM mail_followers WHERE res_model = 'account.move' AND res_id IN %s", (move_ids,))
+    
+    # 7. Delete activity records
+    env.cr.execute("DELETE FROM mail_activity WHERE res_model = 'account.move' AND res_id IN %s", (move_ids,))
+    
+    # 8. Delete the journal entries themselves
+    env.cr.execute("DELETE FROM account_move WHERE id IN %s", (move_ids,))
+        </field>
+    </record>
+
+    <!-- Force Delete Journal Items (account.move.line) -->
+    <record id="action_force_delete_account_move_line" model="ir.actions.server">
+        <field name="name">Force Delete Journal Item</field>
+        <field name="model_id" ref="account.model_account_move_line"/>
+        <field name="binding_model_id" ref="account.model_account_move_line"/>
+        <field name="groups_id" eval="[(6, 0, [ref('audit_trail_control.group_audit_trail_manager')])]"/>
+        <field name="state">code</field>
+        <field name="code">
+# WARNING: This bypasses all accounting constraints
+# Deleting individual journal items may leave entries unbalanced
+if records:
+    line_ids = tuple(records.ids)
+    
+    # Delete reconciliation links first
+    env.cr.execute("DELETE FROM account_partial_reconcile WHERE debit_move_id IN %s OR credit_move_id IN %s", (line_ids, line_ids))
+    
+    # Delete the journal items
+    env.cr.execute("DELETE FROM account_move_line WHERE id IN %s", (line_ids,))
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,31 @@
+{
+    'name': 'CRM WhatsApp Integration',
+    'version': '1.0',
+    'license': 'LGPL-3',
+    'category': 'CRM',
+    'summary': 'Send WhatsApp messages from CRM Leads',
+    'author': 'Your Name',
+    'depends': ['crm', 'sale', 'calendar', 'contacts', 'stock', 'delivery', 'purchase', 'account', 'project'],
+    'data': [
+        'security/security.xml',
+        'security/ir.model.access.csv',
+        'data/whatsapp_server_action.xml',
+        'views/account_move_view.xml',
+        'views/crm_lead_view.xml',
+        'views/sale_order_view.xml',
+        'views/calendar_whatsapp.xml',
+        'views/stock_picking_whatsapp.xml',
+        'views/daily_report_view.xml',
+        'views/report_daily_business_overview.xml',
+        'views/sales_dashboard_action.xml',
+        'views/project_task_view.xml',
+     ],
+    'assets': {
+        'web.assets_backend': [
+             'crm_whatsapp/static/src/components/sales_dashboard/sales_dashboard.xml',
+             'crm_whatsapp/static/src/components/sales_dashboard/sales_dashboard.js',
+        ],
+    },
+    'installable': True,
+    'application': False,
+}

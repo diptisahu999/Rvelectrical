@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_daily_business_overview" model="ir.actions.report">
+        <field name="name">Business Overview Day Report</field>
+        <field name="model">crm.daily.report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">crm_whatsapp.report_daily_business</field>
+        <field name="report_file">crm_whatsapp.report_daily_business</field>
+        <field name="print_report_name">'Daily Report - %s' % (object.date)</field>
+        <field name="binding_model_id" ref="model_crm_daily_report"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_daily_business">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="text-center mb-4">
+                            <h2>Business Overview Day Report</h2>
+                            <h4>Branch: HQ  Date: <span t-field="o.date"/></h4>
+                        </div>
+
+                        <!-- Today's Business Activity -->
+                        <div class="card mb-4" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px; background-color: #f8f9fa;">
+                            <h5 style="color: #4b4b4b;">Today's Business Activity</h5>
+                            <hr/>
+                            <div class="row text-center">
+                                <!-- Row 1 -->
+                                <div class="col-4 mb-3">
+                                    <h3><span t-field="o.quotation_count_today"/></h3>
+                                    <small class="text-muted">Quotations Created (<span t-field="o.quotation_amount_today" t-options='{"widget": "monetary", "display_currency": o.env.company.currency_id}'/>)</small>
+                                </div>
+                                <div class="col-4 mb-3">
+                                    <h3><span t-field="o.order_confirmed_count_today"/></h3>
+                                    <small class="text-muted">Orders Confirmed (<span t-field="o.order_confirmed_amount_today" t-options='{"widget": "monetary", "display_currency": o.env.company.currency_id}'/>)</small>
+                                </div>
+                                <div class="col-4 mb-3">
+                                    <h3><span t-field="o.purchase_amount_today" t-options='{"widget": "monetary", "display_currency": o.env.company.currency_id}'/></h3>
+                                    <small class="text-muted">Purchase Amount (<span t-field="o.purchase_count_today"/> Count)</small>
+                                </div>
+
+                                <!-- Row 2 -->
+                                <div class="col-4 mb-3">
+                                    <h3><span t-field="o.inventory_out_qty_today"/></h3>
+                                    <small class="text-muted">Inventory Delivered (Qty)</small>
+                                </div>
+                                <div class="col-4 mb-3">
+                                    <h3><span t-field="o.payment_in_amount_today" t-options='{"widget": "monetary", "display_currency": o.env.company.currency_id}'/></h3>
+                                    <small class="text-muted">Payment In (Bank)</small>
+                                </div>
+                                <div class="col-4 mb-3">
+                                    <h3><span t-field="o.invoice_amount_today" t-options='{"widget": "monetary", "display_currency": o.env.company.currency_id}'/></h3>
+                                    <small class="text-muted">Invoiced Amount (<span t-field="o.invoice_count_today"/> Count)</small>
+                                </div>
+
+                                <!-- Row 3 -->
+                                <div class="col-4">
+                                    <h3><span t-field="o.advance_given_amount_today" t-options='{"widget": "monetary", "display_currency": o.env.company.currency_id}'/></h3>
+                                    <small class="text-muted">Advance Given</small>
+                                </div>
+                                <div class="col-4">
+                                    <h3><span t-field="o.advance_received_amount_today" t-options='{"widget": "monetary", "display_currency": o.env.company.currency_id}'/></h3>
+                                    <small class="text-muted">Advance Received</small>
+                                </div>
+                                <div class="col-4">
+                                    <!-- Empty or maybe Invoice Count if not combined above? I combined it. -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lead & Deal Summary -->
+                        <div class="card mb-4" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
+                            <h5>Lead &amp; Deal Summary</h5>
+                            <hr/>
+                            <div class="row text-center">
+                                <div class="col-3">
+                                    <h3><span t-field="o.new_lead"/></h3>
+                                    <small>New Lead</small>
+                                </div>
+                                <div class="col-3">
+                                    <h3><span t-field="o.new_deal"/></h3>
+                                    <small>New Deal</small>
+                                </div>
+                                <div class="col-4">
+                                    <h3><span t-field="o.won_deal"/></h3>
+                                    <small>Won Deal</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Follow-ups Summary -->
+                        <div class="card mb-4" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
+                            <h5>Follow-ups Summary</h5>
+                            <hr/>
+                            <div class="row text-center">
+                                <div class="col-2">
+                                    <h3><span t-field="o.lead_done_followup"/></h3>
+                                    <small>Lead Follow-up</small>
+                                </div>
+                                <div class="col-2">
+                                    <h3><span t-field="o.opportunity_done_followup"/></h3>
+                                    <small>Opp Follow-up</small>
+                                </div>
+                                <div class="col-2">
+                                    <h3><span t-field="o.overdue_followup"/></h3>
+                                    <small>Overdue</small>
+                                </div>
+                                <div class="col-2">
+                                    <h3><span t-field="o.tomorrow_followup"/></h3>
+                                    <small>Tomorrow</small>
+                                </div>
+                                <div class="col-2">
+                                    <h3><span t-field="o.completed_task"/></h3>
+                                    <small>Tasks</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- User Summary (Today) -->
+                        <div class="card mb-4" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
+                            <h5>User Summary (Today)</h5>
+                            <hr/>
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>USER</th>
+                                        <th>UNTOUCHED LEAD</th>
+                                        <th>LEAD</th>
+                                        <th>DEAL</th>
+                                        <th>LEAD FOLLOW UP</th>
+                                        <th>OPP FOLLOW UP</th>
+                                        <th>REVENUE</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.user_summary_today_ids" t-as="l">
+                                        <td><span t-field="l.user_id.name"/></td>
+                                        <td><span t-field="l.untouched_lead"/></td>
+                                        <td><span t-field="l.lead"/></td>
+                                        <td><span t-field="l.deal"/></td>
+                                        <td><span t-field="l.lead_done_followup"/></td>
+                                        <td><span t-field="l.opportunity_done_followup"/></td>
+                                        <td><span t-field="l.revenue" t-options='{"widget": "monetary", "display_currency": o.env.company.currency_id}'/></td>
+                                    </tr>
+                                    <tr style="font-weight: bold; background-color: #f8f9fa;">
+                                        <td>TOTAL</td>
+                                        <td><span t-esc="sum(o.user_summary_today_ids.mapped('untouched_lead'))"/></td>
+                                        <td><span t-esc="sum(o.user_summary_today_ids.mapped('lead'))"/></td>
+                                        <td><span t-esc="sum(o.user_summary_today_ids.mapped('deal'))"/></td>
+                                        <td><span t-esc="sum(o.user_summary_today_ids.mapped('lead_done_followup'))"/></td>
+                                        <td><span t-esc="sum(o.user_summary_today_ids.mapped('opportunity_done_followup'))"/></td>
+                                        <td><span t-esc="sum(o.user_summary_today_ids.mapped('revenue'))" t-options='{"widget": "monetary", "display_currency": o.env.company.currency_id}'/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        
+                        <!-- Source Wise Lead Summary -->
+                         <div class="card mb-4" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
+                            <h5>Source Wise Lead Summary</h5>
+                            <hr/>
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>SOURCE</th>
+                                        <th>TODAY</th>
+                                        <th>LIFE TIME</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.source_summary_ids" t-as="l">
+                                        <td><span t-field="l.source_id.name"/></td>
+                                        <td><span t-field="l.today_count"/></td>
+                                        <td><span t-field="l.lifetime_count"/></td>
+                                    </tr>
+                                    <tr style="font-weight: bold; background-color: #f8f9fa;">
+                                        <td>TOTAL</td>
+                                        <td><span t-esc="sum(o.source_summary_ids.mapped('today_count'))"/></td>
+                                        <td><span t-esc="sum(o.source_summary_ids.mapped('lifetime_count'))"/></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

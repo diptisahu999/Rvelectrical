@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Remove default stage grouping from Project list -->
+    <record id="project_project_list_remove_default_group"
+            model="ir.ui.view">
+        <field name="name">project.project.list.remove.default.group</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.project_list_view_group_stage"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <!-- Remove default_group_by -->
+                <attribute name="default_group_by"/>
+            </xpath>
+        </field>
+    </record>
+
+     <!-- Remove Stage filter from Project search panel -->
+    <record id="project_project_search_remove_stage"
+            model="ir.ui.view">
+        <field name="name">project.project.search.remove.stage</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.view_project_project_filter"/>
+        <field name="arch" type="xml">
+
+            <!-- remove group-by filter using stage -->
+            <xpath expr="//filter[contains(@context, 'stage_id')]"
+                   position="replace"/>
+
+        </field>
+    </record>
+
+    <!-- 1st set Tree(List) view -->
+    <record id="project.open_view_project_all_group_stage_tree_view" 
+        model="ir.actions.act_window.view"
+        forcecreate="False">
+
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="project.open_view_project_all_group_stage_kanban_view"
+            model="ir.actions.act_window.view"
+            forcecreate="False">
+
+        <field name="sequence">20</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Project Task Form View to Show All Assignees by Default -->
+    <record id="view_project_task_form_all_users" model="ir.ui.view">
+        <field name="name">project.task.form.all.users</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_ids']" position="attributes">
+                <attribute name="options">{"no_open": False, "no_create": False, "no_create_edit": False}</attribute>
+                <attribute name="context">{}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Inherit Project Form View to add Stage Template field -->
+    <!-- <record id="view_project_form_stage_template" model="ir.ui.view">
+        <field name="name">project.project.form.stage.template</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="stage_template_id" 
+                       placeholder="Select a stage template to apply..."
+                       help="Select a stage template to automatically create project stages"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_apply_stage_template" 
+                        type="object" 
+                        class="oe_stat_button" 
+                        icon="fa-tasks"
+                        string="Apply Template"
+                        help="Apply a stage template to this project"/>
+            </xpath>
+        </field>
+    </record> -->
+
+    <!-- Add Import Stages action to Task Type action window -->
+    <record id="action_import_stages_from_project" model="ir.actions.act_window">
+        <field name="name">Import Stages</field>
+        <field name="res_model">import.stage.template.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_project_id': active_id}</field>
+    </record>
+
+    <!-- Add Apply Template menu item for quick access -->
+    <!-- <menuitem id="menu_apply_stage_template"
+              name="Apply Stage Template"
+              parent="project.menu_project_management"
+              action="action_import_stages_from_project"
+              sequence="25"/> -->
+
+    <!-- Add Apply Template action as a server action for easier access -->
+    <!-- <record id="action_apply_template_server" model="ir.actions.server">
+        <field name="name">Apply Stage Template</field>
+        <field name="model_id" ref="project.model_project_project"/>
+        <field name="binding_model_id" ref="project.model_project_project"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = {
+                'name': 'Apply Stage Template',
+                'type': 'ir.actions.act_window',
+                'res_model': 'import.stage.template.wizard',
+                'view_mode': 'form',
+                'target': 'new',
+                'context': {'default_project_id': record.id},
+            }
+        </field>
+    </record> -->
+</odoo>

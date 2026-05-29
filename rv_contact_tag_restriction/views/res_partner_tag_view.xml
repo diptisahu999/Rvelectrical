@@ -1,0 +1,39 @@
+<odoo>
+
+    <!-- 1️⃣ Restrict create/edit for users WITHOUT permission -->
+    <record id="res_partner_form_restrict_tag_create" model="ir.ui.view">
+        <field name="name">res.partner.form.restrict.tag.create</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='category_id']"
+                   position="attributes"
+                   groups="!rv_contact_tag_restriction.group_contact_tag_manage">
+                <attribute name="options">
+                    {'no_create': True, 'no_create_edit': True}
+                </attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- 2️⃣ Allow create/edit for users WITH permission -->
+    <record id="res_partner_form_allow_tag_create" model="ir.ui.view">
+        <field name="name">res.partner.form.allow.tag.create</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='category_id']"
+                   position="attributes"
+                   groups="rv_contact_tag_restriction.group_contact_tag_manage">
+                <attribute name="options">
+                    {}
+                </attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

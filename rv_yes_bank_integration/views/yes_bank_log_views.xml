@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_yes_bank_log_tree" model="ir.ui.view">
+        <field name="name">yes.bank.log.tree</field>
+        <field name="model">yes.bank.log</field>
+        <field name="arch" type="xml">
+            <list string="YES Bank Logs">
+                <field name="create_date"/>
+                <field name="name"/>
+                <field name="amount" sum="Total Amount"/>
+                <field name="payment_type"/>
+                <field name="status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_yes_bank_log_form" model="ir.ui.view">
+        <field name="name">yes.bank.log.form</field>
+        <field name="model">yes.bank.log</field>
+        <field name="arch" type="xml">
+            <form string="YES Bank Log">
+                <header>
+                    <field name="status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="amount"/>
+                        <field name="payment_type"/>
+                        <field name="create_date" readonly="1"/>
+                        <field name="processed_date" readonly="1"/>
+                    </group>
+                    <group string="Raw Data">
+                        <field name="raw_data" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_yes_bank_log" model="ir.actions.act_window">
+        <field name="name">YES Bank Logs</field>
+        <field name="res_model">yes.bank.log</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_yes_bank_root" name="Bank Integrations" parent="account.menu_finance_configuration" sequence="100"/>
+    <menuitem id="menu_yes_bank_log" name="YES Bank Logs" parent="menu_yes_bank_root" action="action_yes_bank_log"/>
+</odoo>

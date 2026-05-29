@@ -1,0 +1,16 @@
+/* Progress Bar Dynamic Colors */
+.text-danger .o_progress div.bg-primary {
+    background-color: #dc3545 !important;
+}
+
+.text-warning .o_progress div.bg-primary {
+    background-color: #ffc107 !important;
+}
+
+.text-info .o_progress div.bg-primary {
+    background-color: #17a2b8 !important;
+}
+
+.text-success .o_progress div.bg-primary {
+    background-color: #28a745 !important;
+}

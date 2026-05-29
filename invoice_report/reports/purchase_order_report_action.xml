@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Define a Custom Purchase Order Report Action -->
+    <record id="action_report_purchase_order_custom" model="ir.actions.report">
+        <field name="name">Purchase Order</field>
+        <field name="model">purchase.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">invoice_report.report_purchase_order_custom_document</field>
+        <field name="report_file">invoice_report.report_purchase_order_custom_document</field>
+        <field name="print_report_name">('%s %s %s %s' % (object.date_order.strftime('%d-%m-%Y') if object.date_order else '', 'Request for Quotation' if object.state in ('draft', 'sent') else 'Cancelled Purchase Order' if object.state == 'cancel' else 'Purchase Order', object.name, object.partner_id.name or ''))</field>
+        <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Define the QWeb Template for Custom Purchase Order Report -->
+    <template id="report_purchase_order_custom_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="oe_structure"/>
+
+                        <!-- Address Section Row -->
+                        <div class="row mb-4">
+                            <!-- Shipping Address (Left) -->
+                            <div class="col-6">
+                                <strong style="font-size: 14px;">Shipping address:</strong>
+                                <div class="mt-2" style="line-height: 1.6;">
+                                    <div t-if="o.dest_address_id">
+                                        <div t-if="o.dest_address_id.name" t-field="o.dest_address_id.name"/>
+                                        <div t-if="o.dest_address_id.street" t-field="o.dest_address_id.street"/>
+                                        <div t-if="o.dest_address_id.street2" t-field="o.dest_address_id.street2"/>
+                                        <div>
+                                            <span t-if="o.dest_address_id.city" t-field="o.dest_address_id.city"/><t t-if="o.dest_address_id.city"> </t>
+                                            <span t-if="o.dest_address_id.zip" t-field="o.dest_address_id.zip"/>
+                                        </div>
+                                        <div t-if="o.dest_address_id.state_id" t-field="o.dest_address_id.state_id"/>
+                                        <div t-if="o.dest_address_id.country_id" t-field="o.dest_address_id.country_id"/>
+                                        <div t-if="o.dest_address_id.phone">
+                                            📞 <span t-field="o.dest_address_id.phone"/>
+                                        </div>
+                                    </div>
+                                    <div t-elif="o.picking_type_id and o.picking_type_id.warehouse_id">
+                                        <div t-field="o.picking_type_id.warehouse_id.name"/>
+                                        <div t-if="o.picking_type_id.warehouse_id.partner_id.street" t-field="o.picking_type_id.warehouse_id.partner_id.street"/>
+                                        <div t-if="o.picking_type_id.warehouse_id.partner_id.street2" t-field="o.picking_type_id.warehouse_id.partner_id.street2"/>
+                                        <div>
+                                            <span t-if="o.picking_type_id.warehouse_id.partner_id.city" t-field="o.picking_type_id.warehouse_id.partner_id.city"/><t t-if="o.picking_type_id.warehouse_id.partner_id.city"> </t>
+                                            <span t-if="o.picking_type_id.warehouse_id.partner_id.zip" t-field="o.picking_type_id.warehouse_id.partner_id.zip"/>
+                                        </div>
+                                        <div t-if="o.picking_type_id.warehouse_id.partner_id.state_id" t-field="o.picking_type_id.warehouse_id.partner_id.state_id"/>
+                                        <div t-if="o.picking_type_id.warehouse_id.partner_id.country_id" t-field="o.picking_type_id.warehouse_id.partner_id.country_id"/>
+                                    </div>
+                                    <div t-else="">
+                                        <div t-if="o.company_id.partner_id.street" t-field="o.company_id.partner_id.street"/>
+                                        <div t-if="o.company_id.partner_id.street2" t-field="o.company_id.partner_id.street2"/>
+                                        <div>
+                                            <span t-if="o.company_id.partner_id.city" t-field="o.company_id.partner_id.city"/><t t-if="o.company_id.partner_id.city"> </t>
+                                            <span t-if="o.company_id.partner_id.zip" t-field="o.company_id.partner_id.zip"/>
+                                        </div>
+                                        <div t-if="o.company_id.partner_id.state_id" t-field="o.company_id.partner_id.state_id"/>
+                                        <div t-if="o.company_id.partner_id.country_id" t-field="o.company_id.partner_id.country_id"/>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Vendor Address (Right) -->
+                            <div class="col-6">
+                                <div style="line-height: 1.6;">
+                                    <div><strong t-field="o.partner_id.name"/></div>
+                                    <div t-if="o.partner_id.street" t-field="o.partner_id.street"/>
+                                    <div t-if="o.partner_id.street2" t-field="o.partner_id.street2"/>
+                                    <div>
+                                        <span t-if="o.partner_id.city" t-field="o.partner_id.city"/>
+                                        <t t-if="o.partner_id.zip"> </t><span t-if="o.partner_id.zip" t-field="o.partner_id.zip"/>
+                                    </div>
+                                    <div t-if="o.partner_id.state_id" t-field="o.partner_id.state_id"/>
+                                    <div t-if="o.partner_id.country_id" t-field="o.partner_id.country_id"/>
+                                    <div t-if="o.partner_id.vat">
+                                        <strong>GSTIN: </strong><span t-field="o.partner_id.vat"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Document Title -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h2 style="color: #28a745; font-weight: bold;">
+                                    <span t-if="o.state in ['draft', 'sent']">Request for Quotation </span>
+                                    <span t-if="o.state in ['purchase', 'done']">Purchase Order </span>
+                                    <span t-if="o.state == 'cancel'">Cancelled Purchase Order </span>
+                                    <span t-field="o.name"/>
+                                </h2>
+                            </div>
+                        </div>
+
+                        <!-- Order Information Row -->
+                        <div class="row mb-4">
+                            <div class="col-3">
+                                <div><strong style="color: #0d6efd;">Buyer</strong></div>
+                                <div t-if="o.user_id" t-field="o.user_id"/>
+                            </div>
+                            <div class="col-3">
+                                <div><strong style="color: #0d6efd;">Order Deadline:</strong></div>
+                                <div t-if="o.date_planned" t-field="o.date_planned" t-options='{"widget": "date"}'/>
+                            </div>
+                            <div class="col-3">
+                                <div><strong style="color: #0d6efd;">Expected Arrival:</strong></div>
+                                <div t-if="o.date_planned" t-field="o.date_planned" t-options='{"widget": "date"}'/>
+                            </div>
+                            <div class="col-3">
+                                <div><strong style="color: #0d6efd;">Incoterm:</strong></div>
+                                <div t-if="o.incoterm_id" t-field="o.incoterm_id"/>
+                            </div>
+                        </div>
+
+                        <style>
+                            .invoice-table {
+                                width: 100%;
+                                border-collapse: collapse;
+                                margin-top: 20px;
+                            }
+                            .invoice-table thead tr {
+                                background-color: #f8f9fa;
+                            }
+                            .invoice-table th {
+                                padding: 10px 8px;
+                                text-align: left;
+                                font-weight: 600;
+                                font-size: 13px;
+                                color: #333;
+                            }
+                            .invoice-table th.text-end {
+                                text-align: right;
+                            }
+                            .invoice-table tbody td {
+                                padding: 12px 8px;
+                                font-size: 13px;
+                                color: #333;
+                                vertical-align: top;
+                            }
+                            .invoice-table tbody tr {
+                                border-bottom: 1px solid #e9ecef;
+                            }
+                            .invoice-table tbody td.text-end {
+                                text-align: right;
+                            }
+                            .product-name {
+                                font-weight: 500;
+                                color: #000;
+                            }
+                            .hsn-code {
+                                font-size: 12px;
+                                color: #666;
+                                margin-top: 2px;
+                            }
+                            .totals-section {
+                                margin-top: 30px;
+                                float: right;
+                                width: 350px;
+                            }
+                            .totals-row {
+                                display: flex;
+                                justify-content: space-between;
+                                padding: 8px 15px;
+                                font-size: 14px;
+                            }
+                            .totals-row.total-final {
+                                background-color: #f0f8f0;
+                                font-weight: 700;
+                                color: #28a745;
+                                margin-top: 5px;
+                                padding: 12px 15px;
+                            }
+                            .totals-label {
+                                font-weight: 500;
+                            }
+                            .totals-amount {
+                                font-weight: 500;
+                            }
+                            .payment-terms-section {
+                                clear: both;
+                                margin-top: 80px;
+                                padding-top: 15px;
+                            }
+                            .payment-terms-title {
+                                font-weight: 600;
+                                font-size: 14px;
+                                color: #000;
+                            }
+                        </style>
+
+                        <!-- Product Lines Table -->
+                        <table class="invoice-table">
+                            <thead>
+                                <tr>
+                                    <th name="th_description" style="width: 40%;">Description</th>
+                                    <th name="th_quantity" class="text-end" style="width: 10%;">Quantity</th>
+                                    <th name="th_price_unit" class="text-end" style="width: 12%;">Unit Price</th>
+                                    <th name="th_discount" class="text-end" style="width: 10%;">Discount</th>
+                                    <th name="th_taxes" class="text-end" style="width: 10%;">Taxes</th>
+                                    <th name="th_amount" class="text-end" style="width: 18%;">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="current_subtotal" t-value="0"/>
+                                <t t-foreach="o.order_line" t-as="line">
+                                    <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal" groups="account.group_show_line_subtotals_tax_excluded"/>
+                                    <t t-set="current_subtotal" t-value="current_subtotal + line.price_total" groups="account.group_show_line_subtotals_tax_included"/>
+
+                                    <tr t-att-class="'bg-200 fw-bold o_line_section' if line.display_type == 'line_section' else 'fst-italic o_line_note' if line.display_type == 'line_note' else ''">
+                                        <t t-if="not line.display_type">
+                                            <td id="product">
+                                                <div class="product-name" t-field="line.name"/>
+                                                <t t-if="line.product_id.l10n_in_hsn_code">
+                                                    <div class="hsn-code">
+                                                        HSN/SAC Code: <span t-field="line.product_id.l10n_in_hsn_code"/>
+                                                    </div>
+                                                </t>
+                                            </td>
+                                            <td class="text-end">
+                                                <span t-field="line.product_qty"/>
+                                                <t t-if="line.product_uom">
+                                                    <t t-if="line.product_uom.name == 'Units'"> Units</t>
+                                                    <span t-else="" t-field="line.product_uom"/>
+                                                </t>
+                                            </td>
+                                            <td class="text-end">
+                                                <span t-esc="'{:,.2f}'.format(line.price_unit)"/>
+                                            </td>
+                                            <td class="text-end">
+                                                <span t-esc="'{:.2f}'.format(line.discount) if line.discount else '0.00'"/>%
+                                            </td>
+                                            <td class="text-end">
+                                                <span t-esc="', '.join(map(lambda x: x.name, line.taxes_id))"/>
+                                            </td>
+                                            <td class="text-end">
+                                                <span t-esc="o.currency_id.symbol"/>
+                                                <span t-esc="'{:,.2f}'.format(line.price_subtotal)"/>
+                                            </td>
+                                        </t>
+                                        <t t-if="line.display_type == 'line_section'">
+                                            <td colspan="6" id="section" style="font-weight: 600;">
+                                                <span t-field="line.name"/>
+                                            </td>
+                                            <t t-set="current_section" t-value="line"/>
+                                            <t t-set="current_subtotal" t-value="0"/>
+                                        </t>
+                                        <t t-if="line.display_type == 'line_note'">
+                                            <td colspan="6" id="note" style="font-style: italic;">
+                                                <span t-field="line.name"/>
+                                            </td>
+                                        </t>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <!-- Totals Section with Custom Design -->
+                        <div class="totals-section">
+                            
+                            <!-- Untaxed Amount -->
+                            <div class="totals-row">
+                                <span class="totals-label">Untaxed Amount</span>
+                                <span class="totals-amount">
+                                    <span t-esc="o.currency_id.symbol"/>
+                                    <span t-esc="'{:,.2f}'.format(o.amount_untaxed)"/>
+                                </span>
+                            </div>
+                            
+                            <!-- Calculate and display individual taxes dynamically with GST splitting -->
+                            <t t-set="tax_data" t-value="{}"/>
+                            <t t-foreach="o.order_line" t-as="line">
+                                <t t-if="not line.display_type">
+                                    <t t-foreach="line.taxes_id" t-as="tax">
+                                        <t t-set="tax_amount" t-value="line.price_subtotal * (tax.amount / 100)"/>
+                                        <t t-set="tax_name_upper" t-value="tax.name.upper()"/>
+                                        
+                                        <!-- Check if it's a generic GST (not IGST, SGST, or CGST) and should be split -->
+                                        <t t-if="'GST' in tax_name_upper and 'IGST' not in tax_name_upper and 'SGST' not in tax_name_upper and 'CGST' not in tax_name_upper">
+                                            <!-- Split into SGST and CGST -->
+                                            <t t-set="half_tax" t-value="tax_amount / 2"/>
+                                            
+                                            <!-- Add SGST -->
+                                            <t t-if="'SGST' not in tax_data">
+                                                <t t-set="dummy" t-value="tax_data.update({'SGST': 0})"/>
+                                            </t>
+                                            <t t-set="dummy" t-value="tax_data.update({'SGST': tax_data['SGST'] + half_tax})"/>
+                                            
+                                            <!-- Add CGST -->
+                                            <t t-if="'CGST' not in tax_data">
+                                                <t t-set="dummy" t-value="tax_data.update({'CGST': 0})"/>
+                                            </t>
+                                            <t t-set="dummy" t-value="tax_data.update({'CGST': tax_data['CGST'] + half_tax})"/>
+                                        </t>
+                                        
+                                        <!-- Otherwise, use the tax name as is -->
+                                        <t t-else="">
+                                            <t t-set="tax_label" t-value="tax.name"/>
+                                            <t t-if="tax_label not in tax_data">
+                                                <t t-set="dummy" t-value="tax_data.update({tax_label: 0})"/>
+                                            </t>
+                                            <t t-set="dummy" t-value="tax_data.update({tax_label: tax_data[tax_label] + tax_amount})"/>
+                                        </t>
+                                    </t>
+                                </t>
+                            </t>
+                            
+                            <!-- Display each tax dynamically -->
+                            <t t-foreach="sorted(tax_data.keys())" t-as="tax_name">
+                                <div class="totals-row">
+                                    <span class="totals-label" t-esc="tax_name"/>
+                                    <span class="totals-amount">
+                                        <span t-esc="o.currency_id.symbol"/>
+                                        <span t-esc="'{:,.2f}'.format(tax_data[tax_name])"/>
+                                    </span>
+                                </div>
+                            </t>
+                            
+                            <!-- Total -->
+                            <div class="totals-row total-final">
+                                <span class="totals-label">Total</span>
+                                <span class="totals-amount">
+                                    <span t-esc="o.currency_id.symbol"/>
+                                    <span t-esc="'{:,.2f}'.format(o.amount_total)"/>
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Payment Terms Section -->
+                        <div class="payment-terms-section">
+                            <t t-if="o.payment_term_id">
+                                <div class="payment-terms-title">Payment Terms:</div>
+                                <div style="margin-top: 5px; font-size: 13px;">
+                                    <span t-field="o.payment_term_id.name"/>
+                                </div>
+                            </t>
+                            <t t-if="o.notes or o.terms_condition_id">
+                                <div class="payment-terms-title" style="margin-top: 15px;">Terms and Condition:</div>
+                                <div style="margin-top: 5px; font-size: 13px;">
+                                    <span t-if="o.notes" t-field="o.notes"/>
+                                    <span t-elif="o.terms_condition_id and o.terms_condition_id.terms_condition" t-field="o.terms_condition_id.terms_condition"/>
+                                    <span t-elif="o.terms_condition_id and o.terms_condition_id.name" t-field="o.terms_condition_id.name"/>
+                                </div>
+                            </t>
+                        </div>
+
+                        <div class="oe_structure"/>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <!-- Customize Standard Request for Quotation Report Filename -->
+    <record id="purchase.report_purchase_quotation" model="ir.actions.report">
+        <field name="print_report_name">('%s %s %s %s' % (object.date_order.strftime('%d-%m-%Y') if object.date_order else '', 'Request for Quotation', object.name, object.partner_id.name or ''))</field>
+    </record>
+
+    <!-- Unbind Standard Purchase Order Report to hide it from the Print menu -->
+    <record id="purchase.action_report_purchase_order" model="ir.actions.report">
+        <field name="binding_model_id" eval="False"/>
+    </record>
+</odoo>

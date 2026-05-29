@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_payment_receipt_document_inherit" inherit_id="account.report_payment_receipt_document">
+        <!-- 1. Fetch and show Bank Reference under the Payment Method -->
+        <xpath expr="//div[@name='payment_method']" position="inside">
+            <t t-if="o.bank_reference">
+                <br/>
+                <strong>Bank Reference: </strong>
+                <span t-field="o.bank_reference"/>
+            </t>
+        </xpath>
+
+        <!-- 2. Fetch and show Customer Mobile and GST Number under the Customer details -->
+        <xpath expr="//span[@t-field='o.partner_id']" position="after">
+            <t t-if="o.partner_id.mobile">
+                <br/>
+                <strong>Mobile: </strong>
+                <span t-field="o.partner_id.mobile"/>
+            </t>
+            <t t-elif="o.partner_id.phone">
+                <br/>
+                <strong>Mobile: </strong>
+                <span t-field="o.partner_id.phone"/>
+            </t>
+            <t t-if="o.partner_id.vat">
+                <br/>
+                <strong>GSTIN: </strong>
+                <span t-field="o.partner_id.vat"/>
+            </t>
+        </xpath>
+    </template>
+</odoo>

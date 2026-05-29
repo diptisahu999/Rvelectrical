@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TKN</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+  <style>
+    :root {
+      --primary-color: #f1f9ff;
+      --bg-white: #fff;
+      --text-color: #01649c;
+      --text-color-light: #64728f;
+    }
+
+    body {
+      font-family: "Montserrat", sans-serif;
+      padding-top: 56px;
+    }
+
+    .navbar-brand {
+      font-weight: bold;
+    }
+
+    .carousel-indicators {
+      bottom: -30px !important;
+    }
+
+    .bg-primary {
+      background-color: var(--primary-color) !important;
+    }
+
+    .text-color {
+      color: var(--text-color) !important;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container shadow">
+    <!-- Hero Section -->
+    <header class="bg-light text-white text-center py-5">
+      <div class="container text-danger">
+        <h1 class="fw-bold text-color">Advance Partner Ledger Report</h1>
+        <p class="lead text-color">Custom Date Range for Reports</p>
+        <p class="lead text-color">Journals Filtering</p>
+        <p class="lead text-color">Controller Of Showing Invoice Details</p>
+        <p class="lead text-color">Salesperson Filtering</p>
+        <p class="lead text-color">Balance for Total Debits, Credits, and Ending balance</p>
+        <p class="lead text-color">View Advance Partner Ledger Report</p>
+        <p class="lead text-color">List View & Form & Pivot & Graph</p>
+        <p class="lead text-color">Multi Partner</p>
+        <p class="lead text-color">Multi Currency: Can Choose Currency Of Report </p>
+        <p class="lead text-color">Excel Report</p>
+        <p class="lead text-color">Controller Of Showing Initial Balance & Ending Balance</p>
+      </div>
+      <div class="d-flex justify-content-center align-items-center gap-4">
+        <div class="d-flex justify-content-center align-items-end mb-4"
+          style="border-right: 2px solid lightgray; padding-right: 20px">
+          <h1 class="m-0 fw-bold text-color" style="font-size: 65px !important; font-family: math">
+            TKN
+          </h1>
+          <p class="m-0 fw-bold text-black-50" style="font-size: 23px">
+            solutions
+          </p>
+        </div>
+        <h1 class="fw-bold" style="color: #8f8f8f; font-size: 65px !important">
+          <span style="color: #714b67">O</span>doo
+        </h1>
+      </div>
+      <div class="d-flex gap-3 justify-content-center">
+        <button class="btn px-5 rounded-pill rounded-lg text-white" type="button"
+          style="background-color: var(--text-color) !important">
+          Email Us
+        </button>
+      </div>
+    </header>
+
+    <!-- taps -->
+    <section class="container mt-5 bg-transparent p-0" style="text-align: center">
+      <div class="tabs-container" style="
+            width: 100%;
+            border-radius: 50px;
+            padding: 0.6px;
+            margin-bottom: 20px;
+          ">
+        <ul role="tablist" class="nav nav-tabs justify-content-around" data-tabs="tabs" style="
+              border: none;
+              background-color: #99c3db;
+              padding: 5px;
+              border-radius: 35px;
+              margin: 0 auto;
+            ">
+          <li class="nav-item" style="
+                border-radius: 10px;
+                background-color: transparent;
+                margin-right: 10px;
+                padding: 1%;
+                border-bottom: 0;
+              ">
+            <a href="#feature_tab" data-bs-toggle="tab" aria-expanded="true" class="show nav-link active" style="
+                  width: 150px;
+                  font-size: 18px;
+                  border-radius: 25px;
+                  color: #000;
+                  border: 1px solid transparent;
+                ">Features</a>
+          </li>
+          <li class="nav-item" style="
+                border-radius: 10px;
+                background-color: transparent;
+                margin-right: 10px;
+                padding: 1%;
+                border-bottom: 0;
+              ">
+            <a href="#screenshots_tab" data-bs-toggle="tab" aria-expanded="true" class="show nav-link" style="
+                  width: 150px;
+                  font-size: 18px;
+                  border-radius: 25px;
+                  color: #000;
+                  border: 1px solid transparent;
+                ">Screenshots</a>
+          </li>
+          <li class="nav-item" style="
+                border-radius: 10px;
+                background-color: transparent;
+                margin-right: 10px;
+                padding: 1%;
+                border-bottom: 0;
+              ">
+            <a href="#release_note_tab" data-bs-toggle="tab" aria-expanded="true" class="show nav-link" style="
+                  width: 150px;
+                  font-size: 18px;
+                  border-radius: 25px;
+                  color: #000;
+                  border: 1px solid transparent;
+                ">Note</a>
+          </li>
+        </ul>
+      </div>
+      <div class="tab-content">
+        <!-- Features -->
+        <div id="feature_tab" class="tab-pane active bg-primary">
+          <!-- new cursore -->
+          <section style="
+                padding: 15px;
+                border-radius: 20px;
+                margin-top: 40px !important;
+                margin-bottom: 20px;
+              ">
+            <br />
+            <br />
+            <div id="RelatedAppCarouselOne" class="row carousel slide mt64 mb32" data-bs-ride="carousel"
+              data-interval="80000">
+              <div class="carousel-inner text-center">
+                <div class="carousel-item active">
+                  <div class="col-xs-12 col-sm-12 col-md-12 mb16 mt16" style="float: left">
+                    <a href="#" target="_blank">
+                      <img src="banner.jpg" style="width: 90%" />
+                    </a>
+                  </div>
+                </div>
+                <div class="carousel-item">
+                  <div class="col-xs-12 col-sm-12 col-md-12 mb16 mt16" style="float: left">
+                    <a href="#" target="_blank">
+                      <img src="feature.jpg" style="width: 90%" />
+                    </a>
+                  </div>
+                </div>
+                <a class="carousel-control-prev" href="#RelatedAppCarouselOne" data-bs-slide="prev" style="width: 35px">
+                  <span class="">
+                    <i class="fa fa-chevron-left" style="font-size: 24px; color: black"></i>
+                  </span>
+                </a>
+                <a class="carousel-control-next" href="#RelatedAppCarouselOne" data-bs-slide="next" style="width: 35px">
+                  <span class="">
+                    <i class="fa fa-chevron-right" style="font-size: 24px; color: black"></i>
+                  </span>
+                </a>
+              </div>
+              <ol class="carousel-indicators position-relative" style="margin: 1% 0%">
+                <li data-bs-target="#RelatedAppCarouselOne" data-bs-slide-to="0" class="active" style="
+                      background-color: #000;
+                      width: 10px;
+                      border-radius: 15px;
+                      height: 10px;
+                      border-top: 0px;
+                      border-bottom: 0px;
+                    "></li>
+                <li data-bs-target="#RelatedAppCarouselOne" data-bs-slide-to="1" style="
+                      background-color: #000;
+                      width: 10px;
+                      border-radius: 15px;
+                      height: 10px;
+                      border-top: 0px;
+                      border-bottom: 0px;
+                    "></li>
+              </ol>
+            </div>
+          </section>
+
+          <!-- all feature  -->
+          <div class="recent-subject bg-light" id="categories">
+            <div class="container py-5">
+              <div class="container-fluid py-5 text-center">
+                <h1 class="display-5 fs-1 fw-bold text-color">All Features</h1>
+                <p>All the features provided by the program</p>
+              </div>
+              <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+                <div class="col">
+                  <div class="card" style="height: 100%;">
+                    <img src="assets/screenshots/1.png" class="card-img-top" alt="..." />
+                    <div class="card-body">
+                      <h5 class="card-title fw-bold text-color">
+                        Menu Advance Partner Ledger Report
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="card" style="height: 100%;">
+                    <img src="assets/screenshots/2.png" class="card-img-top" alt="..." />
+
+                    <div class="card-body">
+                      <h5 class="card-title fw-bold text-color">
+                        Wizard Options & Print
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="card" style="height: 100%;">
+                    <img src="assets/screenshots/3.png" class="card-img-top" alt="..." />
+                    <div class="card-body">
+                      <h5 class="card-title fw-bold text-color">
+                        Pdf Report for All Partners
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="card" style="height: 100%;">
+                    <img src="assets/screenshots/4.png" class="card-img-top" alt="..." />
+                    <div class="card-body">
+                      <h5 class="card-title fw-bold text-color">
+                        Pdf Report And Data
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="card" style="height: 100%;">
+                    <img src="assets/screenshots/5.png" class="card-img-top" alt="..." />
+
+                    <div class="card-body">
+                      <h5 class="card-title fw-bold text-color">
+                        Show Invoice Details
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="card" style="height: 100%;">
+                    <img src="assets/screenshots/6.png" class="card-img-top" alt="..." />
+
+                    <div class="card-body">
+                      <h5 class="card-title fw-bold text-color">
+                        Report Template With Invoice Details
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="card" style="height: 100%;">
+                    <img src="assets/screenshots/7.png" class="card-img-top" alt="..." />
+
+                    <div class="card-body">
+                      <h5 class="card-title fw-bold text-color">
+                        Filterd By Salesperson Selection
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="card" style="height: 100%;">
+                    <img src="assets/screenshots/8.png" class="card-img-top" alt="..." />
+                    <div class="card-body">
+                      <h5 class="card-title fw-bold text-color">
+                        Report With Filterd By Salesperson
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="card" style="height: 100%;">
+                    <img src="assets/screenshots/9.png" class="card-img-top" alt="..." />
+                    <div class="card-body">
+                      <h5 class="card-title fw-bold text-color">
+                        Filterd By Journals Selection
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="card" style="height: 100%;">
+                    <img src="assets/screenshots/10.png" class="card-img-top" alt="..." />
+                    <div class="card-body">
+                      <h5 class="card-title fw-bold text-color">
+                        Report With Filterd By Journals
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="card" style="height: 100%;">
+                    <img src="assets/screenshots/11.png" class="card-img-top" alt="..." />
+                    <div class="card-body">
+                      <h5 class="card-title fw-bold text-color">
+                        Show Printed By & print Date
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                    <div class="card" style="height: 100%;">
+                      <img src="assets/screenshots/12.png" class="card-img-top" alt="..." />
+                      <div class="card-body">
+                        <h5 class="card-title fw-bold text-color">
+                          Report After Showing Printed By & print Date
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card" style="height: 100%;">
+                      <img src="assets/screenshots/13.png" class="card-img-top" alt="..." />
+                      <div class="card-body">
+                        <h5 class="card-title fw-bold text-color">
+                          Moves Status
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card" style="height: 100%;">
+                      <img src="assets/screenshots/14.png" class="card-img-top" alt="..." />
+                      <div class="card-body">
+                        <h5 class="card-title fw-bold text-color">
+                          Report From All Record With All Status
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card" style="height: 100%;">
+                      <img src="assets/screenshots/15.png" class="card-img-top" alt="..." />
+                      <div class="card-body">
+                        <h5 class="card-title fw-bold text-color">
+                          Controlling For Showing Initial Balance & Ending Balance
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card" style="height: 100%;">
+                      <img src="assets/screenshots/17.png" class="card-img-top" alt="..." />
+                      <div class="card-body">
+                        <h5 class="card-title fw-bold text-color">
+                          Report Not Contain Initial Balance & Ending Balance
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card" style="height: 100%;">
+                      <img src="assets/screenshots/18.png" class="card-img-top" alt="..." />
+                      <div class="card-body">
+                        <h5 class="card-title fw-bold text-color">
+                          Button View Partner Ledger And Multi Partner
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card" style="height: 100%;">
+                      <img src="assets/screenshots/19.png" class="card-img-top" alt="..." />
+                      <div class="card-body">
+                        <h5 class="card-title fw-bold text-color">
+                          List View Partner Ledger
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card" style="height: 100%;">
+                      <img src="assets/screenshots/20.png" class="card-img-top" alt="..." />
+                      <div class="card-body">
+                        <h5 class="card-title fw-bold text-color">
+                          View Record Transaction Partner
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card" style="height: 100%;">
+                      <img src="assets/screenshots/21.png" class="card-img-top" alt="..." />
+                      <div class="card-body">
+                        <h5 class="card-title fw-bold text-color">
+                          Views Payments From Partner Ledger
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card" style="height: 100%;">
+                      <img src="assets/screenshots/22.png" class="card-img-top" alt="..." />
+                      <div class="card-body">
+                        <h5 class="card-title fw-bold text-color">
+                          Pivoit View
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card" style="height: 100%;">
+                      <img src="assets/screenshots/23.png" class="card-img-top" alt="..." />
+                      <div class="card-body">
+                        <h5 class="card-title fw-bold text-color">
+                          Graph View
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card" style="height: 100%;">
+                      <img src="assets/screenshots/24.png" class="card-img-top" alt="..." />
+                      <div class="card-body">
+                        <h5 class="card-title fw-bold text-color">
+                          Excel Reporting View
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card" style="height: 100%;">
+                      <img src="assets/screenshots/25.png" class="card-img-top" alt="..." />
+                      <div class="card-body">
+                        <h5 class="card-title fw-bold text-color">
+                          RExcel View
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card" style="height: 100%;">
+                      <img src="assets/screenshots/26.png" class="card-img-top" alt="..." />
+                      <div class="card-body">
+                        <h5 class="card-title fw-bold text-color">
+                          Reporting Currency
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card" style="height: 100%;">
+                      <img src="assets/screenshots/27.png" class="card-img-top" alt="..." />
+                      <div class="card-body">
+                        <h5 class="card-title fw-bold text-color">
+                          Reporting Currency
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="card" style="height: 100%;">
+                      <img src="assets/screenshots/28.png" class="card-img-top" alt="..." />
+                      <div class="card-body">
+                        <h5 class="card-title fw-bold text-color">
+                          Report For Currency Report
+                        </h5>
+                      </div>
+                    </div>
+                  </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Screenshots -->
+        <div id="screenshots_tab" class="container tab-pane fade" style="text-align: left !important">
+          <div class="row text-dark">
+            <!-- Screenshot Start -->
+            <!-- 1 -->
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/1.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Menu Advance Partner Ledger Report</b>
+                </h3>
+                <p class="mt-4">
+                  Menu Advance Partner Ledger Report
+                </p>
+              </div>
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 2 -->
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Wizard Options</b>
+                </h3>
+                <p class="mt-4">
+                  *Date Range Selection - Choose start and end dates for your report
+                </p>
+                <p>
+                  Partner Selection - Choose specific partners or filter by partner tags.
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/2.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 3 -->
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/3.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Pdf Report And Data</b>
+                </h3>
+                <p class="mt-4">
+                  Pdf Report for multi partner And Data.
+                  </p>
+                  <p class="mt-1">
+                    <b>Note:</b> Every Partner In New Page In Pdf Report
+                  </p>
+                  <p class="mt-1">
+                    <b>Note:</b> After Data Of Partner Ended , will Show Data of Next Partner in New Page
+                  </p>
+                </p>
+              </div>
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 4 -->
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Data For Report For Any Partner</b>
+                </h3>
+                <p class="mt-4">
+                  Data Report.
+                  This Report Contain Data For Any Partner.
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/4.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 5 -->
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/5.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Show Invoice Details</b>
+                </h3>
+                <p class="mt-4">
+                  Show Invoice Details - Display detailed invoice line information.
+                </p>
+              </div>
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 6 -->
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Report Template With Invoice Details</b>
+                </h3>
+                <p class="mt-4">
+                    After Display Show Invoice Details , Report Contain details of invoice.
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/6.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 7 -->
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/7.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Filterd By Salesperson Selection</b>
+                </h3>
+                <p class="mt-4">
+                  Salesperson Selection - Filter by specific salesperson.
+                </p>
+              </div>
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 8 -->
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Report With Filterd By Salesperson</b>
+                </h3>
+                <p class="mt-4">
+                    After Filterd By Salesperson , Report Show only The Record contain Same Sale Person.
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/8.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 9 -->
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/9.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Filterd By Journals Selection</b>
+                </h3>
+                <p class="mt-4">
+                  Journal Selection - Filter by specific journals.
+                </p>
+              </div>
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 10 -->
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Report With Filterd By Journals</b>
+                </h3>
+                <p class="mt-4">
+                  After Filterd By Journals , Report Show only The Record contain Same Journals.
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/10.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 11 -->
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/11.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Show Printed By & print Date</b>
+                </h3>
+                <p class="mt-4">
+                  Controller If Want to display In Report User Printed Report & Date Print.
+                </p>
+              </div>
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 12 -->
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+                <div>
+                  <h3>
+                    <b>Report After Showing Printed By & print Date</b>
+                  </h3>
+                  <p class="mt-4">
+                    After Showing Printed By & print Date, Report Show The User That Print Report And Date of Print.
+                  </p>
+                </div>
+              </div>
+              <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+                <img src="assets/screenshots/12.png" style="width: 100%; border-radius: 15px" />
+              </div>
+              <hr class="d-lg-none" />
+  
+              <!-- 13 -->
+              <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+                <img src="assets/screenshots/13.png" style="width: 100%; border-radius: 15px" />
+              </div>
+              <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+                <div>
+                  <h3>
+                    <b>Moves Status</b>
+                  </h3>
+                  <p class="mt-4">
+                    Controlling Get Data From All Record Or Records That Have Status Posted Only.
+                  </p>
+                </div>
+              </div>
+              <hr class="d-lg-none" />
+
+            <!-- 14 -->
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Report From All Record With All Status</b>
+                </h3>
+                <p class="mt-4">
+                  This Report Has All Data For All Status , It Showing Record With Status 'Draft'.
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/14.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 15 -->
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/15.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Controlling For Showing Initial Balance & Ending Balance</b>
+                </h3>
+                <p class="mt-4">
+                  Controlling For Showing Initial Balance & Ending Balance In Report.
+                </p>
+              </div>
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 16 -->
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Report Not Contain Initial Balance & Ending Balance</b>
+                </h3>
+                <p class="mt-4">
+                  If Dont Check Show Initial Balance & Ending Balance , Report Not Contain Initial Balance & Ending Balance,
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/16.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 17 -->
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/17.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Button View Partner Ledger And Multi Partner</b>
+                </h3>
+                <p class="mt-4">
+                  Button View Partner Ledger To Show Transaction Partner & Many2many Partner Selection
+                </p>
+              </div>
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 18 -->
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>List View Partner Ledger</b>
+                </h3>
+                <p class="mt-4">
+                  List View Partner Ledger & Many2many Partner Selection
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/18.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 19 -->
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/19.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>View Record Transaction Partner</b>
+                </h3>
+                <p class="mt-4">
+                  When Click To View Can Show Transaction For Partner From (Journal Entry Or Inoives Or Payments)
+                </p>
+              </div>
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 20 -->
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Views Payments From Partner Ledger</b>
+                </h3>
+                <p class="mt-4">
+                  Views Payments From Partner Ledger
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/20.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 21 -->
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/21.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Pivoit View</b>
+                </h3>
+                <p class="mt-4">
+                  Pivoit View For Advance Partner Ledger Report
+                </p>
+              </div>
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 22 -->
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Graph View</b>
+                </h3>
+                <p class="mt-4">
+                  Graph View For Advance Partner Ledger Report
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/22.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 23 -->
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/23.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Excel Reporting View</b>
+                </h3>
+                <p class="mt-4">
+                  Excel Reporting View For Advance Partner Ledger Report
+                </p>
+              </div>
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 24 -->
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Excel View</b>
+                </h3>
+                <p class="mt-4">
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/24.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 25 -->
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/25.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Reporting Currency</b>
+                </h3>
+                <p class="mt-4">
+                  <P>Note</P>Choose Currency Of Report , If You Choose Currency Of Report , The Report Will Show All Record In This Currency.
+                  <p>Note</p>All Amount Will Converted To 'USD' Currency.
+                </p>
+              </div>
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 26 -->
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Reporting Currency</b>
+                </h3>
+                <p class="mt-4">
+                  Reporting Currency - All Amount Converted to 'Report Currency' That You Choose.
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/26.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 27 -->
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/27.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Report For Currency Report</b>
+                </h3>
+                <p class="mt-4">
+                  <P>Note</P>Choose Currency Of Report , If You Choose Currency Of Report , The Report Will Show All Record In This Currency.
+                  <p>Note</p>All Amount Will Converted To 'EUR' Currency.
+                </p>
+              </div>
+            </div>
+            <hr class="d-lg-none" />
+
+            <!-- 28 -->
+            <div class="col-lg-3 col-sm-12 mt-5 mb-5" style="display: flex; align-items: center">
+              <div>
+                <h3>
+                  <b>Reporting Currency</b>
+                </h3>
+                <p class="mt-4">
+                  Reporting Currency - All Amount Converted to 'Report Currency' That You Choose.
+                </p>
+              </div>
+            </div>
+            <div class="col-lg-9 col-sm-12 mt-5 mb-5">
+              <img src="assets/screenshots/28.png" style="width: 100%; border-radius: 15px" />
+            </div>
+            <hr class="d-lg-none" />
+
+          </div>
+        </div>
+
+        <!-- Release Note -->
+        <div id="release_note_tab" class="container tab-pane fade">
+          <div class="" style="margin-top: 30px; border-radius: 20px">
+            <div class="col-12 px-0 pb-lg-5 position-relative overflow-hidden" style="border-radius: 20px">
+              <div class="row position-relative pt-lg-5 px-lg-5 pb-lg-3 p-md-4 p-3 mx-auto d-flex align-items-center"
+                style="
+                    color: #333333;
+                    font-weight: 500;
+                    font-size: 16px;
+                    width: 95%;
+                  ">
+                <div class="container" style="max-width: 1320px">
+                  <div class="row" style="display: flex; flex-wrap: wrap; padding: 35px 35px">
+                    <!-- Version Start -->
+                    <div class="row mb-3 pt-3 pb-3 text-center">
+                      <div class="col-md-6 themed-grid-col">
+                        <h3 class="mbr-section-subtitle mbr-fonts-style display-5" style="
+                              line-height: 139%;
+                              font-size: 1.5rem;
+                              word-break: break-word;
+                              word-wrap: break-word;
+                              font-weight: 400;
+                            ">
+                          <strong style="font-weight: bold; line-height: 139%">
+                            Version :
+                            <code style="font-size: 1.3rem; color: red">
+                                18.0.0.0
+                              </code>
+                          </strong>
+                          <br />
+                          <span class="font-italic" style="font-style: italic">2 February 2025</span>
+                        </h3>
+                      </div>
+                      <div class="col-md-6 themed-grid-col">
+                        <p style="
+                              font-style: normal;
+                              font-weight: normal;
+                              font-size: 18px;
+                              line-height: 162.5%;
+                              text-align: center;
+                              color: #000000;
+                            ">
+                          Initial release of the app.
+                        </p>
+                      </div>
+                      <hr style="
+                            height: 0.3rem;
+                            width: 90%;
+                            color: black;
+                            margin-left: 75px;
+                          " />
+                    </div>
+                    <!-- Version End -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- our service  -->
+    <div class="recent-subject bg-light mb-5" id="categories">
+      <div class="container py-5">
+        <div class="container-fluid py-5 text-center">
+          <h1 class="display-5 fs-1 fw-bold text-color">Our Services</h1>
+        </div>
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
+          <div class="col">
+            <div class="card">
+              <div class="d-flex justify-content-center align-items-center rounded-circle ms-3 mt-3"
+                style="background-color: #fa5a7d; height: 56px; width: 56px">
+                <img src="./assets/icons/gear.svg" class="img-responsive" height="28px" width="28px" />
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">Odoo Customization</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="d-flex justify-content-center align-items-center rounded-circle ms-3 mt-3" style="
+                    background-color: #ff947a;
+                    border-radius: 50%;
+                    height: 56px;
+                    width: 56px;
+                  ">
+                <img src="./assets/icons/wrench-icon.svg" class="img-responsive" height="28px" width="28px" />
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">Odoo Implementation</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="d-flex justify-content-center align-items-center rounded-circle ms-3 mt-3" style="
+                    background-color: #3cd856;
+                    border-radius: 50%;
+                    height: 56px;
+                    width: 56px;
+                  ">
+                <img src="./assets/icons/life-ring-icon.svg" class="img-responsive" height="28px" width="28px" />
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">Odoo Support</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="d-flex justify-content-center align-items-center rounded-circle ms-3 mt-3" style="
+                    background-color: #bf83ff;
+                    border-radius: 50%;
+                    height: 56px;
+                    width: 56px;
+                  ">
+                <img src="./assets/icons/arrows-repeat.svg" class="img-responsive" height="28px" width="28px" />
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">Odoo Migration</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="d-flex justify-content-center align-items-center rounded-circle ms-3 mt-3" style="
+                    background-color: #01649c;
+                    border-radius: 50%;
+                    height: 56px;
+                    width: 56px;
+                  ">
+                <img src="./assets/icons/puzzle-piece-icon.svg" class="img-responsive" height="28px" width="28px" />
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">Odoo Integration</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="d-flex justify-content-center align-items-center rounded-circle ms-3 mt-3" style="
+                    background-color: #69cc70;
+                    border-radius: 50%;
+                    height: 56px;
+                    width: 56px;
+                  ">
+                <img src="./assets/icons/odoo-consultancy.svg" class="img-responsive" height="28px" width="28px" />
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">Hire Odoo</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="d-flex justify-content-center align-items-center rounded-circle ms-3 mt-3" style="
+                    background-color: #2e4556;
+                    border-radius: 50%;
+                    height: 56px;
+                    width: 56px;
+                  ">
+                <img src="./assets/icons/odoo-licencing.svg" class="img-responsive" height="28px" width="28px" />
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">Odoo Consultancy</h5>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <div class="d-flex justify-content-center align-items-center rounded-circle ms-3 mt-3" style="
+                    background-color: #fcd12c;
+                    border-radius: 50%;
+                    height: 56px;
+                    width: 56px;
+                  ">
+                <img src="./assets/icons/hire-odoo.svg" class="img-responsive" height="28px" width="28px" />
+              </div>
+              <div class="card-body">
+                <h5 class="card-title">Odoo Consultancy</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+</body>
+
+</html>

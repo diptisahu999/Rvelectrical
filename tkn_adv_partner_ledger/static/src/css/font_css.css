@@ -1,0 +1,10 @@
+@font-face {
+    font-family: 'Calibri(Bold)';
+    src: url('/product_stock_card/static/fonts/NotoKufiArabic-VariableFont_wght.ttf') format('truetype');
+}
+.page{
+    font-family: "Calibri(Bold)" !important;
+}
+.header{
+    font-family: "Calibri(Bold)" !important;
+}

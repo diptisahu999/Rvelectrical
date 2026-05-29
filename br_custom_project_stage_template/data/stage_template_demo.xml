@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sample Stage Template: Software Development -->
+        <record id="demo_template_software_dev" model="project.stage.template">
+            <field name="name">Software Development</field>
+            <field name="description">Standard software development lifecycle stages</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_stage_backlog" model="project.stage.template.stage">
+            <field name="name">Backlog</field>
+            <field name="description">Tasks waiting to be prioritized</field>
+            <field name="template_id" ref="demo_template_software_dev"/>
+            <field name="sequence">10</field>
+            <field name="fold">False</field>
+        </record>
+
+        <record id="demo_stage_analysis" model="project.stage.template.stage">
+            <field name="name">Analysis</field>
+            <field name="description">Requirements analysis and design</field>
+            <field name="template_id" ref="demo_template_software_dev"/>
+            <field name="sequence">20</field>
+            <field name="fold">False</field>
+        </record>
+
+        <record id="demo_stage_development" model="project.stage.template.stage">
+            <field name="name">Development</field>
+            <field name="description">Active development phase</field>
+            <field name="template_id" ref="demo_template_software_dev"/>
+            <field name="sequence">30</field>
+            <field name="fold">False</field>
+        </record>
+
+        <record id="demo_stage_testing" model="project.stage.template.stage">
+            <field name="name">Testing</field>
+            <field name="description">Quality assurance and testing</field>
+            <field name="template_id" ref="demo_template_software_dev"/>
+            <field name="sequence">40</field>
+            <field name="fold">False</field>
+        </record>
+
+        <record id="demo_stage_done" model="project.stage.template.stage">
+            <field name="name">Done</field>
+            <field name="description">Completed tasks</field>
+            <field name="template_id" ref="demo_template_software_dev"/>
+            <field name="sequence">50</field>
+            <field name="fold">True</field>
+        </record>
+
+        <!-- Sample Stage Template: Marketing Campaign -->
+        <record id="demo_template_marketing" model="project.stage.template">
+            <field name="name">Marketing Campaign</field>
+            <field name="description">Marketing campaign management stages</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_marketing_planning" model="project.stage.template.stage">
+            <field name="name">Planning</field>
+            <field name="description">Campaign planning and strategy</field>
+            <field name="template_id" ref="demo_template_marketing"/>
+            <field name="sequence">10</field>
+            <field name="fold">False</field>
+        </record>
+
+        <record id="demo_marketing_creation" model="project.stage.template.stage">
+            <field name="name">Content Creation</field>
+            <field name="description">Creating marketing materials</field>
+            <field name="template_id" ref="demo_template_marketing"/>
+            <field name="sequence">20</field>
+            <field name="fold">False</field>
+        </record>
+
+        <record id="demo_marketing_review" model="project.stage.template.stage">
+            <field name="name">Review</field>
+            <field name="description">Content review and approval</field>
+            <field name="template_id" ref="demo_template_marketing"/>
+            <field name="sequence">30</field>
+            <field name="fold">False</field>
+        </record>
+
+        <record id="demo_marketing_launch" model="project.stage.template.stage">
+            <field name="name">Launch</field>
+            <field name="description">Campaign launch and execution</field>
+            <field name="template_id" ref="demo_template_marketing"/>
+            <field name="sequence">40</field>
+            <field name="fold">False</field>
+        </record>
+
+        <record id="demo_marketing_completed" model="project.stage.template.stage">
+            <field name="name">Completed</field>
+            <field name="description">Campaign completed</field>
+            <field name="template_id" ref="demo_template_marketing"/>
+            <field name="sequence">50</field>
+            <field name="fold">True</field>
+        </record>
+
+        <!-- Sample Stage Template: Construction Project -->
+        <record id="demo_template_construction" model="project.stage.template">
+            <field name="name">Construction Project</field>
+            <field name="description">Construction project management stages</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="demo_construction_design" model="project.stage.template.stage">
+            <field name="name">Design</field>
+            <field name="description">Architectural design and planning</field>
+            <field name="template_id" ref="demo_template_construction"/>
+            <field name="sequence">10</field>
+            <field name="fold">False</field>
+        </record>
+
+        <record id="demo_construction_permits" model="project.stage.template.stage">
+            <field name="name">Permits</field>
+            <field name="description">Obtaining necessary permits</field>
+            <field name="template_id" ref="demo_template_construction"/>
+            <field name="sequence">20</field>
+            <field name="fold">False</field>
+        </record>
+
+        <record id="demo_construction_foundation" model="project.stage.template.stage">
+            <field name="name">Foundation</field>
+            <field name="description">Foundation work</field>
+            <field name="template_id" ref="demo_template_construction"/>
+            <field name="sequence">30</field>
+            <field name="fold">False</field>
+        </record>
+
+        <record id="demo_construction_structure" model="project.stage.template.stage">
+            <field name="name">Structure</field>
+            <field name="description">Main structure construction</field>
+            <field name="template_id" ref="demo_template_construction"/>
+            <field name="sequence">40</field>
+            <field name="fold">False</field>
+        </record>
+
+        <record id="demo_construction_finishing" model="project.stage.template.stage">
+            <field name="name">Finishing</field>
+            <field name="description">Interior and finishing work</field>
+            <field name="template_id" ref="demo_template_construction"/>
+            <field name="sequence">50</field>
+            <field name="fold">False</field>
+        </record>
+
+        <record id="demo_construction_completed" model="project.stage.template.stage">
+            <field name="name">Completed</field>
+            <field name="description">Project completed</field>
+            <field name="template_id" ref="demo_template_construction"/>
+            <field name="sequence">60</field>
+            <field name="fold">True</field>
+        </record>
+    </data>
+</odoo>

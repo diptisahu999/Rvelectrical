@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_account_payment_restricted_sales,account.payment.restricted.sales,account.model_account_payment,rv_app_access.group_restricted_sales_access,1,0,0,0
+access_account_move_restricted_sales,account.move.restricted.sales,account.model_account_move,rv_app_access.group_restricted_sales_access,1,0,0,0
+access_account_move_line_restricted_sales,account.move.line.restricted.sales,account.model_account_move_line,rv_app_access.group_restricted_sales_access,1,0,0,0
+access_sale_order_delete_sales,sale.order.delete.sales,sale.model_sale_order,rv_app_access.group_sales_crm_delete,0,0,0,1
+access_crm_lead_delete_sales,crm.lead.delete.sales,crm.model_crm_lead,rv_app_access.group_sales_crm_delete,0,0,0,1
+access_purchase_order_delete_purchase,purchase.order.delete.purchase,purchase.model_purchase_order,rv_app_access.group_purchase_delete,0,0,0,1

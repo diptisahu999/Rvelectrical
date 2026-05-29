@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="sale_order_template_view_form_inherit_product_configurator" model="ir.ui.view">
+        <field name="name">sale.order.template.form.inherit.product.configurator</field>
+        <field name="model">sale.order.template</field>
+        <field name="inherit_id" ref="sale_management.sale_order_template_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='sale_order_template_line_ids']/list/field[@name='product_id']" position="attributes">
+                <attribute name="string">Product</attribute>
+                <attribute name="optional">show</attribute>
+                <attribute name="force_save">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='sale_order_template_line_ids']/list/field[@name='product_id']" position="after">
+                <widget name="sale_order_template_config_button" />
+                <field name="configuration_template_id" column_invisible="1" />
+            </xpath>
+            <xpath expr="//field[@name='sale_order_template_line_ids']/list/field[@name='product_id']" position="after">
+                <field name="product_config_mode" column_invisible="1"/>
+                <field name="product_custom_attribute_value_ids" column_invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

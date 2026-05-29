@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- <record id="l10n_in_edi_ewaybill.action_report_ewaybill" model="ir.actions.report">
+        <field name="print_report_name">('%s %s %s %s' % (object.document_date.strftime('%d-%m-%Y') if object.document_date else '', 'Ewaybill', object.document_number, object.partner_id.name or ''))</field>
+    </record> -->
+</odoo>

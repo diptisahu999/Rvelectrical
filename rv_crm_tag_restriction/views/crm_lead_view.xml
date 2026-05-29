@@ -1,0 +1,36 @@
+<odoo>
+    
+    <record id="crm_lead_form_disable_tag_create" model="ir.ui.view">
+        <field name="name">crm.lead.form.disable.tag.create</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Disable create & edit for Tags -->
+            <xpath expr="//field[@name='tag_ids']" position="attributes">
+                <attribute name="options">
+                    {'no_create': True, 'no_create_edit': True}
+                </attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- 2️⃣ Allow create/edit for users WITH permission -->
+    <record id="crm_lead_form_enable_tag_create" model="ir.ui.view">
+        <field name="name">crm.lead.form.enable.tag.create</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='tag_ids']" position="attributes"
+                   groups="rv_crm_tag_restriction.group_crm_tag_creator">
+                <attribute name="options">
+                    {}
+                </attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

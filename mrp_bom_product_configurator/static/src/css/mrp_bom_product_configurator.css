@@ -1,0 +1,13 @@
+.o_mrp_bom_product_configurator_list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.o_mrp_bom_product_configurator_product {
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 15px;
+}
+
+.o_mrp_bom_product_configurator_attribute_line {
+    font-size: 14px;
+}

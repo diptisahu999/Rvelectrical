@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_picking_form_inherit_rv_inventory" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit.rv.inventory</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                 <!-- Button to Create Purchase Order -->
+                 <button name="action_open_purchase_order" 
+                         string="Purchase" 
+                         type="object" 
+                         class="btn-primary" 
+                         invisible="picking_type_code != 'outgoing' or state in ('draft', 'done', 'cancel', 'assigned')"/>
+            </xpath>
+            <xpath expr="//field[@name='sale_id']" position="after">
+                <field name="rv_purchase_order_id"/>
+            </xpath>
+            <!-- <xpath expr="//field[@name='origin']" position="after">
+                <field name="invoice_number"/>
+            </xpath> -->
+        </field>
+    </record>
+
+    <record id="view_picking_internal_search_inherit_rv_inventory" model="ir.ui.view">
+        <field name="name">stock.picking.search.inherit.rv.inventory</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="rv_purchase_order_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

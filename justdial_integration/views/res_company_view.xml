@@ -1,0 +1,31 @@
+<odoo>
+    <record id="view_company_form_justdial" model="ir.ui.view">
+        <field name="name">res.company.form.justdial</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Add new page -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Justdial Configuration">
+                    <group>
+                        <field name="justdial_salesperson_id"/>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+    <record id="crm_lead_search_inherit_justdial" model="ir.ui.view">
+        <field name="name">crm.lead.search.justdial</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.view_crm_case_leads_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search/filter" position="after">
+                <filter string="Is JustDial"
+                        name="is_justdial"
+                        domain="[('is_justdial', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

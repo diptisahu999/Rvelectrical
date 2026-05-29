@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_move_form" model="ir.ui.view">
+        <field name="name">view.move.form.inherit.invoice_report</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_preview_invoice_list" string="Preview List" type="object" class="btn-secondary" invisible="state != 'draft'"/>
+            </xpath>
+            <field name="delivery_date" position="after">
+                <field name="terms_condition_id" />
+            </field>
+
+<!--             <xpath expr="//field[@name='tax_totals']" position="after">-->
+<!--                <div class="d-flex flex-column align-items-end" style="width: 100%;">-->
+<!--                    <group>-->
+<!--                        <field name="global_discount" />-->
+<!--                        <field name="price_after_discount" readonly="1"/>-->
+<!--&lt;!&ndash;                        <field name="amount_residual_custom" readonly="1" string="Amount Due (After Discount)"/>&ndash;&gt;-->
+<!--                    </group>-->
+<!--                </div>-->
+<!--            </xpath>-->
+
+            <xpath expr="//page[@name='other_info']/group" position="inside">
+                <group string="Additional Information">
+                    <!-- E-waybill number from multiple sources (EDI/manual entry) -->
+                    <field name="ewaybillnumber" placeholder="Auto-filled from e-waybill or enter manually" />
+                    <!-- Use standard Odoo 18 field for vehicle number -->
+                    <field name="l10n_in_vehicle_no" />
+                    <field name="ref" string="PO Number" />
+                    <field name="challan_no" />
+                    <field name="dispatch_number" />
+                </group>
+                <group string="E-Invoice Information (GST)" invisible="move_type not in ('out_invoice', 'out_refund')">
+                    <!-- IRN and acknowledgment fields -->
+                    <field name="l10n_in_irn" placeholder="Auto-generated IRN or enter manually" />
+                    <field name="l10n_in_ack_number" placeholder="Acknowledgment number from e-invoice" />
+                    <field name="l10n_in_ack_date" />
+                    <field name="l10n_in_qr_code_str" widget="text" placeholder="QR code data for e-invoice" />
+                    <button name="action_populate_einvoice_fields_from_edi" 
+                            string="Populate from E-Invoice EDI" 
+                            type="object" 
+                            class="btn-secondary"
+                            help="Manually fetch IRN, Ack Number, and QR Code from e-invoice EDI response"/>
+                </group>
+            </xpath>
+            <!-- Reposition Amount Due as 'Remaining Amount' in the totals area -->
+            <xpath expr="//field[@name='amount_residual']" position="replace">
+                <!-- Remove from original position (or hide) -->
+                <field name="amount_residual" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='tax_totals']" position="after">
+                <div class="d-flex justify-content-end oe_subtotal_footer_separator">
+                    <span class="me-2" style="font-weight: bold;">Remaining Amount: </span>
+                    <field name="amount_residual" nolabel="1" widget="monetary" options="{'currency_field': 'currency_id'}" decoration-bf="1"/>
+                </div>
+            </xpath>
+<!--            <xpath expr="//field[@name='amount_residual']" position="after">-->
+<!--                <field name="amount_residual_custom" readonly="1" string="Amount Due"/>-->
+<!--            </xpath>-->
+        </field>
+    </record>
+    <record id="view_out_invoice_tree_inherit" model="ir.ui.view">
+        <field name="name">account.move.out.invoice.tree.inherit.invoice_report</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_out_invoice_tree"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="invoice_partner_display_name" string="Customer" optional="show"/>
+                <field name="invoice_date" string="Invoice Date" optional="show"/>
+            </field>
+            <xpath expr="//field[@name='amount_residual_signed']" position="attributes">
+                <attribute name="optional">show</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Force Delete Sales Orders -->
+    <record id="action_force_delete_sale_order" model="ir.actions.server">
+        <field name="name">Force Delete Sale Order</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="groups_id" eval="[(6, 0, [ref('rv_app_access.group_sales_crm_delete')])]"/>
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    # SQL Delete to bypass checks
+    # Delete related records
+    
+    # Sales Order Lines
+    env.cr.execute("DELETE FROM sale_order_line WHERE order_id IN %s", (tuple(records.ids),))
+    
+    # Chatter (Mail Messages, Activities, Followers)
+    env.cr.execute("DELETE FROM mail_message WHERE res_id IN %s AND model = 'sale.order'", (tuple(records.ids),))
+    env.cr.execute("DELETE FROM mail_activity WHERE res_id IN %s AND res_model = 'sale.order'", (tuple(records.ids),))
+    env.cr.execute("DELETE FROM mail_followers WHERE res_id IN %s AND res_model = 'sale.order'", (tuple(records.ids),))
+    
+    # Finally delete sales orders
+    env.cr.execute("DELETE FROM sale_order WHERE id IN %s", (tuple(records.ids),))
+        </field>
+    </record>
+
+    <!-- Force Delete Purchase Orders -->
+    <record id="action_force_delete_purchase_order" model="ir.actions.server">
+        <field name="name">Force Delete Purchase Order</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="binding_model_id" ref="purchase.model_purchase_order"/>
+        <field name="groups_id" eval="[(6, 0, [ref('rv_app_access.group_purchase_delete')])]"/>
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    # Purchase Order Lines
+    env.cr.execute("DELETE FROM purchase_order_line WHERE order_id IN %s", (tuple(records.ids),))
+    
+    # Chatter
+    env.cr.execute("DELETE FROM mail_message WHERE res_id IN %s AND model = 'purchase.order'", (tuple(records.ids),))
+    env.cr.execute("DELETE FROM mail_activity WHERE res_id IN %s AND res_model = 'purchase.order'", (tuple(records.ids),))
+    env.cr.execute("DELETE FROM mail_followers WHERE res_id IN %s AND res_model = 'purchase.order'", (tuple(records.ids),))
+    
+    # Finally delete purchase orders
+    env.cr.execute("DELETE FROM purchase_order WHERE id IN %s", (tuple(records.ids),))
+        </field>
+    </record>
+
+    <!-- Force Delete CRM Leads -->
+    <record id="action_force_delete_crm_lead" model="ir.actions.server">
+        <field name="name">Force Delete CRM Lead</field>
+        <field name="model_id" ref="crm.model_crm_lead"/>
+        <field name="binding_model_id" ref="crm.model_crm_lead"/>
+        <field name="groups_id" eval="[(6, 0, [ref('rv_app_access.group_sales_crm_delete')])]"/>
+        <field name="state">code</field>
+        <field name="code">
+if records:
+    # Chatter
+    env.cr.execute("DELETE FROM mail_message WHERE res_id IN %s AND model = 'crm.lead'", (tuple(records.ids),))
+    env.cr.execute("DELETE FROM mail_activity WHERE res_id IN %s AND res_model = 'crm.lead'", (tuple(records.ids),))
+    env.cr.execute("DELETE FROM mail_followers WHERE res_id IN %s AND res_model = 'crm.lead'", (tuple(records.ids),))
+    
+    # Finally delete leads
+    env.cr.execute("DELETE FROM crm_lead WHERE id IN %s", (tuple(records.ids),))
+        </field>
+    </record>
+</odoo>

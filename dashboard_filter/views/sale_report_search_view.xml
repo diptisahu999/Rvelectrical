@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="view_sale_report_search_today" model="ir.ui.view">
+    <field name="name">sale.report.search.today.filter</field>
+    <field name="model">sale.report</field>
+    <field name="inherit_id" ref="sale.view_order_product_search"/>
+    <field name="arch" type="xml">
+      <xpath expr="//search" position="inside">
+        <separator/>
+        <filter string="Today" name="filter_sale_today"
+                domain="[('date','&gt;=', context_today()),
+                         ('date','&lt;', (context_today() + relativedelta(days=1)))]"/>
+      </xpath>
+    </field>
+  </record>
+</odoo>
