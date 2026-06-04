@@ -1,4 +1,5 @@
-from odoo import fields, models, api
+from odoo import fields, models, api, _
+from odoo.exceptions import UserError
 
 class PurchaseOrder(models.Model):
     _inherit = 'purchase.order'
@@ -30,3 +31,17 @@ class PurchaseOrder(models.Model):
             action['context'] = {'default_rv_purchase_order_id': self.id} # Optional: ease creation
         
         return action
+
+    def write(self, vals):
+        if 'partner_id' in vals:
+            for order in self:
+                if order.state in ['purchase', 'done'] and not self.env.user.has_group('rv_app_access.group_change_confirmed_po_vendor'):
+                    raise UserError(_("You do not have permission to change the Vendor of a confirmed or locked Purchase Order. Please contact your administrator."))
+        res = super(PurchaseOrder, self).write(vals)
+        if 'partner_id' in vals:
+            for order in self:
+                if order.picking_ids:
+                    order.picking_ids.write({'partner_id': vals['partner_id']})
+        return res
+
+

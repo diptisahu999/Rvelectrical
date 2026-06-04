@@ -13,6 +13,7 @@
     'data': [
         'views/stock_picking_views.xml',
         'views/ewaybill_views.xml',
+        'views/purchase_order_views.xml',
         # 'reports/report_delivery_document.xml',
         'reports/report_ewaybill.xml',
     ],
