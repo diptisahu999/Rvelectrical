@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_account_payment_form_inherit_yes_bank" model="ir.ui.view">
+        <field name="name">account.payment.form.inherit.yes.bank</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_post']" position="before">
+                <button name="action_send_to_yes_bank" 
+                        string="Send to YES Bank" 
+                        type="object" 
+                        class="oe_highlight" 
+                        invisible="payment_type != 'outgoing' or state != 'posted' or yes_bank_status in ('in_process', 'completed')"/>
+                <button name="action_check_yes_bank_status" 
+                        string="Check YES Bank Status" 
+                        type="object" 
+                        class="btn-secondary" 
+                        invisible="yes_bank_status not in ('in_process', 'failed')"/>
+            </xpath>
+            <xpath expr="//field[@name='date']" position="after">
+                <field name="yes_bank_payment_type" invisible="payment_type != 'outgoing'"/>
+                <field name="yes_bank_status" invisible="payment_type != 'outgoing'"/>
+                <field name="yes_bank_ref_id" invisible="payment_type != 'outgoing'"/>
+                <field name="yes_bank_api_ref" invisible="payment_type != 'outgoing'"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

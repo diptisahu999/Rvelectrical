@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.rv_yes_bank_integration</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@id='invoicing_settings']" position="after">
+                 <block title="YES Bank Integration" id="yes_bank_integration">
+                    <setting id="yes_bank_environment_setting" title="Environment" string="Environment" help="Select UAT or Production">
+                        <field name="yes_bank_environment"/>
+                    </setting>
+                    <setting id="yes_bank_client_id_setting" string="Client ID / API Key" help="Client ID / API Key from developer portal">
+                        <field name="yes_bank_client_id"/>
+                    </setting>
+                    <setting id="yes_bank_client_secret_setting" string="Client Secret / API Secret" help="Client Secret / API Secret from developer portal">
+                        <field name="yes_bank_client_secret" password="True"/>
+                    </setting>
+                    <setting id="yes_bank_ftx_id_setting" string="FTX ID" help="FTX ID / Username">
+                        <field name="yes_bank_ftx_id"/>
+                    </setting>
+                    <setting id="yes_bank_basic_auth_password_setting" string="Basic Auth Password" help="Basic Auth Password">
+                        <field name="yes_bank_basic_auth_password" password="True"/>
+                    </setting>
+                    <setting id="yes_bank_account_number_setting" string="Account Number" help="YES Bank Account Number">
+                        <field name="yes_bank_account_number"/>
+                    </setting>
+                    <setting id="yes_bank_cust_id_setting" string="Customer ID" help="Customer ID">
+                        <field name="yes_bank_cust_id"/>
+                    </setting>
+                    <setting id="yes_bank_cert_path_setting" string="SSL Certificate Path (.crt)" help="Absolute path to .crt client certificate file on server">
+                        <field name="yes_bank_cert_path"/>
+                    </setting>
+                    <setting id="yes_bank_key_path_setting" string="SSL Key Path (.key)" help="Absolute path to .key client key file on server">
+                        <field name="yes_bank_key_path"/>
+                    </setting>
+                 </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

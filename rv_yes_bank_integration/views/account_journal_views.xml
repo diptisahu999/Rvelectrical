@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_account_journal_form_inherit_yes_bank" model="ir.ui.view">
+        <field name="name">account.journal.form.inherit.yes.bank</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="YES Bank Integration" name="yes_bank_integration" invisible="type != 'bank'">
+                    <group>
+                        <group string="Balance Details">
+                            <field name="yes_bank_balance" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            <field name="yes_bank_balance_date"/>
+                        </group>
+                        <group string="Actions">
+                            <div>
+                                <button name="action_fetch_yes_bank_balance" 
+                                        string="Fetch Live Balance" 
+                                        type="object" 
+                                        class="btn-primary" 
+                                        icon="fa-refresh"/>
+                            </div>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
