@@ -7,8 +7,6 @@
         <field name="code">model.cron_fetch_yes_bank_balance()</field>
         <field name="interval_number">15</field>
         <field name="interval_type">minutes</field>
-        <field name="numbercall">-1</field>
-        <field name="doall" eval="False"/>
         <field name="active" eval="True"/>
     </record>
 </odoo>
