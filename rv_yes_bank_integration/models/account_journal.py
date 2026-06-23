@@ -128,3 +128,23 @@ class AccountJournal(models.Model):
                 'processed_date': fields.Datetime.now()
             })
             raise UserError(_("Failed to connect to YES Bank server: %s") % str(e))
+
+    @api.model
+    def cron_fetch_yes_bank_balance(self):
+        # Search for all bank journals
+        journals = self.search([('type', '=', 'bank')])
+        account_number = self.env['ir.config_parameter'].sudo().get_param('rv_yes_bank_integration.yes_bank_account_number')
+        
+        for journal in journals:
+            # Match the configured account number or look for "yes" in name/code
+            is_yes_bank = False
+            if account_number and (journal.bank_account_id.acc_number == account_number or journal.code == 'YES'):
+                is_yes_bank = True
+            elif 'yes' in (journal.name or '').lower():
+                is_yes_bank = True
+                
+            if is_yes_bank:
+                try:
+                    journal.action_fetch_yes_bank_balance()
+                except Exception as e:
+                    _logger.error("Auto balance fetch failed for journal %s: %s", journal.name, str(e))

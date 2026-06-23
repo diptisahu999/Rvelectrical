@@ -1,3 +1,4 @@
+# pyrefly: ignore [missing-import]
 from odoo import models, fields, api
 from datetime import datetime, date, timedelta
 from dateutil.relativedelta import relativedelta
@@ -73,6 +74,7 @@ class DailyReport(models.TransientModel):
                 'advance_received': self._get_advance_received(filters),
                 'yes_bank_incoming': self._get_yes_bank_incoming(filters),
                 'yes_bank_outgoing': self._get_yes_bank_outgoing(filters),
+                'yes_bank_balance': self._get_yes_bank_balance(filters),
             },
             'team_performance': self._get_team_performance(filters),
             'recent_orders': self._get_recent_orders(filters),
@@ -209,7 +211,7 @@ class DailyReport(models.TransientModel):
         return sum(payments.mapped('amount'))
 
     def _get_yes_bank_incoming(self, filters):
-        dom = [('payment_type', '=', 'incoming')] + self._get_filter_domain('yes.bank.log', filters)
+        dom = [('payment_type', '=', 'incoming'), ('name', '!=', 'Balance Inquiry Request')] + self._get_filter_domain('yes.bank.log', filters)
         records = self.env['yes.bank.log'].search(dom)
         return sum(records.mapped('amount'))
 
@@ -217,6 +219,12 @@ class DailyReport(models.TransientModel):
         dom = [('payment_type', '=', 'outgoing')] + self._get_filter_domain('yes.bank.log', filters)
         records = self.env['yes.bank.log'].search(dom)
         return abs(sum(records.mapped('amount')))
+
+    def _get_yes_bank_balance(self, filters):
+        journal = self.env['account.journal'].search([('type', '=', 'bank'), ('yes_bank_balance', '!=', False)], limit=1)
+        if not journal:
+            journal = self.env['account.journal'].search([('type', '=', 'bank')], limit=1)
+        return journal.yes_bank_balance if journal else 0.0
 
     def _get_opportunity_dashboard_data(self, filters):
         dom_lead = [('type', '=', 'lead'), ('active', '=', True)] + self._get_filter_domain('crm.lead', filters)

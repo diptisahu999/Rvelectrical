@@ -231,6 +231,7 @@ export class SalesDashboard extends Component {
             { name: 'advance_received', label: 'Advance Received', value: this.formatCurrency(kpis.advance_received), icon: 'fa-money', color: '#9b59b6' },
             { name: 'yes_bank_incoming', label: 'YES Bank Incoming', value: this.formatCurrency(kpis.yes_bank_incoming), icon: 'fa-bank', color: '#1abc9c' },
             { name: 'yes_bank_outgoing', label: 'YES Bank Outgoing', value: this.formatCurrency(kpis.yes_bank_outgoing), icon: 'fa-bank', color: '#e74c3c' },
+            { name: 'yes_bank_balance', label: 'YES Bank Balance', value: this.formatCurrency(kpis.yes_bank_balance), icon: 'fa-bank', color: '#2e86de' },
             { name: 'pipeline', label: 'Pipeline Value', value: this.formatCurrency(kpis.pipeline_value), icon: 'fa-line-chart', color: '#2e86de' },
             { name: 'conversion', label: 'Lead Conversion', value: kpis.lead_conversion + '%', icon: 'fa-bullseye', color: '#00b894' },
             { name: 'orders', label: 'Confirmed Orders', value: kpis.confirmed_orders, icon: 'fa-check-square-o', color: '#f39c12' },
@@ -435,6 +436,9 @@ export class SalesDashboard extends Component {
                 break;
             case 'yes_bank_outgoing':
                 action = { name: "YES Bank Outgoing", type: "ir.actions.act_window", res_model: "yes.bank.log", view_mode: "list,form", views: [[false, "list"], [false, "form"]], domain: [['payment_type', '=', 'outgoing']] };
+                break;
+            case 'yes_bank_balance':
+                action = { name: "YES Bank Journal", type: "ir.actions.act_window", res_model: "account.journal", view_mode: "list,form", views: [[false, "list"], [false, "form"]], domain: [['type', '=', 'bank']] };
                 break;
         }
 

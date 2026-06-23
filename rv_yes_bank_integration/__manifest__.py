@@ -8,6 +8,7 @@
     'depends': ['base', 'account', 'base_accounting_kit'],
     'data': [
         'security/ir.model.access.csv',
+        'data/ir_cron.xml',
         'views/yes_bank_log_views.xml',
         'views/res_config_settings_views.xml',
         'views/account_journal_views.xml',
