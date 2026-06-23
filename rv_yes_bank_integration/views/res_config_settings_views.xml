@@ -28,11 +28,11 @@
                     <setting id="yes_bank_cust_id_setting" string="Customer ID" help="Customer ID">
                         <field name="yes_bank_cust_id"/>
                     </setting>
-                    <setting id="yes_bank_cert_path_setting" string="SSL Certificate Path (.crt)" help="Absolute path to .crt client certificate file on server">
-                        <field name="yes_bank_cert_path"/>
+                    <setting id="yes_bank_cert_path_setting" string="SSL Certificate Path (.crt)" help="Absolute path to .crt client certificate file on server" class="col-12 col-lg-12">
+                        <field name="yes_bank_cert_path" class="w-100"/>
                     </setting>
-                    <setting id="yes_bank_key_path_setting" string="SSL Key Path (.key)" help="Absolute path to .key client key file on server">
-                        <field name="yes_bank_key_path"/>
+                    <setting id="yes_bank_key_path_setting" string="SSL Key Path (.key)" help="Absolute path to .key client key file on server" class="col-12 col-lg-12">
+                        <field name="yes_bank_key_path" class="w-100"/>
                     </setting>
                  </block>
             </xpath>
