@@ -31,10 +31,10 @@ class AccountPayment(models.Model):
 
     def action_send_to_yes_bank(self):
         self.ensure_one()
-        if self.payment_type != 'outgoing':
-            raise UserError(_("Only outgoing payments can be sent to YES Bank."))
-        if self.state != 'posted':
-            raise UserError(_("Only confirmed (posted) payments can be sent to YES Bank."))
+        if self.payment_type != 'outbound':
+            raise UserError(_("Only outbound payments can be sent to YES Bank."))
+        if self.state in ('draft', 'cancel'):
+            raise UserError(_("Only confirmed payments can be sent to YES Bank."))
         if self.yes_bank_status in ('in_process', 'completed'):
             raise UserError(_("This payment has already been sent to YES Bank (Status: %s).") % self.yes_bank_status)
 
