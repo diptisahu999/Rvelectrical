@@ -83,7 +83,7 @@ class AccountJournal(models.Model):
                 auth=basic_auth,
                 cert=(cert_path, key_path),
                 data=json.dumps(payload),
-                timeout=15
+                timeout=30
             )
 
             # Update Log with Response
