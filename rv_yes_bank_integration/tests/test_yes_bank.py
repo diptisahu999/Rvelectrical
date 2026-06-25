@@ -53,3 +53,92 @@ class TestYesBankIntegration(TransactionCase):
         self.assertTrue(log)
         self.assertEqual(log.status, 'processed')
         self.assertEqual(log.amount, 50000.50)
+
+    @patch('odoo.http.request')
+    def test_callback_credit_incoming(self, mock_request):
+        mock_request.env = self.env
+        # pyrefly: ignore [missing-import]
+        from odoo.addons.rv_yes_bank_integration.controllers.main import YesBankCallback
+        
+        callback_data = {
+            "ftxPayCallback": {
+                "version": "1.0",
+                "data": {
+                    "bankRefId": "YESBRCREDIT123",
+                    "amount": "15000.00",
+                    "txnStatus": "COMPLETED",
+                    "beneAcctNum": "1234567890", # Matches company acct
+                    "beneName": "Test Customer",
+                }
+            }
+        }
+        
+        # Instantiate controller and process callback
+        controller = YesBankCallback()
+        response = controller._process_callback(callback_data)
+        
+        self.assertEqual(response.get('status'), 'success')
+        
+        # Check yes.bank.log
+        log = self.env['yes.bank.log'].search([('name', '=', 'Callback (CREDIT)')], limit=1)
+        self.assertTrue(log)
+        self.assertEqual(log.amount, 15000.00)
+        self.assertEqual(log.status, 'processed')
+        
+        # Check created account.payment
+        payment = self.env['account.payment'].search([
+            ('payment_type', '=', 'inbound'),
+            ('yes_bank_ref_id', '=', 'YESBRCREDIT123')
+        ], limit=1)
+        self.assertTrue(payment)
+        self.assertEqual(payment.amount, 15000.00)
+        self.assertEqual(payment.state, 'posted')
+
+    @patch('odoo.http.request')
+    def test_callback_debit_outgoing(self, mock_request):
+        mock_request.env = self.env
+        # pyrefly: ignore [missing-import]
+        from odoo.addons.rv_yes_bank_integration.controllers.main import YesBankCallback
+        
+        # Create partner
+        partner = self.env['res.partner'].create({'name': 'Test Vendor'})
+        partner_bank = self.env['res.partner.bank'].create({
+            'acc_number': '9876543210',
+            'partner_id': partner.id,
+            'bank_id': self.env['res.bank'].create({'name': 'HDFC', 'bic': 'HDFC0004024'}).id
+        })
+        
+        # Create outbound payment in Odoo
+        payment = self.env['account.payment'].create({
+            'payment_type': 'outbound',
+            'partner_type': 'supplier',
+            'partner_id': partner.id,
+            'amount': 25000.00,
+            'journal_id': self.journal.id,
+            'partner_bank_id': partner_bank.id,
+        })
+        # Mock posting it (or set status directly since it's outbound)
+        payment.action_post()
+        
+        callback_data = {
+            "ftxPayCallback": {
+                "version": "1.0",
+                "data": {
+                    "bankRefId": "YESBRDEBIT123",
+                    "custRefNum": str(payment.id),
+                    "amount": "25000.00",
+                    "txnStatus": "COMPLETED"
+                }
+            }
+        }
+        
+        controller = YesBankCallback()
+        response = controller._process_callback(callback_data)
+        
+        self.assertEqual(response.get('status'), 'success')
+        self.assertEqual(payment.yes_bank_status, 'completed')
+        
+        log = self.env['yes.bank.log'].search([('name', '=', 'Callback (DEBIT)')], limit=1)
+        self.assertTrue(log)
+        self.assertEqual(log.amount, -25000.00)
+
