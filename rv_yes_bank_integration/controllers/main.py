@@ -145,7 +145,7 @@ class YesBankCallback(http.Controller):
                             partner = request.env['res.partner'].sudo().search([('name', 'ilike', bene_name)], limit=1)
 
                         # Find payment method line
-                        pay_method_line = yes_journal.inbound_payment_method_line_ids.filtered(lambda l: l.code == 'manual')
+                        pay_method_line = yes_journal.inbound_payment_method_line_ids.filtered(lambda l: l.code == 'manual')[:1]
                         if not pay_method_line:
                             pay_method_line = yes_journal.inbound_payment_method_line_ids[:1]
 
