@@ -155,7 +155,7 @@ class YesBankCallback(http.Controller):
                             'journal_id': yes_journal.id,
                             'amount': amount,
                             'date': fields.Date.context_today(yes_journal),
-                            'ref': f"YES Bank Incoming Ref: {bank_ref_id or api_ref_num or ''}",
+                            'memo': f"YES Bank Incoming Ref: {bank_ref_id or api_ref_num or ''}",
                             'yes_bank_ref_id': bank_ref_id,
                             'yes_bank_api_ref': api_ref_num,
                             'yes_bank_status': 'completed' if txn_status == 'COMPLETED' else 'in_process',
