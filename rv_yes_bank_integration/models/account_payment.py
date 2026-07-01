@@ -455,7 +455,10 @@ class ResPartnerBank(models.Model):
                 else:
                     log_record.write({'status': 'error'})
                     error_resp = resp_obj.get('errorResp', [])
-                    error_msg = error_resp[0].get('errorDesc') if error_resp else "Unknown error"
+                    error_msg = "Unknown error"
+                    if error_resp:
+                        first_err = error_resp[0]
+                        error_msg = first_err.get('Desc') or first_err.get('desc') or first_err.get('errorDesc') or str(first_err)
                     raise UserError(_("YES Bank Beneficiary Registration failed: %s") % error_msg)
             else:
                 log_record.write({'status': 'error'})
