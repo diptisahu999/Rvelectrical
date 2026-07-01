@@ -30,7 +30,8 @@ class AccountMove(models.Model):
         for move in self:
             additional_charge = sum(line.price_subtotal for line in move.invoice_line_ids if line.is_additional_charge)
             move.amount_additional_charge = additional_charge
-            move.amount_untaxed -= additional_charge
+            move.amount_untaxed = sum(line.price_subtotal for line in move.invoice_line_ids if not line.is_additional_charge)
+            move.amount_total = move.amount_untaxed + move.amount_tax + additional_charge
 
     @api.depends('invoice_line_ids.price_subtotal', 'invoice_line_ids.price_total', 'invoice_line_ids.is_additional_charge')
     def _compute_tax_totals(self):

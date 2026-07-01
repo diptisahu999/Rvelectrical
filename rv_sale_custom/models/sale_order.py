@@ -23,7 +23,9 @@ class SaleOrder(models.Model):
         for order in self:
             additional_charge = sum(line.price_subtotal for line in order.order_line if line.is_additional_charge)
             order.amount_additional_charge = additional_charge
-            order.amount_total += additional_charge
+            order.amount_untaxed = sum(line.price_subtotal for line in order.order_line if not line.is_additional_charge)
+            order.amount_tax = sum(line.price_tax for line in order.order_line if not line.is_additional_charge)
+            order.amount_total = order.amount_untaxed + order.amount_tax + additional_charge
 
     @api.depends('order_line.price_subtotal', 'order_line.price_tax', 'order_line.is_additional_charge')
     def _compute_tax_totals(self):
