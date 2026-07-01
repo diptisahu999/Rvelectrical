@@ -29,6 +29,14 @@ class AccountPayment(models.Model):
         ('RTGS', 'RTGS')
     ], string='YES Bank Payment Mode', default='IMPS', copy=False)
 
+    yes_bank_bene_code = fields.Char(
+        string='YES Bank Bene Code',
+        related='partner_bank_id.yes_bank_bene_code',
+        readonly=False,
+        store=True,
+        help="Pre-registered beneficiary code at YES Bank"
+    )
+
     def action_send_to_yes_bank(self):
         self.ensure_one()
         if self.payment_type != 'outbound':
@@ -111,7 +119,7 @@ class AccountPayment(models.Model):
                         "rmtrName": self.company_id.name or "R V Enterprise"
                     },
                     "beneBlk": {
-                        "beneCode": f"BENE{timestamp}",
+                        "beneCode": self.yes_bank_bene_code or f"BENE{timestamp}",
                         "beneName": self.partner_id.name,
                         "beneIFSC": bene_ifsc,
                         "beneAcctNum": bene_acc
@@ -301,3 +309,10 @@ class AccountPayment(models.Model):
                 'processed_date': fields.Datetime.now()
             })
             raise UserError(_("Failed to connect to YES Bank server: %s") % str(e))
+
+
+class ResPartnerBank(models.Model):
+    _inherit = 'res.partner.bank'
+
+    yes_bank_bene_code = fields.Char(string='YES Bank Beneficiary Code', help="Pre-registered beneficiary code at YES Bank")
+

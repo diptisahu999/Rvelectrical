@@ -19,9 +19,21 @@
             </xpath>
             <xpath expr="//field[@name='date']" position="after">
                 <field name="yes_bank_payment_type" invisible="payment_type != 'outbound'"/>
+                <field name="yes_bank_bene_code" invisible="payment_type != 'outbound'"/>
                 <field name="yes_bank_status" invisible="payment_type != 'outbound'"/>
                 <field name="yes_bank_ref_id" invisible="payment_type != 'outbound'"/>
                 <field name="yes_bank_api_ref" invisible="payment_type != 'outbound'"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_partner_bank_form_inherit_yes_bank" model="ir.ui.view">
+        <field name="name">res.partner.bank.form.inherit.yes.bank</field>
+        <field name="model">res.partner.bank</field>
+        <field name="inherit_id" ref="base.view_partner_bank_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='acc_number']" position="after">
+                <field name="yes_bank_bene_code"/>
             </xpath>
         </field>
     </record>
