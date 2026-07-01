@@ -366,6 +366,11 @@ class ResPartnerBank(models.Model):
             bene_code = f"BC{bene_acc[-10:] if len(bene_acc) > 10 else bene_acc}{timestamp[-4:]}"
             self.yes_bank_bene_code = bene_code
 
+        # Clean mobile number (only digits, max 10 digits)
+        mobile_raw = self.partner_id.mobile or self.partner_id.phone or "9999999999"
+        mobile_digits = ''.join(c for c in mobile_raw if c.isdigit())
+        mobile = mobile_digits[-10:] if len(mobile_digits) >= 10 else "9999999999"
+
         payload = {
             "beneMaintV2": {
                 "head": {
@@ -396,7 +401,7 @@ class ResPartnerBank(models.Model):
                         "IfscCode": bene_ifsc,
                         "BeneAccountNo": bene_acc,
                         "UpiHandle": "",
-                        "MobileNo": self.partner_id.mobile or self.partner_id.phone or "9999999999",
+                        "MobileNo": mobile,
                         "EmailId": self.partner_id.email or "test@test.com",
                         "Address1": self.partner_id.street or "India",
                         "Address2": self.partner_id.city or "India",
