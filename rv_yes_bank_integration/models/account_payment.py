@@ -316,3 +316,157 @@ class ResPartnerBank(models.Model):
 
     yes_bank_bene_code = fields.Char(string='YES Bank Beneficiary Code', help="Pre-registered beneficiary code at YES Bank")
 
+    def action_register_yes_bank_beneficiary(self):
+        self.ensure_one()
+        
+        # Get credentials
+        get_param = self.env['ir.config_parameter'].sudo().get_param
+        client_id = get_param('rv_yes_bank_integration.yes_bank_client_id')
+        client_secret = get_param('rv_yes_bank_integration.yes_bank_client_secret')
+        ftx_id = get_param('rv_yes_bank_integration.yes_bank_ftx_id')
+        basic_auth_pass = get_param('rv_yes_bank_integration.yes_bank_basic_auth_password')
+        cert_path = (get_param('rv_yes_bank_integration.yes_bank_cert_path') or '').strip()
+        key_path = (get_param('rv_yes_bank_integration.yes_bank_key_path') or '').strip()
+        account_number = get_param('rv_yes_bank_integration.yes_bank_account_number')
+        cust_id = get_param('rv_yes_bank_integration.yes_bank_cust_id')
+        env_mode = get_param('rv_yes_bank_integration.yes_bank_environment', 'uat')
+
+        if not all([client_id, client_secret, ftx_id, basic_auth_pass, cert_path, key_path, account_number, cust_id]):
+            raise UserError(_("Please complete YES Bank Integration settings in Accounting Configuration."))
+
+        if not os.path.exists(cert_path):
+            raise ValidationError(_("SSL Certificate file not found at: %s") % cert_path)
+        if not os.path.exists(key_path):
+            raise ValidationError(_("SSL Key file not found at: %s") % key_path)
+
+        if not self.acc_number or not (self.bank_id.bic or getattr(self, 'bank_bic', False)):
+            raise UserError(_("Account number or IFSC code is missing."))
+
+        bene_acc = self.acc_number
+        bene_ifsc = self.bank_id.bic or getattr(self, 'bank_bic', False)
+        
+        # Set API URL
+        base_url = "https://skyway.yesbank.in/app/live" if env_mode == 'production' else "https://skyway.yesuat.bank.in/app/uat"
+        url = f"{base_url}/APIBankingService/FTx/BeneDB/beneMaint"
+
+        headers = {
+            "Content-Type": "application/json",
+            "X-IBM-Client-Id": client_id,
+            "X-IBM-Client-Secret": client_secret,
+            "FTxID": ftx_id
+        }
+
+        basic_auth = (ftx_id, basic_auth_pass)
+        timestamp = str(int(time.time()))
+        unique_ref = f"BENE{timestamp}"
+        
+        bene_code = self.yes_bank_bene_code
+        if not bene_code:
+            # Generate a code if not exists
+            bene_code = f"BC{bene_acc[-10:] if len(bene_acc) > 10 else bene_acc}{timestamp[-4:]}"
+            self.yes_bank_bene_code = bene_code
+
+        payload = {
+            "beneMaintV2": {
+                "head": {
+                    "version": "02.00",
+                    "channel": "API",
+                    "syncMode": "S",
+                    "priority": "1",
+                    "custIDType": "M",
+                    "custCode": cust_id,
+                    "uniqueRefNum": unique_ref,
+                    "recCount": "1",
+                    "ftxId": ftx_id
+                },
+                "BeneList": [
+                    {
+                        "recID": "1",
+                        "Action": "A",
+                        "CustId": cust_id,
+                        "BeneficiaryCd": bene_code,
+                        "SrcAccountNo": account_number,
+                        "PaymentType": "IMPS",
+                        "PurposeCd": "MER",
+                        "BeneName": self.partner_id.name or "Vendor",
+                        "BeneExpiryDt": "31:12:2035",
+                        "CurrencyCd": "INR",
+                        "TransactionLimit": "500000",
+                        "BankName": self.bank_id.name or "BANK",
+                        "IfscCode": bene_ifsc,
+                        "BeneAccountNo": bene_acc,
+                        "UpiHandle": "",
+                        "MobileNo": self.partner_id.mobile or self.partner_id.phone or "9999999999",
+                        "EmailId": self.partner_id.email or "test@test.com",
+                        "Address1": self.partner_id.street or "India",
+                        "Address2": self.partner_id.city or "India",
+                        "ExtParam1": "MUMBAI1",
+                        "ExtParam2": "MUMBAI1",
+                        "ExtParam3": "MUMBAI1",
+                        "ExtParam4": "PVTLTD",
+                        "ExtParam5": "RETAILER",
+                        "ExtParam6": "MUMBAI1"
+                    }
+                ]
+            }
+        }
+
+        # Log request
+        log_record = self.env['yes.bank.log'].sudo().create({
+            'name': f'Bene Register Request {self.acc_number}',
+            'amount': 0.0,
+            'raw_data': f"URL: {url}\nHeaders: {json.dumps(headers)}\nPayload: {json.dumps(payload)}",
+            'status': 'received'
+        })
+
+        try:
+            _logger.info("Registering beneficiary at YES Bank...")
+            response = requests.post(
+                url,
+                headers=headers,
+                auth=basic_auth,
+                cert=(cert_path, key_path),
+                data=json.dumps(payload),
+                timeout=30
+            )
+
+            # Update Log with Response
+            log_record.write({
+                'raw_data': log_record.raw_data + f"\n\nResponse Code: {response.status_code}\nResponse Body: {response.text}",
+                'processed_date': fields.Datetime.now()
+            })
+
+            if response.status_code == 200:
+                res_data = response.json()
+                resp_obj = res_data.get('beneMaintV2', {})
+                status = resp_obj.get('Status')
+                if status == 'S':
+                    log_record.write({'status': 'processed'})
+                    return {
+                        'type': 'ir.actions.client',
+                        'tag': 'display_notification',
+                        'params': {
+                            'title': _('Success'),
+                            'message': _('Beneficiary registered successfully. Code: %s') % bene_code,
+                            'sticky': False,
+                            'type': 'success',
+                        }
+                    }
+                else:
+                    log_record.write({'status': 'error'})
+                    error_resp = resp_obj.get('errorResp', [])
+                    error_msg = error_resp[0].get('errorDesc') if error_resp else "Unknown error"
+                    raise UserError(_("YES Bank Beneficiary Registration failed: %s") % error_msg)
+            else:
+                log_record.write({'status': 'error'})
+                raise UserError(_("Bank API Error (Status %s): %s") % (response.status_code, response.text))
+
+        except Exception as e:
+            log_record.write({
+                'status': 'error',
+                'raw_data': log_record.raw_data + f"\n\nConnection Exception: {str(e)}",
+                'processed_date': fields.Datetime.now()
+            })
+            raise UserError(_("Failed to connect to YES Bank server: %s") % str(e))
+
+
