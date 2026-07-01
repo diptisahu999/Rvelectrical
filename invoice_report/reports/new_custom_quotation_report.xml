@@ -309,7 +309,7 @@
                                             <t t-set="sgst" t-value="0.0"/>
                                             <t t-set="cgst" t-value="0.0"/>
                                             <t t-set="igst" t-value="0.0"/>
-                                            <t t-foreach="doc.order_line" t-as="line">
+                                            <t t-foreach="doc.order_line.filtered(lambda l: not l.is_additional_charge)" t-as="line">
                                                 <t t-foreach="line.tax_id" t-as="tax">
                                                     <t t-if="'SGST' in tax.name">
                                                         <t t-set="sgst" t-value="sgst + (line.price_subtotal * tax.amount / 100.0)"/>
@@ -343,6 +343,12 @@
                                                 <div class="totals-row" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #000;">
                                                     <span class="px-2 text-muted mr-2" style="margin-right: 24px;">IGST</span>
                                                     <span class="px-2" t-esc="igst" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                                </div>
+                                            </t>
+                                            <t t-if="doc.amount_additional_charge">
+                                                <div class="totals-row" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #000;">
+                                                    <span class="px-2 text-muted mr-2" style="margin-right: 24px;">Additional Charge</span>
+                                                    <span class="px-2" t-field="doc.amount_additional_charge" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
                                                 </div>
                                             </t>
                                             <div class="totals-row justify-content-end bg-warning" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 16px; font-weight: bold; border-bottom: 1px solid #000;">
