@@ -7,9 +7,11 @@
         This module contains customizations for Sales.
         - Removes 'New' button from Quotation List and Kanban views.
     """,
-    'depends': ['sale'],
+    'depends': ['sale', 'account'],
     'data': [
         'views/sale_order_views.xml',
+        'views/product_views.xml',
+        'views/account_move_views.xml',
     ],
     'assets': {
         'web.assets_backend': [

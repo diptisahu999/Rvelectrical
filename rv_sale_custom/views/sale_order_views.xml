@@ -56,6 +56,29 @@
             <xpath expr="//field[@name='order_line']/list" position="attributes">
                 <attribute name="class">o_list_editable_mobile</attribute>
             </xpath>
+            <!-- Expose is_additional_charge and restrict product selection domain -->
+            <xpath expr="//field[@name='order_line']/list/field[@name='product_template_id']" position="before">
+                <field name="is_additional_charge" optional="show"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/list/field[@name='product_template_id']" position="attributes">
+                <attribute name="domain">[('sale_ok', '=', True), ('is_additional_product', '=', is_additional_charge)]</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/list/field[@name='product_id']" position="attributes">
+                <attribute name="domain">[('sale_ok', '=', True), ('is_additional_product', '=', is_additional_charge)]</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/form//field[@name='product_id']" position="before">
+                <field name="is_additional_charge"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/form//field[@name='product_id']" position="attributes">
+                <attribute name="domain">[('sale_ok', '=', True), ('type', '!=', 'combo'), ('is_additional_product', '=', is_additional_charge)]</attribute>
+            </xpath>
+            <!-- Hide Packaging columns in order lines tree view -->
+            <xpath expr="//field[@name='order_line']/list/field[@name='product_packaging_qty']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/list/field[@name='product_packaging_id']" position="attributes">
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
         </field>
     </record>
 </odoo>
