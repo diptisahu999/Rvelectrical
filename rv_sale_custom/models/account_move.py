@@ -49,23 +49,47 @@ class AccountMove(models.Model):
     def _compute_tax_totals(self):
         super()._compute_tax_totals()
         for move in self:
-            additional_charge = sum(line.price_subtotal for line in move.invoice_line_ids if line.is_additional_charge)
-            if additional_charge and move.tax_totals:
-                tax_totals = dict(move.tax_totals)
-                if 'subtotals' in tax_totals:
-                    subtotals = list(tax_totals['subtotals'])
-                    subtotals.append({
-                        'name': _("Additional Charge"),
-                        'base_amount_currency': additional_charge,
-                        'base_amount': additional_charge,
-                        'tax_amount_currency': 0.0,
-                        'tax_amount': 0.0,
-                        'tax_groups': [],
-                    })
-                    tax_totals['subtotals'] = subtotals
-                    tax_totals['total_amount_currency'] += additional_charge
-                    tax_totals['total_amount'] += additional_charge
-                    move.tax_totals = tax_totals
+            additional_lines = move.invoice_line_ids.filtered(lambda l: l.is_additional_charge)
+            if not additional_lines or not move.tax_totals:
+                continue
+
+            additional_charge = sum(line.price_subtotal for line in additional_lines)
+            non_additional_untaxed = sum(
+                line.price_subtotal for line in move.invoice_line_ids
+                if not line.is_additional_charge
+            )
+
+            tax_totals = dict(move.tax_totals)
+            tax_amount = tax_totals.get('tax_amount_currency', 0.0)
+            correct_total = non_additional_untaxed + tax_amount + additional_charge
+
+            # Rebuild subtotals: fix Untaxed Amount base, remove stale Additional Charge rows
+            new_subtotals = []
+            for subtotal in list(tax_totals.get('subtotals', [])):
+                if subtotal.get('name') == _("Additional Charge"):
+                    continue  # skip any stale Additional Charge row
+                if subtotal.get('name') == 'Untaxed Amount':
+                    subtotal = dict(subtotal)
+                    subtotal['base_amount_currency'] = non_additional_untaxed
+                    subtotal['base_amount'] = non_additional_untaxed
+                new_subtotals.append(subtotal)
+
+            # Add the Additional Charge subtotal row
+            new_subtotals.append({
+                'name': _("Additional Charge"),
+                'base_amount_currency': additional_charge,
+                'base_amount': additional_charge,
+                'tax_amount_currency': 0.0,
+                'tax_amount': 0.0,
+                'tax_groups': [],
+            })
+
+            tax_totals['subtotals'] = new_subtotals
+            tax_totals['base_amount_currency'] = non_additional_untaxed
+            tax_totals['base_amount'] = non_additional_untaxed
+            tax_totals['total_amount_currency'] = correct_total
+            tax_totals['total_amount'] = correct_total
+            move.tax_totals = tax_totals
 
 class AccountMoveLine(models.Model):
     _inherit = 'account.move.line'
