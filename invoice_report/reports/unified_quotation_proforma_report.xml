@@ -301,11 +301,11 @@
                         </table>
                     </div>
                     <div class="col-6 py-2">
-                        <div class="totals-section d-flex flex-column align-items-end justify-content-between" style="width: 100%; height: 100%; font-size: 16px; justify-content: flex-end !important; ">
-                            <div class="totals-row bg-warning" style="display: flex;align-items: center; justify-content: space-between;justify-content-end; padding: 4px 0; border-bottom: 1px solid #000;">
-                                <span class="px-2 text-dark font-weight-bold" style="font-size: 15px; font-weight: bold;margin-right: 20px;">Untaxed Amount </span>
-                                <span class="px-2 text-dark font-weight-bold" t-field="doc.amount_untaxed" style="font-size: 15px; font-weight: bold;"/>
-                            </div>
+                        <table style="width: 260px; float: right; font-size: 16px; border-collapse: collapse; margin-top: 4px; margin-bottom: 4px;">
+                            <tr style="border-bottom: 1px solid #000; background-color: #ffc107;">
+                                <td style="padding: 4px 8px; font-weight: bold; font-size: 15px; color: #212529;">Untaxed Amount</td>
+                                <td style="padding: 4px 8px; font-weight: bold; font-size: 15px; text-align: right; color: #212529;" t-field="doc.amount_untaxed"/>
+                            </tr>
                             <!-- Calculate SGST, CGST, IGST -->
                             <t t-set="sgst" t-value="0.0"/>
                             <t t-set="cgst" t-value="0.0"/>
@@ -329,47 +329,34 @@
                                 </t>
                             </t>
                             <t t-if="sgst">
-                                <div class="totals-row" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #000;" >
-                                    <span class="px-2 text-muted mr-2 justify-content-start" style="margin-right: 24px;">SGST</span>
-                                    <span class="px-2" t-esc="sgst" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
-                                </div>
+                                <tr style="border-bottom: 1px solid #000;">
+                                    <td style="padding: 4px 8px; color: #6c757d;">SGST</td>
+                                    <td style="padding: 4px 8px; text-align: right; color: #212529;" t-esc="sgst" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                </tr>
                             </t>
                             <t t-if="cgst">
-                                <div class="totals-row" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #000;">
-                                    <span class="px-2 text-muted mr-2" style="margin-right: 24px;">CGST</span>
-                                    <span class="px-2" t-esc="cgst" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
-                                </div>
+                                <tr style="border-bottom: 1px solid #000;">
+                                    <td style="padding: 4px 8px; color: #6c757d;">CGST</td>
+                                    <td style="padding: 4px 8px; text-align: right; color: #212529;" t-esc="cgst" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                </tr>
                             </t>
                             <t t-if="igst">
-                                <div class="totals-row" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #000;">
-                                    <span class="px-2 text-muted mr-2" style="margin-right: 24px;">IGST</span>
-                                    <span class="px-2" t-esc="igst" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
-                                </div>
+                                <tr style="border-bottom: 1px solid #000;">
+                                    <td style="padding: 4px 8px; color: #6c757d;">IGST</td>
+                                    <td style="padding: 4px 8px; text-align: right; color: #212529;" t-esc="igst" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                </tr>
                             </t>
                             <t t-if="doc.amount_additional_charge">
-                                <div class="totals-row" style="display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #000;">
-                                    <span class="px-2 text-muted" style="white-space: nowrap; flex-shrink: 0; margin-right: 24px;">Additional Charge</span>
-                                    <span class="px-2" style="white-space: nowrap; flex-shrink: 0;" t-esc="doc.amount_additional_charge" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
-                                </div>
+                                <tr style="border-bottom: 1px solid #000;">
+                                    <td style="padding: 4px 8px; color: #6c757d; white-space: nowrap;">Additional Charge</td>
+                                    <td style="padding: 4px 8px; text-align: right; color: #212529; white-space: nowrap;" t-esc="doc.amount_additional_charge" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                </tr>
                             </t>
-
-                            <div class="totals-row justify-content-end bg-warning" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 0; font-size: 16px; font-weight: bold; border-bottom: 1px solid #000;">
-                                <span class="px-2 mr-2 text-dark" style="margin-right: 24px; font-weight: bold; font-size: 17px;">Total</span>
-                                <span class="px-2 text-dark" t-field="doc.amount_total" style=" font-weight: bold; font-size: 17px;"/>
-                            </div>
-
-<!--                            <t t-if="doc.global_discount">-->
-<!--                            <div class="totals-row" style="display: flex;align-items: center; justify-content: space-between;justify-content: end; padding: 4px 0; border-bottom: 1px solid #000;">-->
-<!--                                <span class="px-2 text-muted mr-2" style="margin-right: 24px;">Discount (<t t-esc="doc.global_discount"/>%)</span>-->
-<!--                                <span class="px-2" t-esc="-doc.discount_amount" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>-->
-<!--                            </div>-->
-<!--                            <div class="totals-row justify-content-end bg-warning" style="display: flex;align-items: center; justify-content: space-between;justify-content: end; padding: 4px 0;">-->
-<!--                                <span class="px-2 text-dark" style="margin-right: 24px; font-weight: bold; font-size: 17px;">Price After Discount</span>-->
-<!--                                <span class="px-2 text-dark" t-esc="doc.price_after_discount" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>-->
-<!--                            </div>-->
-<!--                            </t>-->
-
-                        </div>
+                            <tr style="border-bottom: 1px solid #000; background-color: #ffc107; font-weight: bold;">
+                                <td style="padding: 4px 8px; font-size: 17px; font-weight: bold; color: #212529;">Total</td>
+                                <td style="padding: 4px 8px; text-align: right; font-size: 17px; font-weight: bold; color: #212529;" t-field="doc.amount_total"/>
+                            </tr>
+                        </table>
                     </div>
                 </div>
                 
