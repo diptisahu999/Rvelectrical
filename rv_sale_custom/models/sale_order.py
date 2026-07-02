@@ -12,6 +12,18 @@ class SaleOrder(models.Model):
         store=True,
         currency_field="currency_id"
     )
+    amount_untaxed = fields.Monetary(
+        compute='_compute_amounts',
+        store=True,
+    )
+    amount_tax = fields.Monetary(
+        compute='_compute_amounts',
+        store=True,
+    )
+    amount_total = fields.Monetary(
+        compute='_compute_amounts',
+        store=True,
+    )
 
     def _get_priced_lines(self):
         lines = super()._get_priced_lines()

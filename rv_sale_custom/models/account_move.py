@@ -10,6 +10,14 @@ class AccountMove(models.Model):
         store=True,
         currency_field="currency_id"
     )
+    amount_untaxed = fields.Monetary(
+        compute='_compute_amount',
+        store=True,
+    )
+    amount_total = fields.Monetary(
+        compute='_compute_amount',
+        store=True,
+    )
 
     def _get_rounded_base_and_tax_lines(self, round_from_tax_lines=True):
         base_lines, tax_lines = super()._get_rounded_base_and_tax_lines(round_from_tax_lines=round_from_tax_lines)
