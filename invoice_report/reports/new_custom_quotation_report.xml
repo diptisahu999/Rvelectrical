@@ -346,8 +346,8 @@
                                                 </div>
                                             </t>
                                             <t t-if="doc.amount_additional_charge">
-                                                <div class="totals-row" style="display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: center; width: 100%; padding: 4px 0; border-bottom: 1px solid #000;">
-                                                    <span class="px-2 text-muted" style="white-space: nowrap; flex-shrink: 0; margin-right: 8px;">Additional Charge</span>
+                                                <div class="totals-row" style="display: flex; flex-wrap: nowrap; justify-content: space-between; align-items: center; padding: 4px 0; border-bottom: 1px solid #000;">
+                                                    <span class="px-2 text-muted" style="white-space: nowrap; flex-shrink: 0; margin-right: 24px;">Additional Charge</span>
                                                     <span class="px-2" style="white-space: nowrap; flex-shrink: 0;" t-esc="doc.amount_additional_charge" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
                                                 </div>
                                             </t>
