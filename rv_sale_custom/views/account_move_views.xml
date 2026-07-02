@@ -5,13 +5,15 @@
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
-            <!-- Expose is_additional_charge and restrict product selection domain on invoice lines -->
+            <!-- Expose is_additional_charge and restrict product selection domain on invoice lines (TEMPORARILY UNRESTRICTED) -->
             <xpath expr="//field[@name='invoice_line_ids']/list/field[@name='product_id']" position="before">
-                <field name="is_additional_charge" optional="show" readonly="1"/>
+                <field name="is_additional_charge" optional="show"/>
             </xpath>
+            <!--
             <xpath expr="//field[@name='invoice_line_ids']/list/field[@name='product_id']" position="attributes">
                 <attribute name="domain">context.get('default_move_type') in ('out_invoice', 'out_refund', 'out_receipt') and [('sale_ok', '=', True), ('is_additional_product', '=', is_additional_charge)] or [('purchase_ok', '=', True)]</attribute>
             </xpath>
+            -->
         </field>
     </record>
 </odoo>
