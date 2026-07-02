@@ -23,11 +23,6 @@ class AccountMove(models.Model):
         exportable=False,
     )
 
-    def _get_rounded_base_and_tax_lines(self, round_from_tax_lines=True):
-        base_lines, tax_lines = super()._get_rounded_base_and_tax_lines(round_from_tax_lines=round_from_tax_lines)
-        base_lines = [line for line in base_lines if not line['record'].is_additional_charge]
-        return base_lines, tax_lines
-
     @api.depends(
         'line_ids.debit',
         'line_ids.credit',
