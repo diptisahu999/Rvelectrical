@@ -18,6 +18,10 @@ class AccountMove(models.Model):
         compute='_compute_amount',
         store=True,
     )
+    tax_totals = fields.Binary(
+        compute='_compute_tax_totals',
+        exportable=False,
+    )
 
     def _get_rounded_base_and_tax_lines(self, round_from_tax_lines=True):
         base_lines, tax_lines = super()._get_rounded_base_and_tax_lines(round_from_tax_lines=round_from_tax_lines)

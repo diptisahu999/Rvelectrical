@@ -24,6 +24,10 @@ class SaleOrder(models.Model):
         compute='_compute_amounts',
         store=True,
     )
+    tax_totals = fields.Binary(
+        compute='_compute_tax_totals',
+        exportable=False,
+    )
 
     def _get_priced_lines(self):
         lines = super()._get_priced_lines()
