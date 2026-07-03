@@ -394,7 +394,7 @@ class ResPartnerBank(models.Model):
                         "PaymentType": "IMPS",
                         "PurposeCd": "MER",
                         "BeneName": self.partner_id.name or "Vendor",
-                        "BeneExpiryDt": "31:12:2035",
+                        "BeneExpiryDt": "12:31:2035",
                         "CurrencyCd": "INR",
                         "TransactionLimit": "500000",
                         "BankName": self.bank_id.name or "BANK",
