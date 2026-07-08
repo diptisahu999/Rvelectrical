@@ -13,6 +13,7 @@
         'views/res_config_settings_views.xml',
         'views/account_journal_views.xml',
         'views/account_payment_views.xml',
+        'views/yes_bank_otp_wizard_views.xml',
     ],
     'installable': True,
     'application': False,

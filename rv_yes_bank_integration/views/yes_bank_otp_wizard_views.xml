@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_yes_bank_otp_wizard_form" model="ir.ui.view">
+        <field name="name">yes.bank.otp.wizard.form</field>
+        <field name="model">yes.bank.otp.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Verify Outbound Payment OTP">
+                <div class="alert alert-info" role="alert" style="margin-bottom: 20px;">
+                    <p style="margin-bottom: 0;">An OTP code has been sent to the authorized secure email address. Please enter it below to confirm and authorize this transaction.</p>
+                </div>
+                <group>
+                    <field name="payment_id" invisible="1"/>
+                    <field name="otp_entered" placeholder="Enter 6-digit OTP code" style="font-size: 16px; font-weight: bold; text-align: center; letter-spacing: 5px;"/>
+                </group>
+                <footer>
+                    <button name="action_verify_and_send" string="Verify &amp; Pay" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

@@ -4,6 +4,8 @@ import json
 import time
 import os
 import logging
+import random
+from datetime import datetime, timedelta
 # pyrefly: ignore [missing-import]
 from odoo import models, fields, api, _
 # pyrefly: ignore [missing-import]
@@ -37,7 +39,79 @@ class AccountPayment(models.Model):
         help="Pre-registered beneficiary code at YES Bank"
     )
 
+    yes_bank_otp = fields.Char(string='YES Bank OTP Code', copy=False)
+    yes_bank_otp_sent_time = fields.Datetime(string='YES Bank OTP Sent Time', copy=False)
+
     def action_send_to_yes_bank(self):
+        self.ensure_one()
+        if self.payment_type != 'outbound':
+            raise UserError(_("Only outbound payments can be sent to YES Bank."))
+        if self.state in ('draft', 'cancel'):
+            raise UserError(_("Only confirmed payments can be sent to YES Bank."))
+        if self.yes_bank_status in ('in_process', 'completed'):
+            raise UserError(_("This payment has already been sent to YES Bank (Status: %s).") % self.yes_bank_status)
+
+        # Get Secure OTP Email
+        get_param = self.env['ir.config_parameter'].sudo().get_param
+        otp_email = (get_param('rv_yes_bank_integration.yes_bank_otp_email') or '').strip()
+        if not otp_email:
+            raise UserError(_("YES Bank Secure OTP Email is not configured. Please contact the administrator."))
+
+        # Generate 6-digit OTP
+        otp = str(random.randint(100000, 999999))
+        self.write({
+            'yes_bank_otp': otp,
+            'yes_bank_otp_sent_time': fields.Datetime.now()
+        })
+
+        # Send OTP email to the fixed address
+        mail_values = {
+            'subject': _('YES Bank Payment Security Verification OTP'),
+            'body_html': _(
+                '<div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; border-radius: 5px; max-width: 600px;">'
+                '<h2 style="color: #0056b3;">YES Bank Payment Authorization</h2>'
+                '<p>Dear Administrator,</p>'
+                '<p>A request has been initiated to send a payment to a vendor. Details are as follows:</p>'
+                '<table style="width: 100%%; border-collapse: collapse; margin: 15px 0;">'
+                '<tr><td style="padding: 8px; border-bottom: 1px solid #eee; font-weight: bold;">Vendor:</td><td style="padding: 8px; border-bottom: 1px solid #eee;">%s</td></tr>'
+                '<tr><td style="padding: 8px; border-bottom: 1px solid #eee; font-weight: bold;">Amount:</td><td style="padding: 8px; border-bottom: 1px solid #eee;">%s %s</td></tr>'
+                '<tr><td style="padding: 8px; border-bottom: 1px solid #eee; font-weight: bold;">Vendor Account:</td><td style="padding: 8px; border-bottom: 1px solid #eee;">%s</td></tr>'
+                '<tr><td style="padding: 8px; border-bottom: 1px solid #eee; font-weight: bold;">Initiated By:</td><td style="padding: 8px; border-bottom: 1px solid #eee;">%s</td></tr>'
+                '</table>'
+                '<p style="font-size: 16px;">Your secure OTP code to authorize this transaction is:</p>'
+                '<div style="background-color: #f7f9fc; border: 1px dashed #0056b3; font-size: 28px; font-weight: bold; text-align: center; padding: 15px; margin: 15px 0; color: #0056b3; letter-spacing: 5px;">%s</div>'
+                '<p style="color: #666; font-size: 13px;">This OTP is valid for 5 minutes. If you did not authorize this action, please review immediately.</p>'
+                '</div>'
+            ) % (
+                self.partner_id.name or "Vendor",
+                self.amount,
+                self.currency_id.name,
+                self.partner_bank_id.acc_number or "N/A",
+                self.env.user.name,
+                otp
+            ),
+            'email_to': otp_email,
+        }
+        try:
+            mail = self.env['mail.mail'].sudo().create(mail_values)
+            mail.send()
+        except Exception as e:
+            _logger.error("Failed to send YES Bank OTP email: %s", str(e))
+            raise UserError(_("Failed to send OTP email. Please check your mail server configuration."))
+
+        # Return the verification wizard
+        return {
+            'name': _('Verify Payment OTP'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'yes.bank.otp.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_payment_id': self.id
+            }
+        }
+
+    def action_send_to_yes_bank_final(self):
         self.ensure_one()
         if self.payment_type != 'outbound':
             raise UserError(_("Only outbound payments can be sent to YES Bank."))
@@ -315,6 +389,11 @@ class ResPartnerBank(models.Model):
     _inherit = 'res.partner.bank'
 
     yes_bank_bene_code = fields.Char(string='YES Bank Beneficiary Code', help="Pre-registered beneficiary code at YES Bank")
+    yes_bank_payment_type = fields.Selection([
+        ('IMPS', 'IMPS'),
+        ('NEFT', 'NEFT'),
+        ('RTGS', 'RTGS')
+    ], string='YES Bank Payment Mode', default='IMPS', help="Payment mode to register this beneficiary for")
 
     def action_register_yes_bank_beneficiary(self):
         self.ensure_one()
@@ -391,7 +470,7 @@ class ResPartnerBank(models.Model):
                         "CustId": cust_id,
                         "BeneficiaryCd": bene_code,
                         "SrcAccountNo": account_number,
-                        "PaymentType": "IMPS",
+                        "PaymentType": self.yes_bank_payment_type or "IMPS",
                         "PurposeCd": "MER",
                         "BeneName": self.partner_id.name or "Vendor",
                         "BeneExpiryDt": "12:31:2035",
@@ -476,5 +555,35 @@ class ResPartnerBank(models.Model):
                 'processed_date': fields.Datetime.now()
             })
             raise UserError(_("Failed to connect to YES Bank server: %s") % str(e))
+
+
+class YesBankOtpWizard(models.TransientModel):
+    _name = 'yes.bank.otp.wizard'
+    _description = 'YES Bank OTP Verification Wizard'
+
+    payment_id = fields.Many2one('account.payment', string='Payment', required=True, ondelete='cascade')
+    otp_entered = fields.Char(string='Enter OTP Code', required=True)
+
+    def action_verify_and_send(self):
+        self.ensure_one()
+        payment = self.payment_id
+        
+        # Verify OTP
+        if not payment.yes_bank_otp:
+            raise ValidationError(_("No OTP has been requested/sent for this payment."))
+
+        # Expiry Check (5 minutes)
+        sent_time = payment.yes_bank_otp_sent_time
+        if not sent_time or (fields.Datetime.now() - sent_time) > timedelta(minutes=5):
+            raise ValidationError(_("The OTP code has expired. Please request a new one."))
+
+        # Match OTP
+        if self.otp_entered.strip() != payment.yes_bank_otp:
+            raise ValidationError(_("Invalid OTP code. Please enter the correct code."))
+
+        # Clear OTP on success and send to YES Bank
+        payment.write({'yes_bank_otp': False})
+        return payment.action_send_to_yes_bank_final()
+
 
 

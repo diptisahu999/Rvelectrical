@@ -41,3 +41,8 @@ class ResConfigSettings(models.TransientModel):
         ('uat', 'UAT / Testing'),
         ('production', 'Production')
     ], string='YES Bank Environment', default='uat', config_parameter='rv_yes_bank_integration.yes_bank_environment')
+    yes_bank_otp_email = fields.Char(
+        string='YES Bank Secure OTP Email',
+        config_parameter='rv_yes_bank_integration.yes_bank_otp_email',
+        help="All transaction OTP authorization codes will be sent exclusively to this email address."
+    )
