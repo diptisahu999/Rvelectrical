@@ -64,9 +64,15 @@ class AccountPayment(models.Model):
             'yes_bank_otp_sent_time': fields.Datetime.now()
         })
 
+        # Get dynamic email_from to avoid SMTP relay rejection
+        mail_server = self.env['ir.mail_server'].sudo().search([], limit=1)
+        email_from = mail_server.smtp_user or get_param('mail.default.from') or self.env.user.email
+
         # Send OTP email to the fixed address
         mail_values = {
             'subject': _('YES Bank Payment Security Verification OTP'),
+            'email_from': email_from,
+            'email_to': otp_email,
             'body_html': _(
                 '<div style="font-family: Arial, sans-serif; padding: 20px; border: 1px solid #ddd; border-radius: 5px; max-width: 600px;">'
                 '<h2 style="color: #0056b3;">YES Bank Payment Authorization</h2>'
@@ -90,14 +96,21 @@ class AccountPayment(models.Model):
                 self.env.user.name,
                 otp
             ),
-            'email_to': otp_email,
         }
         try:
             mail = self.env['mail.mail'].sudo().create(mail_values)
             mail.send()
         except Exception as e:
             _logger.error("Failed to send YES Bank OTP email: %s", str(e))
-            raise UserError(_("Failed to send OTP email. Please check your mail server configuration."))
+            # In UAT/Testing environment, do not raise exception block so they can still test
+            env_mode = get_param('rv_yes_bank_integration.yes_bank_environment', 'uat')
+            if env_mode == 'production':
+                raise UserError(_("Failed to send OTP email. Please check your mail server configuration."))
+
+        # Post OTP to Chatter in UAT Mode for testing convenience
+        env_mode = get_param('rv_yes_bank_integration.yes_bank_environment', 'uat')
+        if env_mode == 'uat':
+            self.message_post(body=_("UAT OTP generated for payment authorization: <strong style='font-size: 14px; color: #28a745;'>%s</strong>") % otp)
 
         # Return the verification wizard
         return {

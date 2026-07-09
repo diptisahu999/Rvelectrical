@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # pyrefly: ignore [missing-import]
-from odoo import models, fields
+from odoo import models, fields, _
+# pyrefly: ignore [missing-import]
+from odoo.exceptions import UserError
 
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
@@ -46,3 +48,37 @@ class ResConfigSettings(models.TransientModel):
         config_parameter='rv_yes_bank_integration.yes_bank_otp_email',
         help="All transaction OTP authorization codes will be sent exclusively to this email address."
     )
+
+    def action_test_otp_email(self):
+        self.ensure_one()
+        otp_email = self.yes_bank_otp_email
+        if not otp_email:
+            raise UserError(_("Please configure the Secure OTP Email address first."))
+            
+        get_param = self.env['ir.config_parameter'].sudo().get_param
+        mail_server = self.env['ir.mail_server'].sudo().search([], limit=1)
+        email_from = mail_server.smtp_user or get_param('mail.default.from') or self.env.user.email
+        
+        mail_values = {
+            'subject': _('YES Bank Integration: Test Email Delivery'),
+            'email_from': email_from,
+            'email_to': otp_email,
+            'body_html': _('<p>This is a test email from Odoo to verify your YES Bank OTP delivery configuration.</p>')
+        }
+        
+        try:
+            mail = self.env['mail.mail'].sudo().create(mail_values)
+            mail.send(raise_exception=True)
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Success'),
+                    'message': _('Test email sent successfully to %s. Please check your inbox.') % otp_email,
+                    'sticky': False,
+                    'type': 'success',
+                }
+            }
+        except Exception as e:
+            raise UserError(_("Email delivery failed: %s\n\nThis indicates Odoo's Outgoing Mail Server is not configured correctly or is rejecting the email relay.") % str(e))
+

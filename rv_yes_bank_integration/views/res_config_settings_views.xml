@@ -36,6 +36,9 @@
                     </setting>
                     <setting id="yes_bank_otp_email_setting" string="Secure OTP Email" help="Designated email to receive outbound payment OTP codes" class="col-12 col-lg-12">
                         <field name="yes_bank_otp_email" class="w-100"/>
+                        <div class="mt-2">
+                            <button name="action_test_otp_email" string="Test OTP Email Delivery" type="object" class="btn-secondary"/>
+                        </div>
                     </setting>
                  </block>
             </xpath>
