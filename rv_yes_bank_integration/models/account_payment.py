@@ -222,6 +222,7 @@ class AccountPayment(models.Model):
             'raw_data': f"URL: {url}\nHeaders: {json.dumps(headers)}\nPayload: {json.dumps(payload)}",
             'status': 'received'
         })
+        self.env.cr.commit()
 
         try:
             _logger.info("Initiating YES Bank Payment request...")
@@ -239,6 +240,7 @@ class AccountPayment(models.Model):
                 'raw_data': log_record.raw_data + f"\n\nResponse Code: {response.status_code}\nResponse Body: {response.text}",
                 'processed_date': fields.Datetime.now()
             })
+            self.env.cr.commit()
 
             if response.status_code == 200:
                 res_data = response.json()
@@ -272,9 +274,11 @@ class AccountPayment(models.Model):
                     }
                 else:
                     log_record.write({'status': 'error'})
+                    self.env.cr.commit()
                     raise UserError(_("No bank reference returned by YES Bank. Response: %s") % response.text)
             else:
                 log_record.write({'status': 'error'})
+                self.env.cr.commit()
                 raise UserError(_("Bank API Error (Status %s): %s") % (response.status_code, response.text))
 
         except Exception as e:
@@ -283,6 +287,7 @@ class AccountPayment(models.Model):
                 'raw_data': log_record.raw_data + f"\n\nConnection Exception: {str(e)}",
                 'processed_date': fields.Datetime.now()
             })
+            self.env.cr.commit()
             raise UserError(_("Failed to connect to YES Bank server: %s") % str(e))
 
     def action_check_yes_bank_status(self):
@@ -338,6 +343,7 @@ class AccountPayment(models.Model):
             'raw_data': f"URL: {url}\nHeaders: {json.dumps(headers)}\nPayload: {json.dumps(payload)}",
             'status': 'received'
         })
+        self.env.cr.commit()
 
         try:
             _logger.info("Checking status of YES Bank payment...")
@@ -355,6 +361,7 @@ class AccountPayment(models.Model):
                 'raw_data': log_record.raw_data + f"\n\nResponse Code: {response.status_code}\nResponse Body: {response.text}",
                 'processed_date': fields.Datetime.now()
             })
+            self.env.cr.commit()
 
             if response.status_code == 200:
                 res_data = response.json()
@@ -371,6 +378,7 @@ class AccountPayment(models.Model):
                     mapped_status = status_mapping.get(status, 'in_process')
                     self.write({'yes_bank_status': mapped_status})
                     log_record.write({'status': 'processed'})
+                    self.env.cr.commit()
                     
                     return {
                         'type': 'ir.actions.client',
@@ -384,9 +392,11 @@ class AccountPayment(models.Model):
                     }
                 else:
                     log_record.write({'status': 'error'})
+                    self.env.cr.commit()
                     raise UserError(_("Unexpected response format from bank: %s") % response.text)
             else:
                 log_record.write({'status': 'error'})
+                self.env.cr.commit()
                 raise UserError(_("Bank API Error (Status %s): %s") % (response.status_code, response.text))
 
         except Exception as e:
@@ -395,6 +405,7 @@ class AccountPayment(models.Model):
                 'raw_data': log_record.raw_data + f"\n\nConnection Exception: {str(e)}",
                 'processed_date': fields.Datetime.now()
             })
+            self.env.cr.commit()
             raise UserError(_("Failed to connect to YES Bank server: %s") % str(e))
 
 
@@ -515,6 +526,7 @@ class ResPartnerBank(models.Model):
             'raw_data': f"URL: {url}\nHeaders: {json.dumps(headers)}\nPayload: {json.dumps(payload)}",
             'status': 'received'
         })
+        self.env.cr.commit()
 
         try:
             _logger.info("Registering beneficiary at YES Bank...")
@@ -532,6 +544,7 @@ class ResPartnerBank(models.Model):
                 'raw_data': log_record.raw_data + f"\n\nResponse Code: {response.status_code}\nResponse Body: {response.text}",
                 'processed_date': fields.Datetime.now()
             })
+            self.env.cr.commit()
 
             if response.status_code == 200:
                 res_data = response.json()
@@ -539,6 +552,7 @@ class ResPartnerBank(models.Model):
                 status = resp_obj.get('Status')
                 if status == 'S':
                     log_record.write({'status': 'processed'})
+                    self.env.cr.commit()
                     return {
                         'type': 'ir.actions.client',
                         'tag': 'display_notification',
@@ -551,6 +565,7 @@ class ResPartnerBank(models.Model):
                     }
                 else:
                     log_record.write({'status': 'error'})
+                    self.env.cr.commit()
                     error_resp = resp_obj.get('errorResp', [])
                     error_msg = "Unknown error"
                     if error_resp:
@@ -559,6 +574,7 @@ class ResPartnerBank(models.Model):
                     raise UserError(_("YES Bank Beneficiary Registration failed: %s") % error_msg)
             else:
                 log_record.write({'status': 'error'})
+                self.env.cr.commit()
                 raise UserError(_("Bank API Error (Status %s): %s") % (response.status_code, response.text))
 
         except Exception as e:
@@ -567,6 +583,7 @@ class ResPartnerBank(models.Model):
                 'raw_data': log_record.raw_data + f"\n\nConnection Exception: {str(e)}",
                 'processed_date': fields.Datetime.now()
             })
+            self.env.cr.commit()
             raise UserError(_("Failed to connect to YES Bank server: %s") % str(e))
 
 
