@@ -71,25 +71,35 @@ class YesBankCallback(http.Controller):
             company_acct = get_param('rv_yes_bank_integration.yes_bank_account_number')
 
             if not tx_type:
-                # If beneficiary account is our account number, it is CREDIT (incoming)
-                if company_acct and bene_acct_num and str(bene_acct_num).strip() == str(company_acct).strip():
-                    tx_type = 'CREDIT'
-                # Or check if custRefNum maps to an existing outbound payment
-                elif cust_ref_num:
+                # 1. Try to find by API reference number
+                if api_ref_num:
+                    payment = request.env['account.payment'].sudo().search([
+                        ('yes_bank_api_ref', '=', api_ref_num),
+                        ('payment_type', '=', 'outbound')
+                    ], limit=1)
+                    if payment:
+                        tx_type = 'DEBIT'
+
+                # 2. Try to find by payment ID or Name (custRefNum)
+                if not tx_type and cust_ref_num:
                     try:
                         payment_id = int(cust_ref_num)
-                        payment = request.env['account.payment'].sudo().search([
-                            ('id', '=', payment_id),
-                            ('payment_type', '=', 'outbound')
-                        ], limit=1)
-                        if payment:
-                            tx_type = 'DEBIT'
                     except ValueError:
-                        pass
-                
-                # Default to CREDIT if not resolved
+                        payment_id = 0
+                    payment = request.env['account.payment'].sudo().search([
+                        '|', ('id', '=', payment_id),
+                        ('name', '=', cust_ref_num),
+                        ('payment_type', '=', 'outbound')
+                    ], limit=1)
+                    if payment:
+                        tx_type = 'DEBIT'
+
+                # 3. Fallback based on company account matching
                 if not tx_type:
-                    tx_type = 'CREDIT'
+                    if company_acct and bene_acct_num and str(bene_acct_num).strip() == str(company_acct).strip():
+                        tx_type = 'CREDIT'
+                    else:
+                        tx_type = 'DEBIT'
 
             # Log standard amount sign for yes.bank.log
             signed_amount = amount if tx_type == 'CREDIT' else -amount
