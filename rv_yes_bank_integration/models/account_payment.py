@@ -373,7 +373,8 @@ class AccountPayment(models.Model):
                     status_mapping = {
                         'IN_PROCESS': 'in_process',
                         'COMPLETED': 'completed',
-                        'FAILED': 'failed'
+                        'FAILED': 'failed',
+                        'RETURNED_FROM_BENEFICIARY': 'failed'
                     }
                     mapped_status = status_mapping.get(status, 'in_process')
                     self.write({'yes_bank_status': mapped_status})
