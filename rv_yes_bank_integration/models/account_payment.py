@@ -613,7 +613,22 @@ class YesBankOtpWizard(models.TransientModel):
 
         # Clear OTP on success and send to YES Bank
         payment.write({'yes_bank_otp': False})
-        return payment.action_send_to_yes_bank_final()
+        payment.action_send_to_yes_bank_final()
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Payment Sent'),
+                'message': _('Payment has been dispatched. Status: %s. Bank Ref: %s') % (payment.yes_bank_status, payment.yes_bank_ref_id),
+                'sticky': False,
+                'type': 'success',
+                'next': {
+                    'type': 'ir.actions.client',
+                    'tag': 'reload',
+                }
+            }
+        }
 
 
 
