@@ -41,7 +41,7 @@ class AccountJournal(models.Model):
             raise ValidationError(_("SSL Key file not found at: %s") % key_path)
 
         # Set API URL
-        base_url = "https://skyway.yesbank.in/app/live" if env_mode == 'production' else "https://skyway.yesuat.bank.in/app/uat"
+        base_url = "https://skyway.yes.bank.in/app/live" if env_mode == 'production' else "https://skyway.yesuat.bank.in/app/uat"
         url = f"{base_url}/APIBankingService/FTx/Payments/GetBalance"
 
         headers = {

@@ -162,7 +162,7 @@ class AccountPayment(models.Model):
             raise UserError(_("Recipient bank account number or IFSC code is missing."))
 
         # Set API URL
-        base_url = "https://skyway.yesbank.in/app/live" if env_mode == 'production' else "https://skyway.yesuat.bank.in/app/uat"
+        base_url = "https://skyway.yes.bank.in/app/live" if env_mode == 'production' else "https://skyway.yesuat.bank.in/app/uat"
         url = f"{base_url}/APIBankingService/FTx/Payments/PayReq"
 
         headers = {
@@ -310,7 +310,7 @@ class AccountPayment(models.Model):
             raise UserError(_("Please complete YES Bank Integration settings in Accounting Configuration."))
 
         # Set API URL
-        base_url = "https://skyway.yesbank.in/app/live" if env_mode == 'production' else "https://skyway.yesuat.bank.in/app/uat"
+        base_url = "https://skyway.yes.bank.in/app/live" if env_mode == 'production' else "https://skyway.yesuat.bank.in/app/uat"
         url = f"{base_url}/APIBankingService/FTx/Payments/GetStatus"
 
         headers = {
@@ -450,7 +450,7 @@ class ResPartnerBank(models.Model):
         bene_ifsc = self.bank_id.bic or getattr(self, 'bank_bic', False)
         
         # Set API URL
-        base_url = "https://skyway.yesbank.in/app/live" if env_mode == 'production' else "https://skyway.yesuat.bank.in/app/uat"
+        base_url = "https://skyway.yes.bank.in/app/live" if env_mode == 'production' else "https://skyway.yesuat.bank.in/app/uat"
         url = f"{base_url}/APIBankingService/FTx/BeneDB/beneMaint"
 
         headers = {
