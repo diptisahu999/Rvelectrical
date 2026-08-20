@@ -551,7 +551,7 @@ class ResPartnerBank(models.Model):
                 res_data = response.json()
                 resp_obj = res_data.get('beneMaintV2', {})
                 status = resp_obj.get('Status')
-                if status == 'S':
+                if status in ('S', 'P'):
                     log_record.write({'status': 'processed'})
                     self.env.cr.commit()
                     return {
