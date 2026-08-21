@@ -28,7 +28,7 @@ class AccountJournal(models.Model):
         basic_auth_pass = get_param('rv_yes_bank_integration.yes_bank_basic_auth_password')
         cert_path = (get_param('rv_yes_bank_integration.yes_bank_cert_path') or '').strip()
         key_path = (get_param('rv_yes_bank_integration.yes_bank_key_path') or '').strip()
-        account_number = get_param('rv_yes_bank_integration.yes_bank_account_number')
+        account_number = self.bank_account_id.acc_number or get_param('rv_yes_bank_integration.yes_bank_account_number')
         cust_id = get_param('rv_yes_bank_integration.yes_bank_cust_id')
         env_mode = get_param('rv_yes_bank_integration.yes_bank_environment', 'uat')
 
