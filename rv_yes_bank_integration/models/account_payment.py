@@ -413,6 +413,12 @@ class AccountPayment(models.Model):
 class ResPartnerBank(models.Model):
     _inherit = 'res.partner.bank'
 
+    yes_bank_journal_id = fields.Many2one(
+        'account.journal', 
+        string='YES Bank Debit Journal', 
+        domain=[('type', '=', 'bank')],
+        help="Select the YES Bank journal (corporate account) you want to register this beneficiary under"
+    )
     yes_bank_bene_code = fields.Char(string='YES Bank Beneficiary Code', help="Pre-registered beneficiary code at YES Bank")
     yes_bank_payment_type = fields.Selection([
         ('IMPS', 'IMPS'),
@@ -431,7 +437,7 @@ class ResPartnerBank(models.Model):
         basic_auth_pass = get_param('rv_yes_bank_integration.yes_bank_basic_auth_password')
         cert_path = (get_param('rv_yes_bank_integration.yes_bank_cert_path') or '').strip()
         key_path = (get_param('rv_yes_bank_integration.yes_bank_key_path') or '').strip()
-        account_number = get_param('rv_yes_bank_integration.yes_bank_account_number')
+        account_number = self.yes_bank_journal_id.bank_account_id.acc_number or get_param('rv_yes_bank_integration.yes_bank_account_number')
         cust_id = get_param('rv_yes_bank_integration.yes_bank_cust_id')
         env_mode = get_param('rv_yes_bank_integration.yes_bank_environment', 'uat')
 
@@ -554,6 +560,21 @@ class ResPartnerBank(models.Model):
                 if status in ('S', 'P'):
                     log_record.write({'status': 'processed'})
                     self.env.cr.commit()
+
+                    # Post log note on Partner's chatter
+                    if self.partner_id:
+                        self.partner_id.message_post(
+                            body=_("🟢 <b>YES Bank Beneficiary Registered</b><br/>"
+                                   "<b>Beneficiary Account Number:</b> %s<br/>"
+                                   "<b>IFSC Code:</b> %s<br/>"
+                                   "<b>Beneficiary Code:</b> %s<br/>"
+                                   "<b>Registered Under Debit Journal:</b> %s (Account: %s)") % (
+                                       bene_acc, bene_ifsc, bene_code,
+                                       self.yes_bank_journal_id.name or 'Default Settings',
+                                       account_number
+                                   )
+                        )
+
                     return {
                         'type': 'ir.actions.client',
                         'tag': 'display_notification',

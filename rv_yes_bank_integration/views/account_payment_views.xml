@@ -33,6 +33,7 @@
         <field name="inherit_id" ref="base.view_partner_bank_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='acc_number']" position="after">
+                <field name="yes_bank_journal_id" options="{'no_create': True, 'no_open': True}"/>
                 <field name="yes_bank_bene_code"/>
                 <field name="yes_bank_payment_type"/>
                 <button name="action_register_yes_bank_beneficiary" string="Register Beneficiary at YES Bank" type="object" class="btn-primary"/>
