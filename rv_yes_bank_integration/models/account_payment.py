@@ -18,12 +18,40 @@ class AccountPayment(models.Model):
 
     yes_bank_ref_id = fields.Char(string='YES Bank Ref ID', readonly=True, copy=False)
     yes_bank_api_ref = fields.Char(string='YES Bank API Ref', readonly=True, copy=False)
+    state = fields.Selection(selection_add=[
+        ('failed', 'Failed')
+    ], ondelete={'failed': 'set default'})
+
     yes_bank_status = fields.Selection([
         ('draft', 'Not Sent'),
         ('in_process', 'In Process'),
         ('completed', 'Completed'),
         ('failed', 'Failed')
     ], string='YES Bank Status', default='draft', readonly=True, copy=False)
+
+    def write(self, vals):
+        if 'yes_bank_status' in vals:
+            yes_status = vals['yes_bank_status']
+            if yes_status == 'completed':
+                vals['state'] = 'paid'
+            elif yes_status == 'failed':
+                vals['state'] = 'failed'
+            elif yes_status == 'in_process':
+                vals['state'] = 'in_process'
+        return super(AccountPayment, self).write(vals)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if 'yes_bank_status' in vals:
+                yes_status = vals['yes_bank_status']
+                if yes_status == 'completed':
+                    vals['state'] = 'paid'
+                elif yes_status == 'failed':
+                    vals['state'] = 'failed'
+                elif yes_status == 'in_process':
+                    vals['state'] = 'in_process'
+        return super(AccountPayment, self).create(vals_list)
 
     yes_bank_payment_type = fields.Selection([
         ('IMPS', 'IMPS'),
