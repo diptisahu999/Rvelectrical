@@ -44,8 +44,8 @@ class SaleOrder(models.Model):
             # Ensure data is flushed to DB before PDF generation to catch latest T&C
             order.flush_recordset()
 
-            # Generate PDF bytes using custom report
-            report = self.env.ref("invoice_report.action_unified_quotation")
+            # Generate PDF bytes using new custom report
+            report = self.env.ref("invoice_report.action_unified_quotation_new")
             pdf_content, _ = report._render_qweb_pdf(report.report_name, res_ids=[order.id])
 
             # Create unique filename to prevent URL caching
