@@ -347,7 +347,7 @@ class report_stock_card(models.TransientModel):
 
             total_debit = sum(line.get('debit', 0) for line in docs if line)
             total_credit = sum(line.get('credit', 0) for line in docs if line)
-            last_balance = docs[-1].get('balance', 0.0) if docs else 0.0
+            last_balance = docs[-1].get('balance', 0.0) if docs else initial_balance
 
             sheet.write(current_row, 2, 'Total:', header_format)
             sheet.write(current_row, 3, total_debit, currency_format_total)

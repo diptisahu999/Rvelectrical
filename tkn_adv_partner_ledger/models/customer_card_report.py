@@ -77,9 +77,9 @@ class AdvancePartnerLedger(models.AbstractModel):
         #           ('account_id', '=', partner.property_account_receivable_id.id),
         #           ('account_id', '=', partner.property_account_payable_id.id)]
 
-        domain = [('partner_id', '=', partner.id),
-                    ('date', '>=', date_from),
-                    ('date', '<=', date_to)]
+        domain = [('partner_id', '=', partner.id)]
+        if date_to:
+            domain += [('date', '<=', date_to)]
 
         if partner_type == 'receivable':
             domain += [('account_id', '=', partner.property_account_receivable_id.id)]

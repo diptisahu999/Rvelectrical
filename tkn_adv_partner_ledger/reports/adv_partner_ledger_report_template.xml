@@ -202,7 +202,7 @@
                                     </td>
 
                                     <td class="text-center">
-                                        <span t-esc="round(all_balance(partner,o.date_start,o.date_end,o.journal_ids,o.sales_person_ids,o.moves_status,o.currency_id,o.company_id,o.partner_type),2)"/>
+                                        <span t-esc="round(balanced, 2)"/>
                                         <span style="margin-left:5px;" t-esc="o.currency_id.symbol"/>
                                     </td>
                                 </tr>
@@ -216,7 +216,7 @@
                                     <h4 class="text-start" style="padding: 5px; background-color: #dce1e3;">
                                         Ending Balance:
                                         <span style="margin-left: 10px;"
-                                              t-esc="round(all_balance(partner,o.date_start,o.date_end,o.journal_ids,o.sales_person_ids,o.moves_status,o.currency_id,o.company_id,o.partner_type),2)"/>
+                                              t-esc="round(balanced, 2)"/>
                                         <span style="margin-left:5px;" t-esc="o.currency_id.symbol"/>
                                     </h4>
                                 </div>
