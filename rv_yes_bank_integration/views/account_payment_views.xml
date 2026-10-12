@@ -10,12 +10,12 @@
                         string="Send to YES Bank" 
                         type="object" 
                         class="oe_highlight" 
-                        invisible="payment_type != 'outbound' or state in ('draft', 'cancel') or yes_bank_status in ('in_process', 'completed')"/>
+                        invisible="payment_type != 'outbound' or state in ('draft', 'cancel') or yes_bank_status in ('pending_auth', 'in_process', 'completed')"/>
                 <button name="action_check_yes_bank_status" 
                         string="Check YES Bank Status" 
                         type="object" 
                         class="btn-secondary" 
-                        invisible="yes_bank_status not in ('in_process', 'failed')"/>
+                        invisible="yes_bank_status not in ('pending_auth', 'in_process', 'failed')"/>
             </xpath>
             <xpath expr="//field[@name='date']" position="after">
                 <field name="yes_bank_payment_type" invisible="payment_type != 'outbound'"/>

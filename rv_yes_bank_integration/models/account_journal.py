@@ -103,7 +103,7 @@ class AccountJournal(models.Model):
                         'yes_bank_balance': balance_val,
                         'yes_bank_balance_date': fields.Datetime.now()
                     })
-                    log_record.write({'status': 'processed', 'amount': balance_val})
+                    log_record.write({'status': 'completed', 'amount': balance_val})
                     return {
                         'type': 'ir.actions.client',
                         'tag': 'display_notification',
@@ -112,6 +112,10 @@ class AccountJournal(models.Model):
                             'message': _('Live Balance fetched successfully: %s INR') % clear_balance,
                             'sticky': False,
                             'type': 'success',
+                            'next': {
+                                'type': 'ir.actions.client',
+                                'tag': 'reload',
+                            }
                         }
                     }
                 else:

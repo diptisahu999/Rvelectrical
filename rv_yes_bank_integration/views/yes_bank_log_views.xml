@@ -20,7 +20,7 @@
         <field name="arch" type="xml">
             <form string="YES Bank Log">
                 <header>
-                    <field name="status" widget="statusbar"/>
+                    <field name="status" widget="statusbar" statusbar_visible="received,pending_auth,in_process,completed,processed,error"/>
                 </header>
                 <sheet>
                     <group>

@@ -15,6 +15,9 @@ class YesBankLog(models.Model):
     raw_data = fields.Text(string='Raw Data')
     status = fields.Selection([
         ('received', 'Received'),
+        ('pending_auth', 'Pending Auth'),
+        ('in_process', 'In Process'),
+        ('completed', 'Completed'),
         ('processed', 'Processed'),
         ('error', 'Error')
     ], string='Status', default='received')

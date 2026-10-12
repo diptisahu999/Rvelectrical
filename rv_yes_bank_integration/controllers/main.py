@@ -120,13 +120,32 @@ class YesBankCallback(http.Controller):
 
                 if payment:
                     status_mapping = {
+                        'PENDING_AUTH': 'pending_auth',
+                        'PENDING_AUTHORIZATION': 'pending_auth',
                         'IN_PROCESS': 'in_process',
+                        'PENDING': 'in_process',
                         'COMPLETED': 'completed',
+                        'SUCCESS': 'completed',
                         'FAILED': 'failed',
                         'RETURNED_FROM_BENEFICIARY': 'failed'
                     }
                     mapped_status = status_mapping.get(txn_status, 'in_process')
+                    log_status_map = {
+                        'pending_auth': 'pending_auth',
+                        'in_process': 'in_process',
+                        'completed': 'completed',
+                        'failed': 'error'
+                    }
+                    log_st = log_status_map.get(mapped_status, 'processed')
                     payment.write({'yes_bank_status': mapped_status})
+
+                    # Also update original outgoing payment log
+                    orig_log = request.env['yes.bank.log'].sudo().search([
+                        ('name', '=', f'Payment Request {payment.name}')
+                    ], limit=1)
+                    if orig_log:
+                        orig_log.write({'status': log_st})
+
                     _logger.info("Updated outgoing payment %s status to %s via callback", payment.name, mapped_status)
             else:
                 # Process incoming payment - Create account.payment
@@ -169,7 +188,7 @@ class YesBankCallback(http.Controller):
                             'memo': f"YES Bank Incoming Ref: {bank_ref_id or api_ref_num or ''}",
                             'yes_bank_ref_id': bank_ref_id,
                             'yes_bank_api_ref': api_ref_num,
-                            'yes_bank_status': 'completed' if txn_status == 'COMPLETED' else 'in_process',
+                            'yes_bank_status': 'completed' if txn_status in ('COMPLETED', 'SUCCESS') else 'in_process',
                         }
                         if partner:
                             payment_vals['partner_id'] = partner.id
@@ -181,11 +200,12 @@ class YesBankCallback(http.Controller):
                         _logger.info("Created and posted incoming payment %s for amount %s via callback", new_payment.name, amount)
 
             # Create log entry
+            cb_status = 'completed' if txn_status in ('COMPLETED', 'SUCCESS') else ('error' if txn_status in ('FAILED', 'RETURNED_FROM_BENEFICIARY') else 'in_process')
             request.env['yes.bank.log'].sudo().create({
                 'name': f"Callback ({tx_type})",
                 'amount': signed_amount,
                 'raw_data': json.dumps(data),
-                'status': 'processed',
+                'status': cb_status,
                 'processed_date': fields.Datetime.now()
             })
 

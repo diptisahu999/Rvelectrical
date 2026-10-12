@@ -24,6 +24,7 @@ class AccountPayment(models.Model):
 
     yes_bank_status = fields.Selection([
         ('draft', 'Not Sent'),
+        ('pending_auth', 'Pending Auth'),
         ('in_process', 'In Process'),
         ('completed', 'Completed'),
         ('failed', 'Failed')
@@ -36,7 +37,7 @@ class AccountPayment(models.Model):
                 vals['state'] = 'paid'
             elif yes_status == 'failed':
                 vals['state'] = 'failed'
-            elif yes_status == 'in_process':
+            elif yes_status in ('in_process', 'pending_auth'):
                 vals['state'] = 'in_process'
         return super(AccountPayment, self).write(vals)
 
@@ -49,7 +50,7 @@ class AccountPayment(models.Model):
                     vals['state'] = 'paid'
                 elif yes_status == 'failed':
                     vals['state'] = 'failed'
-                elif yes_status == 'in_process':
+                elif yes_status in ('in_process', 'pending_auth'):
                     vals['state'] = 'in_process'
         return super(AccountPayment, self).create(vals_list)
 
@@ -76,7 +77,7 @@ class AccountPayment(models.Model):
             raise UserError(_("Only outbound payments can be sent to YES Bank."))
         if self.state in ('draft', 'cancel'):
             raise UserError(_("Only confirmed payments can be sent to YES Bank."))
-        if self.yes_bank_status in ('in_process', 'completed'):
+        if self.yes_bank_status in ('pending_auth', 'in_process', 'completed'):
             raise UserError(_("This payment has already been sent to YES Bank (Status: %s).") % self.yes_bank_status)
 
         # Get Secure OTP Email
@@ -158,7 +159,7 @@ class AccountPayment(models.Model):
             raise UserError(_("Only outbound payments can be sent to YES Bank."))
         if self.state in ('draft', 'cancel'):
             raise UserError(_("Only confirmed payments can be sent to YES Bank."))
-        if self.yes_bank_status in ('in_process', 'completed'):
+        if self.yes_bank_status in ('pending_auth', 'in_process', 'completed'):
             raise UserError(_("This payment has already been sent to YES Bank (Status: %s).") % self.yes_bank_status)
 
         # Get credentials
@@ -279,17 +280,28 @@ class AccountPayment(models.Model):
 
                 if bank_ref:
                     status_mapping = {
+                        'PENDING_AUTH': 'pending_auth',
+                        'PENDING_AUTHORIZATION': 'pending_auth',
                         'IN_PROCESS': 'in_process',
+                        'PENDING': 'in_process',
                         'COMPLETED': 'completed',
-                        'FAILED': 'failed'
+                        'SUCCESS': 'completed',
+                        'FAILED': 'failed',
+                        'RETURNED_FROM_BENEFICIARY': 'failed'
                     }
                     mapped_status = status_mapping.get(status, 'in_process')
+                    log_status_map = {
+                        'pending_auth': 'pending_auth',
+                        'in_process': 'in_process',
+                        'completed': 'completed',
+                        'failed': 'error'
+                    }
                     self.write({
                         'yes_bank_ref_id': bank_ref,
                         'yes_bank_api_ref': api_ref,
                         'yes_bank_status': mapped_status
                     })
-                    log_record.write({'status': 'processed'})
+                    log_record.write({'status': log_status_map.get(mapped_status, 'processed')})
                     return {
                         'type': 'ir.actions.client',
                         'tag': 'display_notification',
@@ -399,14 +411,33 @@ class AccountPayment(models.Model):
 
                 if status:
                     status_mapping = {
+                        'PENDING_AUTH': 'pending_auth',
+                        'PENDING_AUTHORIZATION': 'pending_auth',
                         'IN_PROCESS': 'in_process',
+                        'PENDING': 'in_process',
                         'COMPLETED': 'completed',
+                        'SUCCESS': 'completed',
                         'FAILED': 'failed',
                         'RETURNED_FROM_BENEFICIARY': 'failed'
                     }
                     mapped_status = status_mapping.get(status, 'in_process')
+                    log_status_map = {
+                        'pending_auth': 'pending_auth',
+                        'in_process': 'in_process',
+                        'completed': 'completed',
+                        'failed': 'error'
+                    }
+                    log_st = log_status_map.get(mapped_status, 'processed')
                     self.write({'yes_bank_status': mapped_status})
-                    log_record.write({'status': 'processed'})
+                    log_record.write({'status': log_st})
+                    
+                    # Also update original outgoing payment log
+                    orig_log = self.env['yes.bank.log'].sudo().search([
+                        ('name', '=', f'Payment Request {self.name}')
+                    ], limit=1)
+                    if orig_log:
+                        orig_log.write({'status': log_st})
+                        
                     self.env.cr.commit()
                     
                     return {
@@ -416,7 +447,11 @@ class AccountPayment(models.Model):
                             'title': _('Status Updated'),
                             'message': _('Current transaction status is: %s') % status,
                             'sticky': False,
-                            'type': 'info',
+                            'type': 'success' if mapped_status == 'completed' else ('danger' if mapped_status == 'failed' else 'info'),
+                            'next': {
+                                'type': 'ir.actions.client',
+                                'tag': 'reload',
+                            }
                         }
                     }
                 else:
@@ -586,7 +621,7 @@ class ResPartnerBank(models.Model):
                 resp_obj = res_data.get('beneMaintV2', {})
                 status = resp_obj.get('Status')
                 if status in ('S', 'P'):
-                    log_record.write({'status': 'processed'})
+                    log_record.write({'status': 'completed'})
                     self.env.cr.commit()
 
                     # Post log note on Partner's chatter
@@ -611,6 +646,10 @@ class ResPartnerBank(models.Model):
                             'message': _('Beneficiary registered successfully. Code: %s') % bene_code,
                             'sticky': False,
                             'type': 'success',
+                            'next': {
+                                'type': 'ir.actions.client',
+                                'tag': 'reload',
+                            }
                         }
                     }
                 else:
