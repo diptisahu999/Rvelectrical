@@ -17,8 +17,6 @@
         <field name="code">model.cron_auto_fetch_statement()</field>
         <field name="interval_number">1</field>
         <field name="interval_type">days</field>
-        <field name="numbercall">-1</field>
         <field name="active" eval="False"/>
-        <field name="nextcall" eval="(datetime.now() + timedelta(days=1)).replace(hour=1, minute=0, second=0, microsecond=0)"/>
     </record>
 </odoo>
