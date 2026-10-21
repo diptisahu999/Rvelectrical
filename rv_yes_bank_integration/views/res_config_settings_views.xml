@@ -40,6 +40,18 @@
                             <button name="action_test_otp_email" string="Test OTP Email Delivery" type="object" class="btn-secondary"/>
                         </div>
                     </setting>
+                    <setting id="yes_bank_channel_id_setting" string="Channel ID" help="Channel ID assigned by YES Bank (e.g. RVEnterprise)">
+                        <field name="yes_bank_channel_id"/>
+                    </setting>
+                    <setting id="yes_bank_basic_auth_user_setting" string="Basic Auth Username" help="Basic Auth username for gateway (e.g. testuser for UAT)">
+                        <field name="yes_bank_basic_auth_user"/>
+                    </setting>
+                    <setting id="yes_bank_dp_cert_path_setting" string="DataPower Encryption Cert (.crt)" help="Path to YES Bank DataPower public cert for JWE encryption" class="col-12 col-lg-12">
+                        <field name="yes_bank_dp_cert_path" class="w-100"/>
+                    </setting>
+                    <setting id="yes_bank_app_id_setting" string="App ID" help="App ID for statement inquiry (default: NIL1121)">
+                        <field name="yes_bank_app_id"/>
+                    </setting>
                  </block>
             </xpath>
         </field>

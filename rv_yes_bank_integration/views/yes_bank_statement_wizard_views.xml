@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Wizard Form View -->
+    <record id="view_yes_bank_statement_wizard_form" model="ir.ui.view">
+        <field name="name">yes.bank.statement.wizard.form</field>
+        <field name="model">yes.bank.statement.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Fetch YES Bank Statement">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>YES Bank — Adhoc Statement Fetch</h1>
+                    </div>
+
+                    <!-- Draft state: Input form -->
+                    <group invisible="state == 'done'">
+                        <group string="Select Journal &amp; Date Range">
+                            <field name="journal_id" options="{'no_create': True}"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <group string="Options">
+                            <field name="page_size"/>
+                            <field name="fetch_all_pages"/>
+                        </group>
+                    </group>
+
+                    <!-- Done state: Result summary -->
+                    <group invisible="state == 'draft'">
+                        <group string="Fetch Complete">
+                            <field name="journal_id" readonly="1"/>
+                            <field name="date_from" readonly="1"/>
+                            <field name="date_to" readonly="1"/>
+                        </group>
+                        <group string="Result">
+                            <field name="result_summary" widget="text" readonly="1" nolabel="1"/>
+                        </group>
+                    </group>
+
+                    <field name="state" invisible="1"/>
+                </sheet>
+                <footer>
+                    <button name="action_fetch_statement"
+                            string="Fetch Statement"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state == 'done'"/>
+                    <button name="action_open_bank_statement"
+                            string="View Statement Lines"
+                            type="object"
+                            class="btn-secondary"
+                            invisible="state == 'draft'"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Server Action – available from Accounting > Bank Journals menu -->
+    <record id="action_yes_bank_statement_wizard" model="ir.actions.act_window">
+        <field name="name">Fetch YES Bank Statement</field>
+        <field name="res_model">yes.bank.statement.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="account.model_account_journal"/>
+        <field name="binding_view_types">list,form</field>
+    </record>
+</odoo>

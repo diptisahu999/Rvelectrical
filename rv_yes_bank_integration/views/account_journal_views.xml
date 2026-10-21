@@ -14,11 +14,16 @@
                         </group>
                         <group string="Actions">
                             <div>
-                                <button name="action_fetch_yes_bank_balance" 
-                                        string="Fetch Live Balance" 
-                                        type="object" 
-                                        class="btn-primary" 
+                                <button name="action_fetch_yes_bank_balance"
+                                        string="Fetch Live Balance"
+                                        type="object"
+                                        class="btn-primary"
                                         icon="fa-refresh"/>
+                                <button name="action_open_statement_wizard"
+                                        string="Fetch Bank Statement"
+                                        type="object"
+                                        class="btn-secondary ms-2"
+                                        icon="fa-download"/>
                             </div>
                         </group>
                     </group>

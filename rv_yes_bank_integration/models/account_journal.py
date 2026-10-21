@@ -152,3 +152,16 @@ class AccountJournal(models.Model):
                     journal.action_fetch_yes_bank_balance()
                 except Exception as e:
                     _logger.error("Auto balance fetch failed for journal %s: %s", journal.name, str(e))
+
+    def action_open_statement_wizard(self):
+        """Open the YES Bank Statement Fetch wizard pre-filled with this journal."""
+        self.ensure_one()
+        wizard = self.env['yes.bank.statement.wizard'].create({'journal_id': self.id})
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Fetch YES Bank Statement'),
+            'res_model': 'yes.bank.statement.wizard',
+            'res_id': wizard.id,
+            'view_mode': 'form',
+            'target': 'new',
+        }

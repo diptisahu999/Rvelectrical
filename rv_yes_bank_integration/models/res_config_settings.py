@@ -48,6 +48,29 @@ class ResConfigSettings(models.TransientModel):
         config_parameter='rv_yes_bank_integration.yes_bank_otp_email',
         help="All transaction OTP authorization codes will be sent exclusively to this email address."
     )
+    # --- Statement API (Adhoc Statement V3 Encrypted) ---
+    yes_bank_channel_id = fields.Char(
+        string='YES Bank Channel ID',
+        config_parameter='rv_yes_bank_integration.yes_bank_channel_id',
+        default='RVEnterprise',
+        help="Channel ID assigned by YES Bank during API onboarding (e.g. RVEnterprise)."
+    )
+    yes_bank_basic_auth_user = fields.Char(
+        string='YES Bank Basic Auth Username',
+        config_parameter='rv_yes_bank_integration.yes_bank_basic_auth_user',
+        help="Basic Auth username for the API gateway (e.g. testuser for UAT)."
+    )
+    yes_bank_dp_cert_path = fields.Char(
+        string='DataPower Encryption Cert Path (.crt)',
+        config_parameter='rv_yes_bank_integration.yes_bank_dp_cert_path',
+        help="Absolute path to YES Bank's DataPower public certificate for JWE encryption."
+    )
+    yes_bank_app_id = fields.Char(
+        string='YES Bank App ID',
+        config_parameter='rv_yes_bank_integration.yes_bank_app_id',
+        default='NIL1121',
+        help="App ID sent in statement inquiry requests (default: NIL1121)."
+    )
 
     def action_test_otp_email(self):
         self.ensure_one()
