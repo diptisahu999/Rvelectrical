@@ -154,6 +154,9 @@ class YesBankStatementWizard(models.TransientModel):
 
     def _get_config(self):
         get_param = self.env['ir.config_parameter'].sudo().get_param
+        # Settings account number takes priority; fall back to journal's linked bank account
+        configured_account = (get_param('rv_yes_bank_integration.yes_bank_account_number') or '').strip()
+        journal_account = (self.journal_id.bank_account_id.acc_number or '').strip()
         return {
             'client_id': get_param('rv_yes_bank_integration.yes_bank_client_id'),
             'client_secret': get_param('rv_yes_bank_integration.yes_bank_client_secret'),
@@ -163,14 +166,12 @@ class YesBankStatementWizard(models.TransientModel):
             'cert_path': (get_param('rv_yes_bank_integration.yes_bank_cert_path') or '').strip(),
             'key_path': (get_param('rv_yes_bank_integration.yes_bank_key_path') or '').strip(),
             'dp_cert_path': (get_param('rv_yes_bank_integration.yes_bank_dp_cert_path') or '').strip(),
-            'account_number': (
-                self.journal_id.bank_account_id.acc_number
-                or get_param('rv_yes_bank_integration.yes_bank_account_number') or ''
-            ).strip(),
+            'account_number': configured_account or journal_account,
             'cust_id': (get_param('rv_yes_bank_integration.yes_bank_cust_id') or '').strip(),
             'app_id': get_param('rv_yes_bank_integration.yes_bank_app_id', 'NIL1121'),
             'env_mode': get_param('rv_yes_bank_integration.yes_bank_environment', 'uat'),
         }
+
 
     def _validate_config(self, cfg):
         missing = [k for k in ('client_id', 'client_secret', 'basic_auth_pass',
