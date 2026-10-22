@@ -200,9 +200,9 @@ class YesBankStatementWizard(models.TransientModel):
 
         start_date = self.date_from.strftime('%Y%m%d')
         end_date = self.date_to.strftime('%Y%m%d')
-        # startTime/endTime format: YYYYMMDDHHmmS (13 digits as per YES Bank spec)
-        start_time = self.date_from.strftime('%Y%m%d') + '000000'
-        end_time = self.date_to.strftime('%Y%m%d') + '235959'
+        # startTime/endTime format: 13 digits (YYYYMMDD + HHmmS)
+        start_time = self.date_from.strftime('%Y%m%d') + '00000'
+        end_time = self.date_to.strftime('%Y%m%d') + '23595'
         page_size_val = max(10, min(self.page_size or 100, 100))
 
         headers = {
@@ -233,15 +233,16 @@ class YesBankStatementWizard(models.TransientModel):
                             "ServiceName": "AcctStatementInquiry",
                             "ReqRefNum": req_ref,
                             "ReqRefTimeStamp": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-                            "ServiceVersionNo": "1.0"
+                            "ServiceVersionNo": "1.3"
                         }
                     },
                     "ReqBody": {
                         "customerId": cfg['cust_id'],
-                        "appId": cfg.get('app_id') or 'NIL1121',
                         "accountNo": cfg['account_number'],
                         "pageSize": str(page_size_val),
                         "pageNo": str(page_no),
+                        "startTime": start_time,
+                        "endTime": end_time,
                         "startDate": start_date,
                         "endDate": end_date
                     }
