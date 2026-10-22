@@ -297,9 +297,12 @@ class YesBankStatementWizard(models.TransientModel):
                 err_desc = err_details.get('ErrDesc', 'Unknown error')
                 raise UserError(
                     _("YES Bank CBS error (Code %s): %s\n\n"
+                      "Sent Account: %s\n"
+                      "Sent Customer ID: %s\n"
+                      "Channel ID: %s\n\n"
                       "The account must be entitled to Channel ID '%s' in YES Bank's Finacle system.\n"
                       "Please contact APIONBOARDING.RETAIL to map your account to this channel.")
-                    % (err_code, err_desc, cfg['channel_id'])
+                    % (err_code, err_desc, cfg['account_number'], cfg['cust_id'], cfg['channel_id'], cfg['channel_id'])
                 )
 
             res_body = inner.get('ResBody', {})
