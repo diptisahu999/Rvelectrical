@@ -140,7 +140,7 @@ class YesBankStatementWizard(models.TransientModel):
         string='To Date', required=True,
         default=fields.Date.today
     )
-    page_size = fields.Integer(string='Records per Page', default=50)
+    page_size = fields.Integer(string='Records per Page', default=100)
     fetch_all_pages = fields.Boolean(
         string='Fetch All Pages', default=True,
         help="Automatically paginate through all available records."
@@ -203,13 +203,27 @@ class YesBankStatementWizard(models.TransientModel):
         # startTime/endTime format: YYYYMMDDHHmmS (13 digits as per YES Bank spec)
         start_time = self.date_from.strftime('%Y%m%d') + '000000'
         end_time = self.date_to.strftime('%Y%m%d') + '235959'
+        page_size_val = max(10, min(self.page_size or 100, 100))
+
+        headers = {
+            "ChannelId": cfg['channel_id'],
+            "X-IBM-Client-Id": cfg['client_id'],
+            "X-IBM-Client-Secret": cfg['client_secret'],
+            "Content-Type": "text/plain"
+        }
+
+        # Reuse session for keep-alive TCP & TLS across paginated calls
+        session = req_lib.Session()
+        session.auth = (cfg['basic_auth_user'], cfg['basic_auth_pass'])
+        session.cert = (cfg['cert_path'], cfg['key_path'])
+        session.headers.update(headers)
 
         all_transactions = []
         page_no = 1
         total_pages = 0
         is_next = 'Y'
 
-        while is_next == 'Y':
+        while is_next == 'Y' and page_no <= 50:
             req_ref = f"RVSTMT{int(time.time())}{page_no}"
             payload = {
                 "AcctStatementInquiryReq": {
@@ -225,7 +239,7 @@ class YesBankStatementWizard(models.TransientModel):
                     "ReqBody": {
                         "customerId": cfg['cust_id'],
                         "accountNo": cfg['account_number'],
-                        "pageSize": str(self.page_size),
+                        "pageSize": str(page_size_val),
                         "pageNo": str(page_no),
                         "startTime": start_time,
                         "endTime": end_time,
@@ -240,13 +254,6 @@ class YesBankStatementWizard(models.TransientModel):
             except Exception as e:
                 raise UserError(_("JWE Encryption failed: %s") % str(e))
 
-            headers = {
-                "ChannelId": cfg['channel_id'],
-                "X-IBM-Client-Id": cfg['client_id'],
-                "X-IBM-Client-Secret": cfg['client_secret'],
-                "Content-Type": "text/plain"
-            }
-
             log = self.env['yes.bank.log'].sudo().create({
                 'name': f'Statement – Pg {page_no} – {start_date} to {end_date}',
                 'amount': 0.0,
@@ -255,13 +262,10 @@ class YesBankStatementWizard(models.TransientModel):
             })
 
             try:
-                response = req_lib.post(
+                response = session.post(
                     url,
-                    headers=headers,
-                    auth=(cfg['basic_auth_user'], cfg['basic_auth_pass']),
-                    cert=(cfg['cert_path'], cfg['key_path']),
                     data=jwe_token,
-                    timeout=60
+                    timeout=30
                 )
             except Exception as e:
                 log.write({'status': 'error', 'raw_data': log.raw_data + f"\n\nError: {e}"})
@@ -315,7 +319,7 @@ class YesBankStatementWizard(models.TransientModel):
                 break
             page_no += 1
 
-        # Create bank statement lines
+        # Create bank statement lines using high-performance batch insertion
         created, skipped = self._create_statement_lines(all_transactions)
 
         summary = (
@@ -334,10 +338,14 @@ class YesBankStatementWizard(models.TransientModel):
         }
 
     def _create_statement_lines(self, transactions):
-        """Parse YES Bank transactions and create account.bank.statement.line records."""
-        created = 0
-        skipped = 0
+        """Parse YES Bank transactions and batch-create account.bank.statement.line records."""
         journal = self.journal_id
+        if not transactions:
+            return 0, 0
+
+        parsed_candidates = []
+        seen_refs = set()
+        duplicate_in_payload = 0
 
         for txn in transactions:
             ref_no = (txn.get('referenceTransactionNo') or '').strip()
@@ -375,14 +383,11 @@ class YesBankStatementWizard(models.TransientModel):
             # Unique reference for deduplication
             unique_ref = ref_no or user_ref or f"{txn_date}_{amount}_{narrative[:30]}"
 
-            # Dedup check
-            existing = self.env['account.bank.statement.line'].sudo().search([
-                ('journal_id', '=', journal.id),
-                ('payment_ref', '=', unique_ref),
-            ], limit=1)
-            if existing:
-                skipped += 1
+            # In-memory deduplication of duplicates within current response payload
+            if unique_ref in seen_refs:
+                duplicate_in_payload += 1
                 continue
+            seen_refs.add(unique_ref)
 
             # Build narration label
             parts = [narrative]
@@ -392,20 +397,48 @@ class YesBankStatementWizard(models.TransientModel):
                 parts.append(f"Chq:{cheque_no}")
             label = ' | '.join(filter(None, parts)) or unique_ref
 
+            parsed_candidates.append({
+                'journal_id': journal.id,
+                'date': txn_date,
+                'payment_ref': unique_ref,
+                'ref': user_ref or ref_no,
+                'narration': label,
+                'amount': amount,
+                'partner_name': narrative[:100] if narrative else False,
+            })
+
+        # Single batch query to find existing references in database
+        all_refs = [c['payment_ref'] for c in parsed_candidates]
+        existing_refs = set()
+        if all_refs:
+            ref_chunks = [all_refs[i:i + 500] for i in range(0, len(all_refs), 500)]
+            for chunk in ref_chunks:
+                found = self.env['account.bank.statement.line'].sudo().search([
+                    ('journal_id', '=', journal.id),
+                    ('payment_ref', 'in', chunk),
+                ]).mapped('payment_ref')
+                existing_refs.update(found)
+
+        lines_to_create = [c for c in parsed_candidates if c['payment_ref'] not in existing_refs]
+        skipped = (len(parsed_candidates) - len(lines_to_create)) + duplicate_in_payload
+
+        # Batch create in chunks of 100 for fast & safe insertion
+        created = 0
+        chunk_size = 100
+        for i in range(0, len(lines_to_create), chunk_size):
+            batch = lines_to_create[i:i + chunk_size]
             try:
-                self.env['account.bank.statement.line'].sudo().create({
-                    'journal_id': journal.id,
-                    'date': txn_date,
-                    'payment_ref': unique_ref,
-                    'ref': user_ref or ref_no,
-                    'narration': label,
-                    'amount': amount,
-                    'partner_name': narrative[:100] if narrative else False,
-                })
-                created += 1
+                self.env['account.bank.statement.line'].sudo().create(batch)
+                created += len(batch)
             except Exception as e:
-                _logger.error("YES Bank: Failed to create line for ref %s: %s", unique_ref, e)
-                skipped += 1
+                _logger.error("YES Bank: Batch create failed for %d lines, falling back to single inserts: %s", len(batch), e)
+                for item in batch:
+                    try:
+                        self.env['account.bank.statement.line'].sudo().create(item)
+                        created += 1
+                    except Exception as single_err:
+                        _logger.error("YES Bank: Single create failed for ref %s: %s", item.get('payment_ref'), single_err)
+                        skipped += 1
 
         return created, skipped
 
