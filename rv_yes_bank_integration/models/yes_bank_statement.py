@@ -233,16 +233,15 @@ class YesBankStatementWizard(models.TransientModel):
                             "ServiceName": "AcctStatementInquiry",
                             "ReqRefNum": req_ref,
                             "ReqRefTimeStamp": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-                            "ServiceVersionNo": "1.3"
+                            "ServiceVersionNo": "1.0"
                         }
                     },
                     "ReqBody": {
                         "customerId": cfg['cust_id'],
+                        "appId": cfg.get('app_id') or 'NIL1121',
                         "accountNo": cfg['account_number'],
                         "pageSize": str(page_size_val),
                         "pageNo": str(page_no),
-                        "startTime": start_time,
-                        "endTime": end_time,
                         "startDate": start_date,
                         "endDate": end_date
                     }
@@ -265,7 +264,7 @@ class YesBankStatementWizard(models.TransientModel):
                 response = session.post(
                     url,
                     data=jwe_token,
-                    timeout=30
+                    timeout=(10, 60)
                 )
             except Exception as e:
                 log.write({'status': 'error', 'raw_data': log.raw_data + f"\n\nError: {e}"})

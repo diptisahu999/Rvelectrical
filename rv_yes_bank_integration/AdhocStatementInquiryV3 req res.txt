@@ -1,0 +1,105 @@
+Request:
+{
+ "AcctStatementInquiryReq": {
+  "ReqHdr": {
+   "ConsumerContext": {
+    "RequesterID": "APP"
+   },
+   "ServiceContext": {
+    "ServiceName": "AcctStatementInquiry",
+    "ReqRefNum": "100112334343434502",
+    "ReqRefTimeStamp": "2019-04-12T16:30:15",
+    "ServiceVersionNo": "1.0"
+   }
+  },
+  "ReqBody": {
+   "customerId": "453733",
+   "appId":"NIL1121",
+   "accountNo": "000190600017042",
+   "pageSize": "3",
+   "pageNo": "1",
+   "startDate":"20240701",
+   "endDate":"20240801"
+  }
+ }
+}
+
+
+
+Response:
+{
+    "AcctStatementInquiryRes": {
+        "ResHdr": {
+            "ConsumerContext": {
+                "RequesterID": "APP"
+            },
+            "ServiceContext": {
+                "ServiceName": "AcctStatementInquiry",
+                "ReqRefTimeStamp": "2019-04-12T16:30:15",
+                "ServiceVersionNo": "1.0"
+            },
+            "ServiceResponse": {
+                "EsbResTimeStamp": "2026-05-21 11:01:48.854483",
+                "EsbResStatus": 0
+            }
+        },
+        "ResBody": {
+            "externalReferenceNo": null,
+            "postingDate": "20260521",
+            "totNoOfRecords": 215,
+            "isNextPage": "Y",
+            "xfaceTransactionDetailsDTO": [
+                {
+                    "drcrFlag": "D",
+                    "transactionDate": "2024-07-01 10:31:12",
+                    "referenceTransactionNo": "YBS4183951525224                        ",
+                    "narrative": "UPI/454907847671/From:jayjoshi11@okaxis/To:kiranmishra1007-1@okaxis/UPI",
+                    "transactionAmount": "261",
+                    "transactionBranch": "777",
+                    "fcrPostingDate": "2024-07-01",
+                    "txnCCY": "INR",
+                    "chequeNo": null,
+                    "userReferenceNumber": "AXIeddf5e4842d84831933c020caed66c8fOUT  ",
+                    "txnLiteral": "FTD"
+                },
+                {
+                    "drcrFlag": "D",
+                    "transactionDate": "2024-07-01 14:05:26",
+                    "referenceTransactionNo": "YBS4183952764890                        ",
+                    "narrative": "UPI/454957044206/From:jayjoshi11@ybl/To:BBPSBP@ybl/Payment from PhonePe",
+                    "transactionAmount": "6868",
+                    "transactionBranch": "777",
+                    "fcrPostingDate": "2024-07-01",
+                    "txnCCY": "INR",
+                    "chequeNo": null,
+                    "userReferenceNumber": "YBL86cc816151e9446d84cff8118cbc8b58OUT  ",
+                    "txnLiteral": "FTD"
+                },
+                {
+                    "drcrFlag": "D",
+                    "transactionDate": "2024-07-01 17:30:54",
+                    "referenceTransactionNo": "YBS4183953911667                        ",
+                    "narrative": "UPI/418372971645/From:jayjoshi11@okaxis/To:paytmqr5899dv@paytm/UPI",
+                    "transactionAmount": "60",
+                    "transactionBranch": "777",
+                    "fcrPostingDate": "2024-07-01",
+                    "txnCCY": "INR",
+                    "chequeNo": null,
+                    "userReferenceNumber": "AXI316a80597f7e445489992c08e5b2149dOUT  ",
+                    "txnLiteral": "FTD"
+                }
+            ],
+            "accountNo": "000190600017042",
+            "customerID": "453733",
+            "accountName": "XXXXXAHADEO JOSHI",
+            "branchNo": 1,
+            "branchName": "WORLI",
+            "accountStatus": "8",
+            "accountStatusDescription": "ACCOUNT OPEN REGULAR",
+            "startDate": "20240701000000",
+            "endDate": "20240801000000",
+            "productName": "SAVINGS ACCOUNT - STAFF",
+            "currentBalance": 1.03531656308E+9
+        }
+    }
+}
