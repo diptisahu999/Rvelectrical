@@ -199,6 +199,9 @@ class YesBankStatementWizard(models.TransientModel):
 
         start_date = self.date_from.strftime('%Y%m%d')
         end_date = self.date_to.strftime('%Y%m%d')
+        # startTime/endTime format: YYYYMMDDHHmmS (13 digits as per YES Bank spec)
+        start_time = self.date_from.strftime('%Y%m%d') + '000000'
+        end_time = self.date_to.strftime('%Y%m%d') + '235959'
 
         all_transactions = []
         page_no = 1
@@ -210,20 +213,21 @@ class YesBankStatementWizard(models.TransientModel):
             payload = {
                 "AcctStatementInquiryReq": {
                     "ReqHdr": {
-                        "ConsumerContext": {"RequesterID": cfg['channel_id']},
+                        "ConsumerContext": {"RequesterID": "APP"},
                         "ServiceContext": {
                             "ServiceName": "AcctStatementInquiry",
                             "ReqRefNum": req_ref,
                             "ReqRefTimeStamp": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-                            "ServiceVersionNo": "1.0"
+                            "ServiceVersionNo": "1.3"
                         }
                     },
                     "ReqBody": {
                         "customerId": cfg['cust_id'],
-                        "appId": cfg['app_id'],
                         "accountNo": cfg['account_number'],
                         "pageSize": str(self.page_size),
                         "pageNo": str(page_no),
+                        "startTime": start_time,
+                        "endTime": end_time,
                         "startDate": start_date,
                         "endDate": end_date
                     }
